@@ -1,0 +1,271 @@
+﻿<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+
+<div class="row">
+    <div class="col-md-offset-2  col-md-8">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <div class="panel-title">Update Session Record</div>
+                <div class="btn-group pull-right">
+
+                </div>
+            </div>
+            <div class="panel-body">
+                <form id="dataForm" role="form" class="form-horizontal">
+                    <div class="form-group col-md-12">
+                        <label for="sessionNameInput">Session Synopses Name</label>
+                        <input type="text" id="sessionNameInput" name="sessionNameInput"
+                               maxlength="100" placeholder="Session Name" value="" />
+
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label for="visibilityInput">Visibility</label>
+
+                        <input type="checkbox" data-toggle="toggle" name="visibilityInput" id="visibilityInput" checked />
+
+
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label class="control-label col-md-1"></label>
+                        <div class="col-md-10">
+                            <div class="pull-right">
+                                <input type="button" class="btn btn-danger" value="Delete" data-toggle="modal" data-target="#confirm-delete" /> <!--id="deleteButton" in this line-->
+
+
+
+                                <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <strong>Delete Session Synopsis record</strong>
+                                            </div>
+                                            <div class="modal-body">
+                                                Are you sure about deleting this record?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                                <a class="btn btn-danger btn-ok" id="deleteButton">Delete</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                <input type="button" class="btn btn-primary" value="Save" id="saveButton" />
+                                <a class="btn btn-default" asp-action="Index" asp-controler="Courses">Cancel</a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div><!-- end of div element which has the class="panel-body" -->
+        </div><!-- end of the div element which has the class="panel" -->
+    </div><!-- end of the div element which as the  class="col-md-offset-2 col-sm-8"-->
+</div><!-- end of div element with class="row" -->
+
+<script>
+    $('.modal').hide();
+
+    var g_sessionId = getIdFromAddressBar();
+
+    function getIdFromAddressBar() {
+        var urlArray = window.location.href.split('/');
+        var id = urlArray[urlArray.length - 1];
+        return id;
+    };
+
+
+
+    getSessionDetails();
+
+    function getSessionDetails() {
+        
+        $loadSessionDataHandler = $.ajax({
+            type: 'GET',
+            url: '/API/SessionSynopses/' + g_sessionId,
+
+        })
+        $loadSessionDataHandler.done(function (data, textStatus, jqXHR) { 
+            console.log(data);
+            
+            var session = data;
+            sessionName = session.sessionSynopsisName;
+            isVisible = session.isVisible;
+
+            $('#sessionNameInput').val(sessionName);
+           // console.dir(sessionName); retrieve value for session name
+       
+           // console.dir(isVisible); retrieve value for visibility
+            if (isVisible == false) {
+                $('#visibilityInput').bootstrapToggle('off');
+                this.val = 0;
+            }
+            else {
+                $('#visibilityInput').bootstrapToggle('on');
+                this.val = 1;
+            }
+            console.dir(isVisible);
+
+        });///end of $loadSessionDataHandler.done()
+
+        $loadSessionDataHandler.fail(function (data, textStatus, jqXHR) {
+            console.log(textStatus);
+            console.log(data);
+            console.log(jqXHR);
+            noty({
+                text: data.responseJSON.message, type: 'error',
+                layout: 'center',
+                template: '<div class="noty_message"><span class="noty_text"></span>'
+            });
+        });//end of $loadSessionDataHandler.fail()
+    }//end of getSessionDetails() function (method);
+
+
+    var check = 1;
+    var visval = $("#visibilityInput").change(function () {
+
+        if ($(this).prop("checked") == true) {
+            check = 1;
+            this.val = 1;
+
+        }
+        else {
+            check = 0;
+            this.val = 0;
+        }
+    });
+
+
+    setupFormValidationRules();
+    function setupFormValidationRules() {
+        $.validator.addMethod("noSpace", function (value, element) {
+            return value.indexOf(" ") < 0 && value != "";
+        }, "Please enter a session name");
+
+        $.validator.addMethod("noSpecial", function (value, element) {
+            return this.optional(element) || //(value.match(/^[a-zA-Z\s]+$/))
+                (value.match(/^[\w.]+$/)) ;
+        }, 'No special Characters please');
+
+
+
+        $("#dataForm").validate({
+            rules: {
+                sessionNameInput: {
+                    required: true,
+                    noSpace: true,
+                    noSpecial: true
+
+                }
+
+            },
+            messages: {
+                //required: 'Please enter a session name.',
+                //noSpace: 'Please enter a session name.',
+                //noSpecial :  'No Special Characters pelase'
+
+            }
+
+        });
+
+    }
+
+
+
+    function WebFormData(inSessionSynopsisName, inIsVisible) {
+        this.SessionSynopsisName = inSessionSynopsisName;
+        this.IsVisible = inIsVisible;
+    }
+
+     $('#saveButton').on('click', function () { 
+
+         $('#dataForm').validate();
+
+         if ($('#dataForm').valid()) {
+             var collectedSessionName = $('#sessionNameInput').val();
+             var collectedVisibility = check;
+
+
+             // console.dir(collectedSessionName); //testing whats the value of session name
+             //console.dir(collectedVisibility);  //testing the value of visibility
+
+             var webFormData = new WebFormData(collectedSessionName, collectedVisibility);
+
+             var webFormDataInString = JSON.stringify(webFormData);
+
+             $updateSessionHandler = $.ajax({
+                 type: 'PUT',
+                 url: '/API/SessionSynopses/' + g_sessionId,
+                 dataType: 'json',
+                 contentType: 'application/json;',
+                 data: "'" + webFormDataInString + "'"
+
+
+             });
+
+             $updateSessionHandler.done(function (data, textStatus, jqXHR) {
+                 noty({
+                     text: data.message, type: 'success',
+                     layout: 'center',
+                     template: '<div class="noty_message"><span class="noty_text"></span>'
+                 });
+
+             });
+
+             $updateSessionHandler.fail(function (data, textStatus, jqXHR) {
+                 noty({
+                     text: data.responseJSON.message,
+                     type: 'error',
+                     layout: 'center',
+                     template: '<div class="noty_message"><span class="noty_text"></span>'
+
+                 });
+             });
+         }
+            });//end of save button
+
+
+
+            $('#deleteButton').on('click', function () {
+
+                $('.modal-dialog').fadeOut(1000);
+
+                $deleteSessionHandler = $.ajax({
+                    type: 'DELETE',
+                    url: '/API/SessionSynopses/' + g_sessionId
+                })
+                $deleteSessionHandler.done(function (data, textStatus, jqXHR) {
+                    noty({
+                        text: data.message,
+                        type: 'success',
+                        layout: 'center',
+                        template: '<div class="noty_message"><span class="noty_text"></span>',
+                        buttons: [
+                            {
+                                addClass: 'btn btn-primary', text: 'Ok', onClick: function ($noty) {
+                                    $noty.close();
+                                    $('body').fadeOut(2000, redirectPage);
+                                }
+                            }
+                        ]
+                    });
+                });//end of deleteSessionHandler.done()
+
+
+                $deleteSessionHandler.fail(function (data, textStatus, jqXHR) { 
+                    console.log(data);
+                    noty({
+
+                        text: data.responseJSON.message,
+                        type: 'error',
+                        layout: 'center',
+                        template: '<div class="noty_message"><span class="noty_text"></span>'
+                    })
+                });
+
+            })
+
+            function redirectPage() {
+                location.replace('/SessionSynopses/Index');
+            }
+</script>

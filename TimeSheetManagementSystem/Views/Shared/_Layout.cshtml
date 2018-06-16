@@ -1,0 +1,107 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TimeSheet Management System</title>
+    <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap-table/dist/bootstrap-table.css" rel="stylesheet" />
+    <link href="~/css/site.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/sticky_footer.css" />
+    <link rel="stylesheet" href="~/css/noty_custom.css" />
+    <link href="~/lib/noty/lib/noty.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap-toggle/css/bootstrap-toggle.css" rel="stylesheet" />
+
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation/dist/additional-methods.js"></script>
+    <script src="~/lib/js-cookie/src/js.cookie.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="~/lib/bootstrap-table/dist/bootstrap-table.js"></script>
+    <script src="~/lib/noty/lib/noty.js"></script>
+    <script src="~/lib/moment/min/moment.min.js"></script>
+    <script src="~/lib/he/he.js"></script>
+    <script src="~/lib/noty/js/noty/packaged/jquery.noty.packaged.js"></script>
+    <script src="~/lib/bootstrap-table-contextmenu/dist/bootstrap-table-contextmenu.min.js"></script>
+
+</head>
+<body>
+    <div id="wrap">
+        @if (User.Identity.IsAuthenticated)
+        {
+            <!-- Wrap all page content here -->
+
+
+            <!-- Fixed navbar -->
+            <div class="navbar navbar-default navbar-fixed-top">
+                <div class="container">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="#">Time Sheet Management</a>
+                    </div>
+                    <div class="collapse navbar-collapse">
+                        <ul class="nav navbar-nav">
+                            @if (User.IsInRole("ADMIN") || User.IsInRole("MASTER"))
+                            {
+                                <li><a asp-controller="UserManager" asp-action="Index">Manage User</a></li>
+                            }
+                            <li class="dropdown ">
+                                <a href="#" id="drop2" data-toggle="dropdown" class="dropdown-toggle" role="button">
+                                    Administration <b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
+                                    <li><a asp-controller="CustomerAccounts" asp-action="ManageCustomerAccounts">Manage customer account</a></li>
+                                    <li><a asp-controller="CustomerAccounts" asp-action="CreateCustomerAccount">Create customer account</a></li>
+                                    <li class="divider"></li>
+                                    <li><a asp-controller="SessionSynopses" asp-action="Index">Manage session synopsis</a></li>
+                                    <li><a asp-controller="SessionSynopses" asp-action="Create">Create session synopsis</a></li>
+                                </ul>
+                            </li>
+
+                        </ul>
+                        @await Html.PartialAsync("_LoginPartial")
+                    </div><!--/.nav-collapse -->
+                </div>
+            </div>}
+        else
+        {
+            <div class="navbar navbar-inverse navbar-fixed-top">
+                <div class="container container-fluid">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a asp-controller="Home" asp-action="Index" class="navbar-brand">Time Sheet Manager</a>
+                    </div>
+                    <div class="navbar-collapse collapse">
+                        <ul class="nav navbar-nav"></ul>
+                        @await Html.PartialAsync("_LoginPartial")
+                    </div>
+                </div>
+            </div>
+
+        }
+
+        <div class="container container-fluid">
+            @RenderBody()
+        </div>
+
+    </div><!-- end of div with id="wrap"-->
+    <footer class="footer">
+        <div class="container">
+            <p class="text-muted">Copyright of Middle Age Losing Hair Coder</p>
+        </div>
+    </footer>
+    @RenderSection("scripts", required: false)
+
+
+
+</body>
+</html>

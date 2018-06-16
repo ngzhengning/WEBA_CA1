@@ -1,0 +1,186 @@
+﻿<div class="row">
+	<div class="col-md-offset-2  col-md-8">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<div class="panel-title">Update Course Record</div>
+				<div class="btn-group pull-right">
+
+				</div>
+			</div>
+			<div class="panel-body">
+				<form id="dataForm" role="form" class="form-horizontal">
+					<div class="form-group col-md-12">
+						<label class="control-label  col-md-4" for="courseNameInput">Course Name</label>
+
+						<input type="text" id="courseNameInput"  name="courseNameInput" class="form-control font-bold"
+													maxlength="100" placeholder="Course name" value="" />
+
+					</div>
+					<div class="form-group col-md-12">
+						<label class="control-label col-md-4" for="courseAbbreviationInput">Course Abbreviation</label>
+						<input type="text" id="courseAbbreviationInput"  name="courseAbbreviationInput" class="form-control font-bold"
+													placeholder="Course abbreviation" value="" />
+
+					</div>
+					<div class="form-group col-md-12">
+						<label class="control-label col-md-1"></label>
+						<div class="col-md-10">
+							<div class="pull-right">
+								<input type="button" class="btn btn-danger" value="Delete" id="deleteButton" />
+								<input type="button" class="btn btn-primary" value="Save" id="saveButton" />
+								<a class="btn btn-default" asp-action="Index" asp-controler="Companies">Cancel</a>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div><!-- end of div element which has the class="panel-body" -->
+		</div><!-- end of the div element which has the class="panel" -->
+	</div><!-- end of the div element which as the  class="col-md-offset-2 col-sm-8"-->
+</div><!-- end of div element with class="row" -->
+    <script>
+        //Declare a document scope variable, g_courseId.
+        //A document scope variable value can be accessed anywhere in the web page during the
+        //entire life cycle at the web browser (till the user refresh the page)
+        //Naming convention: begin with "g_" prefix
+        //This variable will contain the id of the course
+        //which will be extracted from the address bar.
+        //The variable will be used in the first Ajax() call, to retrieve JSON structured
+        //information about the course
+				   	var g_courseId = getIdFromAddressBar();
+        function getIdFromAddressBar() {
+        	var urlArray = window.location.href.split('/');
+        	var id = urlArray[urlArray.length - 1];
+        	return id;
+        };
+
+         getCourseDetails();
+
+
+
+
+        function getCourseDetails() {
+        	//When making an ajax call, need to
+        	//get $loadCourseDataHandler to reference the call activity.
+        	//jQuery's ajax() method will turn this $loadCourseDataHandler variable
+									//into an object having 2 important methods. done() and fail().
+        	$loadCourseDataHandler = jQuery.ajax({
+                type: 'GET',
+                url: '/API/Courses/' + g_courseId,
+            })
+        	$loadCourseDataHandler.done(function (data, textStatus, jqXHR) {
+                //The (data) input parameter automatically captures the response from the
+                //Get API method
+                //I usually use the following code
+                //to inspect the returned result captured by the data input parameter
+                //from the web server.
+                console.log(data);
+
+                //After inspecting the data object with the console.log
+                //I have clear picture of the structure and used
+                //the following variable to reference(represent) the data variable.
+                var course = data;
+                //Copy out the course information
+                courseName = course.courseName;
+                courseAbbreviation = course.courseAbbreviation;
+             
+                //Populate the respective input controls with the user details.
+               	//For example, find the text input control, courseNameInput 
+                //and set the input control's value with the courseName variable's content.
+                $('#courseNameInput').val(courseName);
+                $('#courseAbbreviationInput').val(courseAbbreviation);
+            }//end of JavaScript anonymous function
+            )//end of the done() method;
+
+        	$loadCourseDataHandler.fail(function (data, textStatus, jqXHR) {
+                console.log(textStatus);
+                console.log(data);
+                console.log(jqXHR);
+                noty({
+                    text: data.responseJSON.message, type: 'error',
+                    layout: 'center',
+                    template: '<div class="noty_message"><span class="noty_text"></span>'
+                });
+        	});//end of $loadCourseDataHandler.fail()
+        }//end of getCourseDetails() function (method);
+
+        //Using a function technique to define a JavaScript class, WebFormData
+        function WebFormData(inCourseName, inCourseAbbreviation) {
+        	this.courseName = inCourseName;
+        	this.courseAbbreviation = inCourseAbbreviation;
+        }
+        $('#saveButton').on('click', function () {
+            var collectedCourseName = $('#courseNameInput').val();
+            var collectedCourseAbbreviation = $('#courseAbbreviationInput').val();
+            //Create a WebFormData object, webFormData. Have its field values
+            //populated with the collected course data
+            var webFormData = new WebFormData(collectedCourseName,
+													        collectedCourseAbbreviation);
+            //Convert the webFromData into a JSON string
+            var webFormDataInString = JSON.stringify(webFormData);
+
+            $updateCourseHandler = jQuery.ajax({
+                type: 'PUT',
+                url: '/API/Courses/' + g_courseId,
+                dataType: 'json',
+                contentType: 'application/json;',
+                data: "'" + webFormDataInString + "'"
+            })//end of jQuery.ajax() call
+            $updateCourseHandler.done(function (data, textStatus, jqXHR) {
+                new Noty({
+                		text: data.message,
+                		type: 'success',
+                    layout: 'center'
+                }).show();//end of noty()
+            });//end of $updateCourseHandler.done()
+
+            $updateCourseHandler.error(function (data, textStatus, jqXHR) {
+                new Noty({
+                		text: data.responseJSON.message,
+                		type: 'error',
+                    layout: 'center',
+                }).show();//end of noty()
+            });//end of $updateCourseHandler.error()
+
+        });// end of $('#saveButton').on('click', function () { ...}
+
+
+        $('#deleteButton').on('click', function () {
+ 
+            $deleteCourseHandler = jQuery.ajax({
+                type: 'DELETE',
+                url: '/API/Courses/' + g_courseId
+            })//end of jQuery.ajax() call
+            $deleteCourseHandler.done(function (data, textStatus, jqXHR) {
+                noty({
+                    text: data.message, type: 'success',
+                    layout: 'center',
+                    template: '<div class="noty_message" style="height:50px;"><span class="noty_text"></span>',
+                    buttons: [
+                        {
+                         addClass: 'btn btn-primary', text: 'Ok', onClick: function ($noty) {
+                             $noty.close();
+                             $('body').fadeOut(2000, redirectPage);
+                             }
+                         }
+                    ]
+                });//end of noty()
+            });//end of $deleteCourseHandler.done()
+
+            $deleteCourseHandler.fail(function (data, textStatus, jqXHR) {
+            	console.log(data);
+                noty({
+                    text: data.responseJSON.message, type: 'error',
+                    layout: 'center',
+                    template: '<div class="noty_message"><span class="noty_text"></span>'
+                });//end of noty()
+            });//end of $deleteCourseHandler.fail()
+
+        });//$('#deleteButton').on('click', function () { ... }
+        function redirectPage() {
+            location.replace('/Courses/Index');
+        }
+    </script>
+
+
+
+

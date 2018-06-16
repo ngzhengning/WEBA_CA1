@@ -1,0 +1,32 @@
+{
+  "name": "datepicker-moment",
+  "version": "2.0.1",
+  "homepage": "http://luiscustodio.com/datepicker-moment",
+  "authors": [
+    "Luis Custodio <luis.custodio@gmail.com>"
+  ],
+  "description": "A datepicker with the incredible moment.js",
+  "main": [
+    "./moment-datepicker/moment-datepicker.js",
+    "./moment-datepicker/datepicker.css"
+  ],
+  "keywords": [
+    "moment",
+    "momentjs",
+    "datepicker"
+  ],
+  "license": "Apache-2.0",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "bootstrap": "2.3.0",
+    "moment": "~2.10.6",
+    "knockout": "2.2.1"
+  }
+}

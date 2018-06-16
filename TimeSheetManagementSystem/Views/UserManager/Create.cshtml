@@ -1,0 +1,153 @@
+﻿<div class="container">
+    <div class="col-md-offset-2 col-md-8">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <div class="panel-title">Create User Record</div>
+            </div>
+            <div class="panel-body">
+                <form id="dataForm" role="form" class="form-horizontal">
+                    <div class="form-group">
+                        <label class="control-label col-md-3" for="fullNameInput">User Name (Staff Id)</label>
+                        <div class="col-md-4">
+                            <input type="text" id="userNameInput" class="form-control input-group-sm"
+                                   maxlength="30" placeholder="User name (staff id)" value="" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3" for="fullNameInput">Full Name</label>
+                        <div class="col-md-4">
+                            <input type="text" id="fullNameInput" class="form-control input-group-sm"
+                                   maxlength="30" placeholder="Full name" value="" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3" for="emailInput">Email</label>
+                        <div class="col-md-7">
+                            <input type="text" id="emailInput" class="form-control input-group-sm"
+                                   placeholder="Email" value="" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3" for="roleIdInput">Role</label>
+                        <div class="col-md-9">
+                            <select id="roleIdInput" class="form-control input-group-sm">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3"></label>
+                        <div class="col-md-9">
+                            <div class="pull-right">
+                                <input type="button" class="btn btn-primary" value="Save" id="saveButton" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div><!-- end of div element which has the class="panel-body" -->
+        </div><!-- end of the div element which has the class="panel" -->
+    </div><!-- end of the div element which has class="col-md-offset-2 col-md-8" -->
+</div><!-- end of div element which has the class="container" -->
+
+
+
+<script>
+    g_roleIdInputElement = $('#roleIdInput');
+    //I need a document scope variable, g_originalRoleName because
+    //there are complications to use the UserManager to remove a role from a user and add a role to a user.
+    //The reason is, the method are asynchronous.
+    //A lot of spaggheti coding were involved just to get the RoleName. 
+        g_originalRoleName = '';
+        setupRoleListBox();
+
+        function setupRoleListBox() {
+            //Note: jQuery.ajax(..) is also often written is $.ajax(..)
+            $loadHandler = jQuery.ajax({
+                type: 'GET',
+                url: '/API/Roles',
+            })
+            $loadHandler.done(function (data, textStatus, jqXHR) {
+                //The (data) input parameter automatically captures the response from the
+                //Get API method
+                //I usually use the following code
+                //to inspect the returned result captured by the data input parameter
+                //from the web server.
+                console.log(data);
+
+                //After inspecting the data object with the console.log
+                //I have clear picture of the structure and used
+                //the following variable to reference(represent) the data variable.
+                var roleList = data;
+
+                for (index = 0; index < roleList.length; index++) {
+                    role = roleList[index];
+                    roleId = role.roleId;
+                    roleName = role.roleName;
+                    optionElement = $('<option></option', { value: roleId, text: roleName });
+                    g_roleIdInputElement.append(optionElement);
+                }
+                //after setting up the listbox element, call
+                //this method which has another Ajax() call to obtain user details
+                getUserDetails();
+            }//end of JavaScript anonymous function
+            
+   
+            )//end of the done() method;
+
+        } //end of setupRoleListBox
+    //Note: jQuery.ajax(..) is also often written is $.ajax(..)
+
+        function WebFormData(inUserName,inFullName, inEmail, inSelectedRoleName,inOriginalRoleName) {
+            this.userName = inUserName;
+            this.fullName = inFullName;
+            this.email = inEmail;
+            this.selectedRoleName = inSelectedRoleName;
+            this.originalRoleName = inOriginalRoleName;
+        }
+        $('#saveButton').on('click', function () {
+            var collectedUserName = $('#userNameInput').val();
+            var collectedFullName = $('#fullNameInput').val();
+            var collectedEmail = $('#emailInput').val();
+          
+            var collectedRoleName = $("#roleIdInput option:selected").text();
+            var webFormData = new WebFormData(collectedUserName,collectedFullName,
+                  collectedEmail,collectedRoleName,g_originalRoleName);
+            var webFormDataInString = JSON.stringify(webFormData);
+
+            $addUserHandler = jQuery.ajax({
+                type: 'POST',
+                url: '/API/UserManager',
+                dataType: 'json',
+                contentType: 'application/json;',
+                data: "'" + webFormDataInString + "'"
+            })
+            $addUserHandler.done(function (data, textStatus, jqXHR) {
+                if (data.status == "success") {
+                    noty({
+                        text: data.message, type: 'success',
+                        dismissQueue: true,
+                        layout: 'center'
+                    });
+                } else {
+                    noty({
+                        text: data.message, type: 'error',
+                        dismissQueue: true,
+                        layout: 'center'
+                    })
+
+                }
+            });
+            $addUserHandler.fail(function (data, textStatus, jqXHR) {
+                console.log('executed when runtime error on server side occurred');
+                noty({ text: data,
+                    type: 'error' ,
+                    dismissQueue: true,
+                    layout: 'center' })
+            });
+
+        });
+
+</script>
+
+
+
+

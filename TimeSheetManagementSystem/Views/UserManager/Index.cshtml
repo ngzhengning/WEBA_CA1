@@ -1,0 +1,141 @@
+﻿<div class="panel  panel-primary">
+    <div class="panel-heading">Manage User
+				<div class="btn-group pull-right">
+						<a asp-action="Create" asp-controller="UserManager" class="btn btn-default btn-group-lg ">Add</a>
+				</div>
+				</div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>User Name</th>
+                            <th>Full Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTableBody"></tbody>
+                </table>
+
+            </div>
+        </div>
+
+    </div><!-- end of Panel Body -->
+</div><!-- end of Main Panel -->
+
+<script>
+
+    $(document).ready(function () {
+        loadUserData();
+    })
+    function loadUserData() {
+        //Note: jQuery.ajax(..) is also often written is $.ajax(..)
+        jQuery.ajax({
+            url: '/Api/UserManager',
+            method: 'GET',
+            dataType: 'json',
+            cache: false,
+        }).done(function (data, textStatus, jqXHR) {
+            //This done method will
+            //The (data) input parameter automatically captures the response from the
+            //GET() method
+
+            //I usually use the following code
+            //to inspect the returned result captured by the data input parameter
+            //from the web server.
+            console.log(data);
+
+            //After inspecting the data object with the console.log
+            //I have clear picture of the structure and used
+            //the following variable to represent the response.d
+            var userList = data;
+            var userId = '';
+            var fullName = '';
+            var userName = '';
+            var email = '';
+            var role = '';
+            var $tableElement = null;
+            var $cellElement = null;
+            var $rowElement = null;
+            //-------- Find the table element -----------
+            //I am using the $tableElement variable
+            //to represent the found HTML element which has a matching id of userTableBody
+            $tableBodyElement = $('#userTableBody');
+
+            //I want to build rows and cells (using tr and td HTML elements) so that
+            //I can display user id, full name, email, user name (staff id) and role information
+            //within the HTML table element,userTableBody. Recall that, I have already asked the
+            //$tableBodyElement variable to represent (reference) the table element.
+
+            //-------- Begin creating <tr> and <td> HTML element ------
+            for (index = 0; index < userList.length; index++) {
+                //Set this user variable to reference a user object
+                //within the userList Array.
+                user = userList[index];
+                //Copy out the user information
+                userId = user.id;
+                fullName = user.fullName;
+                userName = user.userName;
+                email = user.email;
+                role = user.roles[0];
+               
+                //Create new HTML <tr> element.
+                //At the same time let the $rowElement variable to represent it.
+                $rowElement = $('<tr></tr>');
+                //Create the 1st cell element which display GUID.
+                $cellElement = $('<td></td>', { text: userId });
+                $rowElement.append($cellElement);
+                //Create the 2nd cell element which display User Name (staff id)
+                $cellElement = $('<td></td>', { text: userName });
+                $rowElement.append($cellElement);
+                //Create the 3rd cell element which display Full Name
+                $cellElement = $('<td></td>', { text: fullName });
+                $rowElement.append($cellElement);
+                //Create the 4th cell element which display Email
+                $cellElement = $('<td></td>', { text: email });
+                $rowElement.append($cellElement);
+                //Create the 5th cell element which display Role
+                $cellElement = $('<td></td>', { text: role });
+                $rowElement.append($cellElement);
+  
+                //Create the 6th cell element.
+                //Also, create an additional hyperlink element which will
+                //look like a button due to the Bootstrap class.
+                //This <a> hyperlink element also need to have 1 important feature:
+                //When it is clicked, it will tell the web browser to request for the UserManager controller's
+                //Update action.
+                //and at the same time pass a QueryString data value of the respective user id.
+
+                //---------------- Using jQuery() to create the hyperlink element using the <a></a> --------
+                $hyperLinkElement = $('<a>Update User</a>').attr('href', '/UserManager/Update/' + userId);
+                $hyperLinkElement.addClass('btn btn-primary');
+                //The $hyperLinkElement eventually represents (references) a HTML element which is:
+                //<a href="UserManager/Update/<user id>" class="btn btn-primary" >Update User</a>
+                //-----------------Using jQuery() to creating the 3rd cell for the row----------------------
+                $cellElement = $('<td></td>');
+                //-----------------Add the previous created hyperlink element, $hyperLinkElement
+                //                 into the newly created 6th cell.
+                //As a result, $cellElement references an element defined by:
+                //<td><<a href="UpdateUser/<user id>" class="btn btn-primary" >Update User</a></td>
+                $cellElement.append($hyperLinkElement);
+
+                //---------------Add the 6th cell into the row represented by the $rowElement
+                $rowElement.append($cellElement);
+                //Insert the $rowElement into the table element represented by $tableElement.
+                $tableBodyElement.append($rowElement);
+                //----End of creating one row to display one user by using <tr> and <td> HTML element ---
+                //       Proceed to the next user object in the userList Array.
+            }//end of for loop.
+
+
+
+
+        }//end of JavaScript anonymous function
+        )//end of the done() method;
+    }//end of loadUserData();
+
+</script>

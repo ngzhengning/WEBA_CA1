@@ -1,0 +1,311 @@
+﻿<div class="row">
+    <div class="col-md-offset-2  col-md-8">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <div class="panel-title">Update Customer Account</div>
+                <div class="btn-group pull-right">
+
+                </div>
+            </div>
+            <div class="panel-body">
+
+                <form id="dataForm" role="form" class="form-horizontal">
+                    <div class="form-group col-md-12">
+                        <table border="0">
+                            <tr>
+                                <td class="lblall"> <label for="accountNameInput">Account name</label></td>
+                                <td class="inptall">
+                                    <input type="text" id="accountNameInput" name="accountNameInput"
+                                           maxlength="100" placeholder="Account Name" value="" />
+                                </td>
+
+
+                            </tr>
+                        </table>
+                    </div>
+
+
+                    <div class="form-group col-md-12">
+                        <table border="0">
+                            <tr>
+
+                                <td class="lblall"><label for="visibilityInput">Visibility</label></td>
+                                <td class="inptall"><input type="checkbox" data-toggle="toggle" name="visibilityInput" id="visibilityInput" checked /></td>
+                            </tr>
+                        </table>
+
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <table>
+                            <tr>
+                                <td class="lblall"> <label for="commentsInput">Comments</label></td>
+                                <td class="inptall">
+                                    <textarea id="commentsInput" name="commentsInput"
+                                              placeholder="Comments" value=""></textarea>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label class="control-label col-md-1"></label>
+                        <div class="col-md-10">
+                            <div class="pull-right">
+                                <input type="button" class="btn btn-danger" value="Delete" data-toggle="modal" data-target="#confirm-delete" /> <!--id="deleteButton" in this line-->
+
+
+
+                                <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <strong>Delete Customer Account record</strong>
+                                            </div>
+                                            <div class="modal-body">
+                                                Are you sure about deleting this record?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                                <a class="btn btn-danger btn-ok" id="deleteButton">Delete</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="button" class="btn btn-primary" value="Save" id="saveButton" />
+                                <a class="btn btn-default" asp-action="ManageCustomerAccounts" asp-controller="CustomerAccounts">Cancel</a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+            </div><!-- end of div element which has the class="panel-body" -->
+        </div><!-- end of the div element which has the class="panel" -->
+    </div><!-- end of the div element which as the  class="col-md-offset-2 col-sm-8"-->
+</div><!-- end of div element with class="row" -->
+@section scripts{
+    <script src="~/lib/bootstrap-toggle/js/bootstrap-toggle.js"></script>
+
+    <script>
+
+        //STYLES
+        $('td').css('width', '230px');
+        $('#commentsInput').css('width', '300px');
+
+        $('.lblall').css('text-align', 'right');
+        $('.lblall').css('display', 'block');
+
+        $('.inptall').css('width', '400px');
+        $('.inptall').css('padding-left', '30px');
+
+
+        //FOR BOOTSTRAP-TOGGLE
+        var check = 1;
+        var visval = $("#visibilityInput").change(function () {
+
+            if ($(this).prop("checked") == true) {
+                check = 1;
+                this.val = 1;
+
+            }
+            else {
+                check = 0;
+                this.val = 0;
+            }
+        });
+
+        $('.modal').hide();
+
+        var g_customerId = getIdFromAddressBar();
+
+        function getIdFromAddressBar() {
+            var urlArray = window.location.href.split('/');
+            var id = urlArray[urlArray.length - 1];
+            return id;
+        };
+
+        getCustomerDetails();
+
+        function getCustomerDetails() {
+
+            $loadCustomerDataHandler = $.ajax({
+                type: 'GET',
+                url: '/API/CustomerAccounts/' + g_customerId,
+            })
+
+            $loadCustomerDataHandler.done(function (data, textStatus, jqXHR) { 
+                console.log(data);
+
+                var customer = data;
+                accountName = customer.accountName;
+                isVisible = customer.isVisible;
+                comments = customer.comments;
+
+
+                console.dir(accountName);
+                $('#accountNameInput').val(accountName);
+
+                $('#commentsInput').val(comments);
+                if (isVisible == false) {
+                    $('#visibilityInput').bootstrapToggle('off');
+                    this.val = 0;
+                }
+                else {
+                    $('#visibilityInput').bootstrapToggle('on');
+                    this.val = 1;
+                }
+                
+
+
+            });
+
+            $loadCustomerDataHandler.fail(function (data, textStatus, jqXHR) {
+                console.log(textStatus);
+                console.log(data);
+                console.log(jqXHR);
+                noty({
+                    text: data.responseJSON.message, type: 'error',
+                    layout: 'center',
+                    template: '<div class="noty_message"><span class="noty_text"></span>'
+
+                });
+
+            });
+        }
+
+
+        setupFormValidationRules();
+        function setupFormValidationRules() {
+
+            //NO BLANK FIELD
+            $.validator.addMethod("noSpace", function (value, element) {
+                return value.match(/^([a-zA-Z0-9]+[a-zA-Z0-9\s]*[a-zA-Z0-9]+|[a-zA-Z0-9]*)$/);
+            }, "Invalid format/Empty field".fontsize('2px').fontcolor('red'));
+
+
+
+            $("#dataForm").validate({
+                rules: {
+                    accountNameInput: {
+                        required: true,
+                        noSpace: true
+                    },
+                    comments: {
+                        noSpace: true
+
+                    }
+                    },
+
+                    messages: {
+
+                        accountNameInput: {
+                            required: "This field is required".fontsize('3px').fontcolor('red')
+                        },
+
+                        ratePerHourInput: {
+                            required: "This field is required".fontsize('3px').fontcolor('red')
+                        }
+
+                    }
+                })
+
+
+            }//END OF VALIDATION
+       
+
+        function WebFormData(inAccountName, inIsVisible, inComments) {
+            this.AccountName = inAccountName;
+            this.IsVisible = inIsVisible;
+            this.Comments = inComments;
+
+        }
+
+        $('#saveButton').on('click', function () {
+            $('#dataForm').validate();
+
+            if ($('#dataForm').valid()) {
+                visval;
+                var collectedAccountName = $('#accountNameInput').val();
+                var collectedVisibility = check;
+                var collectedComments = $('#commentsInput').val();
+
+                var webFormData = new WebFormData(collectedAccountName, collectedVisibility, collectedComments);
+
+                var webFormDataInString = JSON.stringify(webFormData);
+
+                $updateCustomerHandler = $.ajax({
+                    type: 'PUT',
+                    url: '/API/CustomerAccounts/' + g_customerId,
+                    dataType: 'json',
+                    contentType: 'application/json;',
+                    data: "'" + webFormDataInString + "'"
+                })
+
+                $updateCustomerHandler.done(function (data, textStatus, jqXHR) {
+                    noty({
+                        text: data.message,
+                        type: 'success',
+                        layout: 'center',
+                        template: '<div class="noty_message"><span class="noty_text"></span>'
+                    });
+
+                });
+
+                $updateCustomerHandler.fail(function (data, textStatus, jqXHR) {
+                    noty({
+                        text: data.responseJSON.message,
+                        type: 'error',
+                        layout: 'center',
+                        template: '<div class="noty_message"><span class="noty_text"></span>'
+
+                    });
+                });
+
+            }
+        });//end OF SAVE BUTTON
+
+        $('#deleteButton').on('click', function () {
+            $('.modal-dialog').fadeOut(1000);
+
+            $deleteCustomerHandler = $.ajax({
+
+                type: 'DELETE',
+                url: '/API/CustomerAccounts/' + g_customerId
+
+            })
+
+            $deleteCustomerHandler.done(function (data, textStatus, jqXHR) { 
+                noty({
+                    text: data.message,
+                    type: 'success',
+                    layout: 'center',
+                    template: '<div class="noty_message"><span class="noty_text"></span>',
+                    buttons: [
+                        {
+                            addClass: 'btn btn-primary', text: 'Ok', onClick: function ($noty) {
+                                $noty.close();
+                                $('body').fadeOut(2000, redirectPage);
+                            }
+                        }
+                    ]
+                });
+            });//end of deleteSessionHandler.done()
+
+            $deleteCustomerHandler.fail(function (data, textStatus, jqXHR) {
+                console.log(data);
+                noty({
+
+                    text: data.responseJSON.message,
+                    type: 'error',
+                    layout: 'center',
+                    template: '<div class="noty_message"><span class="noty_text"></span>'
+                })
+            });
+
+        });
+
+        function redirectPage() {
+            location.replace('/CustomerAccounts/ManageCustomerAccounts');
+        }
+
+    </script>
+}

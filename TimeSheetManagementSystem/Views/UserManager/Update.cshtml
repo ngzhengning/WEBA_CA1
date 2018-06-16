@@ -1,0 +1,203 @@
+﻿<div class="container">
+    <div class="col-md-offset-2 col-md-8">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <div class="panel-title">Update User Record</div>
+            </div>
+            <div class="panel-body">
+                <form id="dataForm" role="form" class="form-horizontal">
+                    <div class="form-group">
+                        <label class="control-label col-md-3" for="fullNameInput">User Name (Staff Id)</label>
+                        <div class="col-md-4">
+                            <input type="text" id="userNameInput" class="form-control input-group-sm"
+                                   maxlength="30" placeholder="User name (staff id)" value="" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3" for="fullNameInput">Full Name</label>
+                        <div class="col-md-4">
+                            <input type="text" id="fullNameInput" class="form-control input-group-sm"
+                                   maxlength="30" placeholder="Full name" value="" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3" for="emailInput">Email</label>
+                        <div class="col-md-7">
+                            <input type="text" id="emailInput" class="form-control input-group-sm"
+                                   placeholder="Email" value="" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3" for="roleIdInput">Role</label>
+                        <div class="col-md-9">
+                            <select id="roleIdInput" class="form-control input-group-sm">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3"></label>
+                        <div class="col-md-9">
+                            <div class="pull-right">
+                                <input type="button" class="btn btn-primary" value="Save" id="saveButton" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div><!-- end of div element which has the class="panel-body" -->
+        </div><!-- end of the div element which has the class="panel" -->
+    </div><!-- end of the div element which has class="col-md-offset-2 col-md-8" -->
+</div><!-- end of div element which has the class="container" -->
+
+
+
+<script>
+    //Declare a document scope variable, window.userId.
+    //A document scope variable value can be accessed anywhere in the web page during the
+    //entire life cycle at the web browser (till the user refresh the page)
+    //Naming convention: when you create a variable starting with window.
+    //the JavaScript engine knows that this is a global variable because it belongs to the window object.
+    //This variable will contain the GUID string user id value
+    //which will be extracted from the address bar.
+    //The variable will be used in the first Ajax() call, to retrieve JSON structured
+    //information about the user
+        window.userId = getUserIdFromAddressBar();
+        window.roleIdInputElement = $('#roleIdInput');
+    //I need a document scope variable, window.originalRoleName because
+    //there are complications to use the UserManager to remove a role from a user and add a role to a user.
+    //The reason is, the method are asynchronous.
+    //A lot of spaggheti coding were involved just to get the RoleName. 
+        window.originalRoleName = '';
+        setupRoleListBox();
+        function getUserIdFromAddressBar(){
+        //Get userid from the url string in the browser's address bar
+            var urlArray = window.location.href.split('/');
+            var userId = urlArray[urlArray.length - 1];
+            return userId;
+        };
+        function setupRoleListBox() {
+            //Note: jQuery.ajax(..) is also often written is $.ajax(..)
+            $loadHandler = jQuery.ajax({
+                type: 'GET',
+                url: '/API/Roles',
+            })
+            $loadHandler.done(function (data, textStatus, jqXHR) {
+                //The (data) input parameter automatically captures the response from the
+                //Get API method
+                //I usually use the following code
+                //to inspect the returned result captured by the data input parameter
+                //from the web server.
+                console.log(data);
+
+                //After inspecting the data object with the console.log
+                //I have clear picture of the structure and used
+                //the following variable to reference(represent) the data variable.
+                var roleList = data;
+
+                for (index = 0; index < roleList.length; index++) {
+                    role = roleList[index];
+                    roleId = role.roleId;
+                    roleName = role.roleName;
+                    optionElement = $('<option></option', { value: roleId, text: roleName });
+                    window.roleIdInputElement.append(optionElement);
+                }
+                //after setting up the listbox element, call
+                //this method which has another Ajax() call to obtain user details
+                getUserDetails();
+            }//end of JavaScript anonymous function
+            
+   
+            )//end of the done() method;
+
+        } //end of setupRoleListBox
+    //Note: jQuery.ajax(..) is also often written is $.ajax(..)
+
+    function getUserDetails(){
+        $loadHandler = jQuery.ajax({
+            type: 'GET',
+            url: '/API/UserManager/' + window.userId,
+        })
+        $loadHandler.done(function (data, textStatus, jqXHR) {
+            //The (data) input parameter automatically captures the response from the
+            //Get API method
+            //I usually use the following code
+            //to inspect the returned result captured by the data input parameter
+            //from the web server.
+            console.log(data);
+
+            //After inspecting the data object with the console.log
+            //I have clear picture of the structure and used
+            //the following variable to reference(represent) the data variable.
+            var user = data;
+            //Copy out the user information
+            fullName = user.fullName;
+            userName = user.userName;
+            email = user.email;
+            roleId = user.roleId;
+
+            //Populate the respective input controls with the user details.
+            //For example, find the text input control, fullNameInput and set the text input control
+            //'s value with the fullName variable's content.
+            $('#userNameInput').val(userName);
+            $('#fullNameInput').val(fullName);
+            $('#emailInput').val(email);
+            $('#roleIdInput').val(roleId);
+            window.originalRoleName = $("#roleIdInput option:selected").text();
+        }//end of JavaScript anonymous function
+
+        )//end of the done() method;
+    }//end of getUserDetails();
+        function WebFormData(inUserName,inFullName, inEmail, inSelectedRoleName,inOriginalRoleName) {
+            this.userName = inUserName;
+            this.fullName = inFullName;
+            this.email = inEmail;
+            this.selectedRoleName = inSelectedRoleName;
+            this.originalRoleName = inOriginalRoleName;
+        }
+        $('#saveButton').on('click', function () {
+            var collectedUserName = $('#userNameInput').val();
+            var collectedFullName = $('#fullNameInput').val();
+            var collectedEmail = $('#emailInput').val();
+          
+            var collectedRoleName = $("#roleIdInput option:selected").text();
+            var webFormData = new WebFormData(collectedUserName,collectedFullName,
+                collectedEmail, collectedRoleName, window.originalRoleName);
+            var webFormDataInString = JSON.stringify(webFormData);
+
+            $updateUserHandler = jQuery.ajax({
+                type: 'PUT',
+                url: '/API/UserManager/' + window.userId,
+                dataType: 'json',
+                contentType: 'application/json;',
+                data: "'" + webFormDataInString + "'"
+            })
+            $updateUserHandler.done(function (data, textStatus, jqXHR) {
+                if (data.status == "success") {
+                    noty({
+                        text: data.message, type: 'success',
+                        dismissQueue: true,
+                        layout: 'center'
+                    });
+                } else {
+                    noty({
+                        text: data.message, type: 'error',
+                        dismissQueue: true,
+                        layout: 'center'
+                    })
+
+                }
+            });
+            $updateUserHandler.fail(function (data, textStatus, jqXHR) {
+                console.log('executed when runtime error on server side occurred');
+                noty({ text: data,
+                    type: 'error' ,
+                    dismissQueue: true,
+                    layout: 'center' })
+            });
+
+        });
+
+</script>
+
+
+
+

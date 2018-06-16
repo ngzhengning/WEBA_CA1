@@ -1,0 +1,147 @@
+﻿<div class="row">
+
+    <div class="panel panel-primary">
+        <div class="panel-heading clearfix">
+            <div class="panel-heading">
+                Manage Customer Accounts
+
+                <div class="btn-group pull-right">
+                    <a asp-action="CreateCustomerAccount" asp-controller="CustomerAccounts"
+                       class="btn btn-default btn-group-lg ">Add Customer Account</a>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-hover" border="1">
+                        <thead>
+                            <tr>
+                                <!-- <th>Session ID</th>-->
+                                <th>Account Name</th>
+                                <th># of Rates Data</th>
+                                <th># of Instructors</th>
+                                <th>Comments</th>
+                                <th>Updated By</th>
+                                <th>Updated At</th>
+                                <th>Actions</th>
+                                <th>&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody id="CustomerAccountsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section scripts
+{
+<script>
+    loadCustomerData();
+
+    function loadCustomerData() {
+        var $loadCustomerDataHandler = $.ajax({
+            url: '/API/CustomerAccounts/',
+            method: 'GET',
+            dataType: 'json',
+            cache: false,
+
+        });
+        $loadCustomerDataHandler.done(function (data, textStatus, jqXHR) {
+            var customerList = data;
+            var CustomerAccountId = '';
+            var AccountName = "";
+            var NumOfRates= '';
+            var Comments = "";
+            var UpdatedBy = "";
+            var updatedAt = "";
+            var $tableElement = null;
+            var $cellElement = null;
+            var $rowElement = null;
+
+
+            console.log(data);
+            $tableBodyElement = $('#CustomerAccountsTableBody');
+
+            for (index = 0; index < customerList.length; index++) {
+                customers = customerList[index];
+                console.dir(customers);
+                customerAccountId = customers.customerAccountId;
+
+                accountName = customers.accountName;
+                console.dir(AccountName);
+                numOfRates = customers.numOfRates;
+                comments = customers.comments;
+                updatedBy = customers.updatedBy;
+                updatedAt = customers.updatedAt;
+                updatedAt = moment(new Date()).format("DD/MM/YYYY"); //moment formating date
+
+                $rowElement = $('<tr></tr>');
+                $cellElement = $('<td></td>', { text: accountName});
+                $rowElement.append($cellElement);
+
+                $cellElement = $('<td></td>', { text: numOfRates });
+                $rowElement.append($cellElement);
+
+                $cellElement = $('<td></td>', { text: 0 });
+                $rowElement.append($cellElement);
+
+
+                $cellElement = $('<td></td>', { text: comments });
+                $rowElement.append($cellElement);
+
+                $cellElement = $('<td></td>', { text: updatedBy });
+                $rowElement.append($cellElement);
+
+                $cellElement = $('<td></td>', { text: updatedAt });
+                $rowElement.append($cellElement);
+
+
+                //issue1
+
+                $hyperLinkElement = $('<a>Update General Info</a>').attr('href', '/CustomerAccounts/UpdateCustomerAccount/' + customerAccountId);
+                $hyperLinkElement.addClass('btn btn-primary');
+
+
+                $cellElement = $('<td></td>');
+
+
+                $cellElement.append($hyperLinkElement);
+                $rowElement.append($cellElement);
+
+
+                //issue 2
+                $hyperLinkElement = $('<a>Manage Rates</a>').attr('href', '/CustomerAccounts/ManageAccountRates/' + customerAccountId);
+                $hyperLinkElement.addClass('btn btn-primary');
+
+
+                $cellElement = $('<td></td>');
+
+
+                $cellElement.append($hyperLinkElement);
+                $rowElement.append($cellElement);
+
+
+                $tableBodyElement.append($rowElement);
+            }
+        }
+        );
+
+        $loadCustomerDataHandler.fail(function (data, textStatus, jqXHR) {
+            noty({
+                text: 'Ajax call has failed due to : ' + data.statusText, type: 'error',
+                layout: 'center',
+                template: '<div class="noty_message"><span class="noty_text"></span>'
+            });//end of noty()
+
+        });
+
+
+    };
+
+
+</script>
+}

@@ -1,0 +1,159 @@
+﻿<div class="row">
+
+    <div class="panel panel-primary">
+        <div class="panel-heading clearfix">
+            <div class="panel-heading">
+                Manage Rates for <label id="accountName" style="text-decoration:underline"></label>
+
+                <div id ="addRate" class="btn-group pull-right"> @*give id to div for javascript manipulation*@
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <!-- <th>Session ID</th>-->
+                                <th>Rate per hour</th>
+                                <th>Effective Start Date</th>
+                                <th>Effective End Date</th>
+                                <th>Actions</th>
+                                <th>&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody id="AccountRatesTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section scripts
+{
+    <script>
+     var g_cusId = getIdFromAddressBar();
+
+    function getIdFromAddressBar() {
+        var urlArray = window.location.href.split('/');
+        var id = urlArray[urlArray.length - 1];
+        return id;
+        };
+
+        //ES6 backtick `
+        const button = document.getElementById('addRate')
+        const $href = $('<a>Add</a>')
+
+        $href.attr('href', `/CustomerAccounts/CreateAccountRate/${g_cusId}`);
+        $href.addClass('btn btn-default')
+        $('#addRate').append($href)
+        
+            //= `<a href="/CustomerAccounts/CreateAccountRate/${g_cusId}>`
+
+          loadRatesData();
+
+        function loadRatesData() {
+            //Note: jQuery.ajax(..) is also often written is $.ajax(..)
+            var $loadRatesDataHandler = $.ajax({
+                url: '/Api/AccountRates/' + g_cusId,
+                method: 'GET',
+                dataType: 'json',
+                cache: false,
+            });
+
+            $loadRatesDataHandler.done(function (data, textStatus, jqXHR) {
+                //accessing within object
+                var rateList = data.rateList;
+                // var CustomerAccountId = '';
+                var accountName = data.accountName;  
+                var accountRateId = '';
+                var RatePerHour = '';
+                var eEndDate = "";
+                var eStartDate = "";
+                var $tableElement = null;
+                var $cellElement = null;
+                var $rowElement = null;
+
+               
+
+                console.log(data);
+                $('#accountName').append(accountName);
+
+                $tableBodyElement = $('#AccountRatesTableBody');
+               
+                for (index = 0; index < rateList.length; index++) {
+                    rates = rateList[index];
+                   // console.dir(rates);
+                    accountRateId = rates.accountRateId;
+                   // accountName = rates.accountName;
+
+                    
+                    //eStartDate= rates.eStartDate;
+                    eStartDate = moment(rates.eStartDate).format("DD/MM/YYYY");
+
+
+                   // eEndDate = moment(rates.eEndDate).format("DD/MM/YYYY");
+
+                    if (rates.eEndDate == null) {
+                        eEndDate = "NA";
+
+                    }
+                    else {
+                        eEndDate = moment(rates.eEndDate).format("DD/MM/YYYY");
+
+                    }
+                    ratePerHour = rates.ratePerHour;
+
+                   
+                    //console.dir(ratePerHour);
+                    //console.dir(eStartDate);
+                    //console.dir(eEndDate);
+                    //console.dir(accountName);
+                    console.dir(accountRateId);
+
+                   
+                   
+                    $rowElement = $('<tr></tr>');
+                    $cellElement = $('<td></td>', { text: ratePerHour });
+                    $rowElement.append($cellElement);
+
+
+                    $cellElement = $('<td></td>', { text: eStartDate});
+                    $rowElement.append($cellElement);
+
+
+                    $cellElement = $('<td></td>', { text: eEndDate });
+                    $rowElement.append($cellElement);
+
+
+                    $hyperLinkElement = $('<a>Update Rates Info</a>').attr('href', '/CustomerAccounts/UpdateAccountRate/' + accountRateId );
+                    $hyperLinkElement.addClass('btn btn-primary');
+
+
+                    $cellElement = $('<td></td>');
+
+
+                    $cellElement.append($hyperLinkElement);
+                    $rowElement.append($cellElement);
+
+                    $tableBodyElement.append($rowElement);
+                }
+               
+                
+            });
+
+            $loadRatesDataHandler.fail(function (data, textStatus, jqXHR) {
+                noty({
+                    text: 'Ajax call has failed due to : ' + data.statusText, type: 'error',
+                    layout: 'center',
+                    template: '<div class="noty_message"><span class="noty_text"></span>'
+                });//end of noty()
+
+            });
+        }
+    </script>
+
+}

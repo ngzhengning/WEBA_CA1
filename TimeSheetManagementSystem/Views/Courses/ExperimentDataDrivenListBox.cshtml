@@ -1,0 +1,110 @@
+﻿<div class="row">
+	<div class="col-md-offset-2  col-md-8">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<div class="panel-title">Experiment Data Driven Drop Down List interface</div>
+				<div class="btn-group pull-right">
+
+				</div>
+			</div>
+			<div class="panel-body">
+				<form id="dataForm" role="form" class="form-horizontal">
+					<div class="form-group">
+						<label class="control-label col-md-3" for="courseIdInput">Course</label>
+						<div class="col-md-9">
+							<select id="courseIdInput" class="form-control input-group-sm"></select>
+						</div>
+					</div>
+					<div class="form-group col-md-12">
+						<label class="control-label col-md-1"></label>
+						<div class="col-md-10">
+							<div class="pull-right">
+							  	<input type="button" class="btn btn-primary" value="Inspect Selected Course Id" id="testButton" />
+							</div>
+						</div>
+					</div>
+				</form>
+			</div><!-- end of div element which has the class="panel-body" -->
+		</div><!-- end of the div element which has the class="panel" -->
+	</div><!-- end of the div element which as the  class="col-md-offset-2 col-sm-8"-->
+</div><!-- end of div element with class="row" -->
+
+
+<script>
+	setupCourseListBox();
+
+	function setupCourseListBox() {
+		//Note: jQuery.ajax(..) is also often written is $.ajax(..)
+		var $loadCourseDataHandler = jQuery.ajax({
+			url: '/Api/Courses/GetCoursesForControls',
+			method: 'GET',
+			dataType: 'json',
+			cache: false,
+		});
+		$loadCourseDataHandler.done(function (data, textStatus, jqXHR) {
+			//After inspecting the data object with the console.log
+			//I have clear picture of the structure and used
+			//the following variable, courseList to represent the data
+			var courseList = data;
+			var courseId = '';
+			var courseAbbreviation = '';
+			var courseName = '';
+			var $courseIdInputElement = null;
+			var $optionElement = null;
+
+			//-------- Find the table element -----------
+			//I am using the $tableElement variable
+			//to represent the found HTML <SELECT> 
+			//element which has a matching id of courseIdInput
+			$courseIdInputElement = $('#courseIdInput');
+
+			//I want to build option elements so that
+			//I can display course abbreviation 
+			//within the drop down list, courseIdInput
+			//$courseIdInputElement variable is representing the dropdownlist <SELECT> element.
+
+			//-------- Begin creating <option> HTML element ------
+			for (index = 0; index < courseList.length; index++) {
+				//Set this course variable to reference a course object
+				//inside the courseList Array.
+				course = courseList[index];
+				//Copy out the course information
+				courseId = course.courseId;
+				courseAbbreviation = course.courseAbbreviation;
+				courseName = course.courseName;
+				//Create new HTML <option> element.
+				//At the same time let the $optionElement variable to represent it.
+				$optionElement = $('<option></option>', { text: courseAbbreviation });
+				$optionElement.attr('value', courseId);
+				$courseIdInputElement.append($optionElement);
+			}//end of for loop.
+		}//end of JavaScript anonymous function
+		)//end of the $loadCourseDataHandler.done() method;
+		$loadCourseDataHandler.fail(function (data, textStatus, jqXHR) {
+			noty({
+				text: 'Ajax call has failed due to : ' + data.statusText,
+				type: 'error',
+				layout: 'center',
+				template: '<div class="noty_message"><span class="noty_text"></span>'
+			});//end of noty()
+		})//end of $loadCourseDataHandler.fail()
+	}//end of setupCourseListBox();
+
+
+	$('#testButton').on('click', function () {
+		//The following set of code are frequently used commands
+		//to the collect id value from the Dropdown list element selected
+		//by user. Only the id value is collected and put into a variable
+		//because the database's Student table has a CourseId field that
+		//needs this value so that the description of a student is complete.
+		var $courseIdInputElement = $('#courseIdInput');
+		var courseId = '';
+		courseId = $courseIdInputElement.val();
+		noty({
+				text: 'Selected Course Id is : ' + courseId,
+				type: 'success',
+				layout: 'center'
+		})
+
+	});
+</script>

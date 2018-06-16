@@ -1,0 +1,192 @@
+﻿<div class="row">
+    <div class="col-md-offset-2  col-md-8">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <div class="panel-title">Create Session Synopses</div>
+                <div class="btn-group pull-right">
+
+                </div>
+            </div>
+            <div class="panel-body">
+                <form id="dataForm" role="form" class="form-horizontal">
+                    <div class="form-group col-md-12">
+                        <label for="sessionNameInput">Session Synopses Name</label>
+                        <input type="text" id="sessionNameInput" name="sessionNameInput"
+                               maxlength="100" placeholder="Session Name" value="" />
+
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label for="visibilityInput">Visibility</label>
+
+                        <input type="checkbox" data-toggle="toggle" name="visibilityInput" id="visibilityInput" checked />
+
+
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label class="control-label col-md-1"></label>
+                        <div class="col-md-10">
+                            <div class="pull-right">
+                                <input type="button" class="btn btn-primary" value="Save" id="saveButton" />
+                                <a class="btn btn-default" asp-action="Index" asp-controler="Courses">Cancel</a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div><!-- end of div element which has the class="panel-body" -->
+        </div><!-- end of the div element which has the class="panel" -->
+    </div><!-- end of the div element which as the  class="col-md-offset-2 col-sm-8"-->
+</div><!-- end of div element with class="row" -->
+
+@section scripts{
+    <script src="~/lib/bootstrap-toggle/js/bootstrap-toggle.js"></script>
+    <script>
+
+
+
+        //VALIDATION METHODS
+        setupFormValidationRules();
+        function setupFormValidationRules() {
+            //NO BLANK FIELD
+            $.validator.addMethod("noSpace", function (value, element) {
+                return value.match(/^([a-zA-Z0-9]+[a-zA-Z0-9\s]*[a-zA-Z0-9]+|[a-zA-Z0-9]*)$/);
+            }, "Invalid format/Empty field");
+
+
+            //value.trim().length != 0;
+            //$.validator.addMethod("noSpace", function (value, element) {
+            //    return (value.match(/^[a-z0-9\ \s]+$/))  || value != "";
+               
+            //}, "Please enter a session name");
+
+
+            ////NO SPECIAL CHARACTERS
+            //$.validator.addMethod("noSpecial", function (value, element) {
+            //    return this.optional(element) || (value.match(/^[\w.]+$/));
+            //}, 'No special Characters please');
+
+
+            //NO SPECIAL CHARACTERS
+            $.validator.addMethod("noSpecial", function (value, element) {
+                return this.optional(element) || (value.match(/^[0-9a-zA-Z \b]+$/));
+            }, 'No special Characters please');
+
+
+
+            $("#dataForm").validate({
+                rules: {
+                    sessionNameInput: {
+                        required: true,              
+                        noSpecial: true,
+                        noSpace: true
+
+                    }
+
+                },
+                messages: {
+                    //required: 'Please enter a session name.',
+                    //noSpace: 'Please enter a session name.',
+                    //noSpecial :  'No Special Characters pelase'
+
+                }
+
+            });
+
+        }
+
+        var check = 1;
+        var visval = $("#visibilityInput").change(function () {
+
+            if ($(this).prop("checked") == true) {
+                check = 1;
+                this.val = 1;
+
+            }
+            else {
+                check = 0;
+                this.val = 0;
+            }
+        });
+
+
+
+        function WebFormData(inSessionSynopsisName, inIsVisible) {
+            this.SessionSynopsisName = inSessionSynopsisName;
+            this.IsVisible = inIsVisible;
+        }
+
+        $('#saveButton').on('click', function () {
+            $('#dataForm').validate();
+
+            if ($('#dataForm').valid()) {
+                visval;
+                var collectedSessionName = $('#sessionNameInput').val();
+                var collectedVisibility = check;
+
+                //console.dir(collectedSessionName); //testing whats the value of session name
+                //console.dir(collectedVisibility); //testing whats the value of visibility
+                var webFormData = new WebFormData(collectedSessionName, collectedVisibility);
+                var webFormDataInString = JSON.stringify(webFormData);
+
+                $updateSessionHandler = $.ajax({
+
+                    method: 'POST',
+                    url: '/API/SessionSynopses/',
+                    dataType: 'json',
+                    contentType: 'application/json;',
+                    data: "'" + webFormDataInString + "'"
+
+                })
+                $updateSessionHandler.done(function (data, textStatus, jqXHR) {
+                    new Noty({
+                        text: data.message, type: 'success',
+                        layout: 'center',
+                        theme: 'metroui',
+                        template: '<div class="noty_message"><span class="noty_text"></span>'
+                    }).show();
+
+                });
+
+                $updateSessionHandler.fail(function (data, textStatus, jqXHR) {
+                    new Noty({
+                        text: data.responseJSON.message, type: 'error',
+                        layout: 'center',
+                        theme: 'metroui',
+                        template: '<div class="noty_message"><span class="noty_text"></span>'
+
+
+
+                    }).show();
+
+                });
+
+            }
+
+        });//end of savebutton
+
+
+
+        //JQUERY VALIDATION NOTES
+        ////jQuery.validator.addMethod("nameRegex", function (value, element) {
+        ////    return this.optional(element) || /^[a-z0-9\ \s]+$/i.test(value);
+        ////}, "Name must contain only letters, number &  space");
+
+
+
+        ////jQuery.validator.addMethod("nameRegex", function (value, element) {
+        ////    return this.optional(element) || /^[a-z0-9\\s]+$/i.test(value);
+        ////}, "Name must contain only letters & number. No space allowed");
+
+
+
+        ////jQuery.validator.addMethod("nameRegex", function (value, element) {
+        ////    return this.optional(element) || /^[a-z\\s]+$/i.test(value);
+        ////}, "Name must contain only letters. No Space Allowed");
+
+
+        ///^[\w._]+$/i take care of underscores
+    </script>
+}
+
+
+
+

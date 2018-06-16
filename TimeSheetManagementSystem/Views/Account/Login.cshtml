@@ -1,0 +1,66 @@
+﻿@using System.Collections.Generic
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Http.Authentication
+@using Microsoft.AspNetCore.Identity
+@model LoginViewModel
+@inject SignInManager<ApplicationUser> SignInManager
+
+@{
+    ViewData["Title"] = "Log in";
+}
+
+<style>
+    td {
+        vertical-align: top;
+    }
+
+    .highlight {
+        font-weight: bold;
+        color: red;
+    }
+</style>
+<h2>@ViewData["Title"].</h2>
+<div class="row">
+    <div class="col-md-6">
+        <section>
+            <form asp-controller="Account" asp-action="Login" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal" role="form">
+                <h4>Use a local account to log in.</h4>
+                <hr />
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="UserName" class="col-md-2 control-label"></label>
+                    <div class="col-md-10">
+                        <input asp-for="UserName" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Password" class="col-md-2 control-label"></label>
+                    <div class="col-md-10">
+                        <input asp-for="Password" class="form-control" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <button type="submit" class="btn btn-default">Log in</button>
+                    </div>
+                </div>
+            </form>
+        </section>
+    </div>
+    <div class="col-md-6">
+        <section>
+            Use the following <span class="highlight">seeded account</span> information to logon.<br />
+            All account profile are using the same password: <span class="highlight"><b>P@ssw0rd</b></span>.<br />
+            <img src="~/images/user_information_for_login.png" /><br />
+            <table>
+                <tr><td>1</td><td>&nbsp;<span class="highlight">ADMIN</span> <i>role type</i> users can manage user accounts (e.g. add user, update user etc.)</td></tr>
+                <tr><td>2</td><td>&nbsp;<span class="highlight">INSTRUCTOR</span> <i>role type</i> users can generate time sheet, verify time sheet, view his class schedule, view his accounts etc.</td></tr>
+            </table>
+        </section>
+    </div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
