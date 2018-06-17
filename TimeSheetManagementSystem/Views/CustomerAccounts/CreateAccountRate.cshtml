@@ -8,7 +8,7 @@
                 </div>
             </div>
             <div class="panel-body">
-          
+
                 <form id="dataForm" role="form" class="form-horizontal">
                     <div class="form-group col-md-12">
                         <table border="0">
@@ -85,336 +85,414 @@
     <link href="~/lib/jqwidgets/jqwidgets/styles/jqx.blackberry.css" rel="stylesheet" />
 
     <script src="~/lib/jqwidgets/jqwidgets/jqx-all.js"></script>
-      <script>
+   
+    <script>
 
-              
-         var g_cusId = getIdFromAddressBar();
+        var g_cusId = getIdFromAddressBar();
 
-         function getIdFromAddressBar() {
-              var urlArray = window.location.href.split('/');
-              var id = urlArray[urlArray.length - 1];
-              return id;
-          };
+        function getIdFromAddressBar() {
+            var urlArray = window.location.href.split('/');
+            var id = urlArray[urlArray.length - 1];
+            return id;
+        };
 
-          //CANCEL BUTTON
-          const button = document.getElementById('cancel')
-          const $href = $('<a>Cancel</a>')
+        //CANCEL BUTTON
+        const button = document.getElementById('cancel')
+        const $href = $('<a>Cancel</a>')
 
-          $href.attr('href', `/CustomerAccounts/ManageAccountRates/${g_cusId}`);
-          $href.addClass('btn btn-default');
-          $href.css('margin-left', '5px');
-          $('#cancel').append($href);
-          
- 
-              loadRatesData();
- 
-          window.conflictRecord = null;
-              var ratePerHour;
-              var eStartDate;
-                var eEndDate;
-  
-         
-       
-          function loadRatesData() {
-              var $loadRatesDataHandler = $.ajax({
-                  url: '/Api/AccountRates/' + g_cusId,
-                  method: 'GET',
-                  dataType: 'json',
-                  cache: false,
-              });
-              
-              $loadRatesDataHandler.done(function (data, textStatus, jqXHR) {
-                
-                  var rateList = data.rateList;
-                  console.dir(rateList);
-                  conflictRecord = new CheckConflict(rateList);
+        $href.attr('href', `/CustomerAccounts/ManageAccountRates/${g_cusId}`);
+        $href.addClass('btn btn-default');
+        $href.css('margin-left', '5px');
+        $('#cancel').append($href);
+
+
+        loadRatesData();
+
+        window.conflictRecord = null;
+        var ratePerHour;
+        var eStartDate;
+        var eEndDate;
+
+
+
+        function loadRatesData() {
+            var $loadRatesDataHandler = $.ajax({
+                url: '/Api/AccountRates/' + g_cusId,
+                method: 'GET',
+                dataType: 'json',
+                cache: false,
+            });
+
+            $loadRatesDataHandler.done(function (data, textStatus, jqXHR) {
+
+                var rateList = data.rateList;
+                console.dir(rateList);
+                conflictRecord = new CheckConflict(rateList);
+
+                //console.dir("below conflict record");
+                conflictRecord.forLoopLesson()
+                //console.dir(conflictRecord);
+                //getRecord = new CheckConflict(rateList)
+                // console.dir(conflictRecord);
+                // getConflict.setRecord();
+
+                var accountName = data.accountName;   //retrieve the accountName
+
+                for (index = 0; index < rateList.length; index++) {
+                    rates = rateList[index];
+                    ratePerHour = rates.ratePerHour;
+                    //console.dir(ratePerHour);
+                    eStartDate = rates.eStartDate;
+                    //eEndDate = rates.eEndDate;
+                }
+                $('#accountName').append(accountName);
+
+            });
+        }
+
+
+        class CheckConflict {
+
+            constructor(inData) {
+                this.rateList = inData;
+            }
+
+
+            check(rph, sd, ed) {
+                // console.log(moment(this.rateList[0].eStartDate).format('DD/MM/YYYY'));
+
+                for (var i = 0; i < this.rateList.length; i++) {
+                    //var nsd = moment().toISOString(sd).split('T')[0];
+
+                    var date = sd;
+                    var tt = date.split("/");
+                    var nsd = tt[2] + '-' + tt[1] + '-' + tt[0];
+
+
+
                   
-                  //console.dir("below conflict record");
-                  conflictRecord.forLoopLesson()
-                  //console.dir(conflictRecord);
-                  //getRecord = new CheckConflict(rateList)
-                 // console.dir(conflictRecord);
-                 // getConflict.setRecord();
+                   // var nsd = moment().format(tt, "DD/MM/YYYY");
 
-                  var accountName = data.accountName;   //retrieve the accountName         
-                    
-                  for (index = 0; index < rateList.length; index++) {
-                      rates = rateList[index];                
-                      ratePerHour = rates.ratePerHour;
-                      //console.dir(ratePerHour);
-                      eStartDate = rates.eStartDate;
-                      //eEndDate = rates.eEndDate;
-                  }
-                  $('#accountName').append(accountName);
+
+                    var desd = formatDate(this.rateList[i].eStartDate)// That’s your formatted date.
+                    console.dir(desd);
+                
+
+                  //  let desd = moment().toISOString(this.rateList[i].eStartDate).split('T')[0];
+                    //var esd = new Date(this.rateList[i].eStartDate);
+                    //var desd = moment(esd).format("DD/MM/YYYY");
+              
                  
-              });
-          }    
+                    //console.dir(this.rateList[i].eStartDate = moment().format("L"));
+                    // this.rateList[i].eStartDate = moment().format();
+                    
+                    //(this.rateList[i].eStartDate
+                    if ((this.rateList[i].ratePerHour === parseInt(rph)) && (desd == nsd)) {
+                        //console.log("Duplicated data")
+                        return true;
+                    }
+
+                    else if (ed != null) {
+
+                        if (this.rateList[i].eEndDate != null) {
+                            //var ned = moment().format(ed, "DD/MM/YYYY");
+                            //var ned = moment().toISOString(ed).split('T')[0];
+
+                            var edate = ed;
+                            var ett = edate.split("/");
+                            var ned = ett[2] + '-' + ett[1] + '-' + ett[0];
 
 
-              class CheckConflict {
+                           // var deed = moment().toISOString(this.rateList[i].eStartDate).split('T')[0];
+                            var deed = formatDate(this.rateList[i].eEndDate)
+                            //var eed = new Date(this.rateList[i].eEndDate);
+                            //var deed = moment(eed).format("DD/MM/YYYY");
 
-                  constructor(inData) {
-                      this.rateList = inData;
-                  }
 
+                            //         // else if (moment(this.rateList[i].eEndDate).format('DD/MM/YYYY') == null) {
 
-                  check(rph, sd,ed) {
-                     // console.log(moment(this.rateList[0].eStartDate).format('DD/MM/YYYY'));
+                            //         this.rateList[i].eEndDate = moment().format();
+                            //         //sd = moment().format('DD/MM/YYYY');
+                            //console.dir(desd);
+                            if (ned >= desd) {
+                                //             //ed >= moment(this.rateList[i].eStartDate).format('DD/MM/YYYY')
+                                //             //sd <= moment(this.rateList[i].eEndDate).format('DD/MM/YYYY')
 
-                      
-                      for (var i = 0; i < this.rateList.length; i++) {
-                       
-                          if ((this.rateList[i].ratePerHour === parseInt(rph)) && (moment(moment(this.rateList[i].eStartDate).format('DD/MM/YYYY')).isSame(moment(sd).format('DD/MM/YYYY')))) {
-                              //console.log("Duplicated data")
-                              return true;
-                          }
-
-                          else if (ed != null) {
-                             // console.dir(this.rateList[i].eEndDate);
-                              if (this.rateList[i].eEndDate != null) {
-                                
-                                  // else if (moment(this.rateList[i].eEndDate).format('DD/MM/YYYY') == null) {
-                                  //console.log(ed)
-                                  //console.dir(moment(ed).format());
-                                  if (moment(ed).isSameOrBefore(moment(this.rateList[i].eStartDate).format('DD/MM/YYYY'))) {
-                                      //ed >= moment(this.rateList[i].eStartDate).format('DD/MM/YYYY'
-                                      //sd <= moment(this.rateList[i].eEndDate).format('DD/MM/YYYY')
-
-                                      if (moment(sd).isSameOrAfter(moment(this.rateList[i].eEndDate).format('DD/MM/YYYY'))) {
-                                          alert("CORRECT");
-                                          return true;
-                                      }
-                                 }
-                              }
-                              else {
-                                  if ((moment(moment(this.rateList[i].eStartDate).format('DD/MM/YYYY')).isSame(moment(sd).format('DD/MM/YYYY'))) || this.rateList[i].ratePerHour === parseInt(rph)) {
-                                      return true;
-                                  }
-                                
-
-                                  
-                                  
-                                
-                                 
-                              }
-     
-                         // else if (ed != null) {
-                         //// else if (moment(this.rateList[i].eEndDate).format('DD/MM/YYYY') == null) {
-                         //     if (sd <= moment(this.rateList[i].eEndDate).format('DD/MM/YYYY')) {
-                         //        alert("CORRECT");
-                         //         return true;
+                                if (nsd <= deed) {
+                                    alert("CORRECT");
+                                    return true;
+                                }
                             }
 
+
+                            else if (nsd >= desd && ned <= deed)
+                                {                                 
+                                        return true;
+                            }
+
+                            else if (nsd <= desd && ned >= deed)
+                            {
+                                return true;
+
+                            }
+
+
+                            else {
+                                if (desd == nsd) {
+                                    return true;
+
+                                }
+
+                            }
+
+
+                                     //else if ((sd <= moment(this.rateList[i].eStartDate).format('DD/MM/YYYY') && (ed >= moment(this.rateList[i].eEndDate).format('DD/MM/YYYY'))) ||
+                                     //    sd >= moment(this.rateList[i].eStartDate).format('DD/MM/YYYY') && ed <= moment(this.rateList[i].eEndDate).format('DD/MM/YYYY')) {
+
+                                     //   return true;
+                                     //}
+
+
                         }
-                          
-                      
-                      
-                      return false //will only reach here if the condition is not met
-                  }
+                        else {
 
-                  setRecord(rph, sd, ed) {
-                      this.ratePerHour = rph;
-                      this.eStartDate = sd;
-                      this.eEndDate = ed;
-                   
-                  }
-                  getRecord() {
-                      return { rate: this.ratePerHour, eStartDate: this.eStartDate };
-                  }
-                  setRate(ratePerHour) {
-                      this.ratePerHour = ratePerHour;   
-                  }
-                  seteStartDate(esd) {
-                      this.eStartDate = esd;
-                  }
+                            if (desd == nsd || this.rateList[i].ratePerHour === parseInt(rph)) {
+                                return true;
+                            }
+                    }
 
-                  seteEndDate(eed) {
-                      this.eEndDate = eed;
+                        // else if (ed != null) {
+                        //// else if (moment(this.rateList[i].eEndDate).format('DD/MM/YYYY') == null) {
+                        //     if (sd <= moment(this.rateList[i].eEndDate).format('DD/MM/YYYY')) {
+                        //        alert("CORRECT");
+                        //         return true;
+                    }
 
-                  }
-
-                  forLoopLesson() {
-                      let data = [2,3,4,5]
-                      for (let i = 0; i < data.length; i++) {
-                          if (data[i] === 4) {
-                            //  console.log("true")
-                              return true
-                          }
-                          else {
-                             // console.log("false")
-                              return false
-                          }
-
-                      }
-                  }
-
-          }
-
-          
-          $('td').css('width', '230px');
-
-
-          $('.lblall').css('text-align', 'right');
-          $('.lblall').css('display', 'block');
-
-          $('.inptall').css('width', '400px');
-          $('.inptall').css('padding-left', '30px');
-
-
-          const sDate = $('#eStartDateInput');
-          sDate.jqxDateTimeInput({ width: '230px', height: '25px', theme: 'blackberry', readonly: true, allowKeyboardDelete: false });
+                }
 
 
 
-          const eDate = $('#eEndDateInput');
-          eDate.jqxDateTimeInput({ width: '230px', height: '25px', theme: 'blackberry', readonly: true });
+                return false //will only reach here if the condition is not met
+            }
+
+            setRecord(rph, sd, ed) {
+                this.ratePerHour = rph;
+                this.eStartDate = sd;
+                this.eEndDate = ed;
+
+            }
+            getRecord() {
+                return { rate: this.ratePerHour, eStartDate: this.eStartDate };
+            }
+            setRate(ratePerHour) {
+                this.ratePerHour = ratePerHour;
+            }
+            seteStartDate(esd) {
+                this.eStartDate = esd;
+            }
+
+            seteEndDate(eed) {
+                this.eEndDate = eed;
+
+            }
+
+            forLoopLesson() {
+                let data = [2, 3, 4, 5]
+                for (let i = 0; i < data.length; i++) {
+                    if (data[i] === 4) {
+                        //  console.log("true")
+                        return true
+                    }
+                    else {
+                        // console.log("false")
+                        return false
+                    }
+
+                }
+            }
+
+        }
+
+                    function formatDate(date) {
+                        var d = new Date(date),
+                            month = '' + (d.getMonth() + 1),
+                            day = '' + d.getDate(),
+                            year = d.getFullYear();
+
+                        if (month.length < 2) month = '0' + month;
+                        if (day.length < 2) day = '0' + day;
+
+                        return [year, month, day].join('-');
+                    }
 
 
-          setupFormValidationRules();
-          function setupFormValidationRules() {
 
-              //NUMBERS 2 DECIMAL PLACE ONLY
-              $.validator.addMethod("numbers", function (value, element) {
-                  return value.match(/^[0-9]+(\.[0-9]{1,2})?$/);
-
-              }, "Please specify positive numbers in 2 decimal place".fontsize('2px').fontcolor('red'));
+        $('td').css('width', '230px');
 
 
-              $.validator.addMethod("enddate", function (value, element) {
-                  var sDate = $('#eStartDateInput').val('date');
-                  var eDate = $('#eEndDateInput').val('date');
-                  //console.dir(sDate); //retrieve values for checking
-                  //console.dir(eDate);
-                  return (eDate) >= (sDate) || eDate == null;
-              }, "End Date should be greater than Start Date.".fontsize('2px').fontcolor('red'));
+        $('.lblall').css('text-align', 'right');
+        $('.lblall').css('display', 'block');
+
+        $('.inptall').css('width', '400px');
+        $('.inptall').css('padding-left', '30px');
 
 
-              $("#dataForm").validate({
-                  rules: {
-                      ratePerHourInput: {
-                          required: true,
-                          numbers: true
-                      },
-                      eEndDateInput: {
-                          enddate: true
-                      }
-                  },
-                  messages: {
-                      ratePerHourInput: {
-                          required: "This field is required".fontsize('3px').fontcolor('red')
-                      }
-                  }
-              });
-          }//END OF VALIDATION
-        
-          
-          //function conflictChecker(rateList) {
-          //    var list = rateList;
-          //    //return list;           
-          //    check(collectedRatePerHour)
-          //    {
-                  //for (var i = 0; i < list.length; i++) {
-                  //    if (list[i].ratePerHour === collectedRatePerHour) {
-                  //        console.log("Duplicated data")
-                  //        return true;
-                  //    }
-                  //    else {
-                  //        return false;
+        const sDate = $('#eStartDateInput');
+        sDate.jqxDateTimeInput({ width: '230px', height: '25px', theme: 'blackberry', readonly: true, allowKeyboardDelete: false });
 
-                  //    }
 
-                  //}
-          //    }
-          //        console.dir(rateList);
-          //        console.dir(list);
-          //}
 
-          //const x = new conflictChecker(data)
-          //x.check(collectedData)
-          //const xyz = new conflictChecker(data2)
-          //xyz.check(collectedData)
+        const eDate = $('#eEndDateInput');
+        eDate.jqxDateTimeInput({ width: '230px', height: '25px', theme: 'blackberry', readonly: true });
 
-          $('#eEndDateInput').on('valueChanged', function () {
-              $('#dataForm').valid();
 
-          });
+        setupFormValidationRules();
+        function setupFormValidationRules() {
 
-          function WebFormData(inRatePerHour, ineStartDate, ineEndDate) {
-              this.ratePerHour = inRatePerHour;
-              this.eStartDate = ineStartDate;
-              this.eEndDate = ineEndDate;
-          }
-        
-          $('#saveButton').on('click', function () {
+            //NUMBERS 2 DECIMAL PLACE ONLY
+            $.validator.addMethod("numbers", function (value, element) {
+                return value.match(/^[0-9]+(\.[0-9]{1,2})?$/);
 
-              $('#dataForm').validate();
+            }, "Please specify positive numbers in 2 decimal place".fontsize('2px').fontcolor('red'));
 
-              if ($('#dataForm').valid()) {
-         
-                  var collectedRatePerHour = $('#ratePerHourInput').val();
-                  var collectedeStartDate = $('#eStartDateInput').jqxDateTimeInput('value')
-                      //val();
-                  var collectedeEndDate = null;
-                  if ($('#eEndDateInput').val() != "") {
-                      collectedeEndDate = $('#eEndDateInput').val();
-                      
-                  }
-                  
-                  //const y = getRecord(collectedRatePerHour, collectedeStartDate);
-                 //conflictRecord.setRecord(collectedRatePerHour, collectedeStartDate)              
+
+            $.validator.addMethod("enddate", function (value, element) {
+                var sDate = $('#eStartDateInput').val('date');
+                var eDate = $('#eEndDateInput').val('date');
+                //console.dir(sDate); //retrieve values for checking
+                //console.dir(eDate);
+                return (eDate) >= (sDate) || eDate == null;
+            }, "End Date should be greater than Start Date.".fontsize('2px').fontcolor('red'));
+
+
+            $("#dataForm").validate({
+                rules: {
+                    ratePerHourInput: {
+                        required: true,
+                        numbers: true
+                    },
+                    eEndDateInput: {
+                        enddate: true
+                    }
+                },
+                messages: {
+                    ratePerHourInput: {
+                        required: "This field is required".fontsize('3px').fontcolor('red')
+                    }
+                }
+            });
+        }//END OF VALIDATION
+
+
+        //function conflictChecker(rateList) {
+        //    var list = rateList;
+        //    //return list;
+        //    check(collectedRatePerHour)
+        //    {
+        //for (var i = 0; i < list.length; i++) {
+        //    if (list[i].ratePerHour === collectedRatePerHour) {
+        //        console.log("Duplicated data")
+        //        return true;
+        //    }
+        //    else {
+        //        return false;
+
+        //    }
+
+        //}
+        //    }
+        //        console.dir(rateList);
+        //        console.dir(list);
+        //}
+
+        //const x = new conflictChecker(data)
+        //x.check(collectedData)
+        //const xyz = new conflictChecker(data2)
+        //xyz.check(collectedData)
+
+        $('#eEndDateInput').on('valueChanged', function () {
+            $('#dataForm').valid();
+
+        });
+
+        function WebFormData(inRatePerHour, ineStartDate, ineEndDate) {
+            this.ratePerHour = inRatePerHour;
+            this.eStartDate = ineStartDate;
+            this.eEndDate = ineEndDate;
+        }
+
+        $('#saveButton').on('click', function () {
+
+            $('#dataForm').validate();
+
+            if ($('#dataForm').valid()) {
+
+                var collectedRatePerHour = $('#ratePerHourInput').val();
+                var collectedeStartDate = $('#eStartDateInput').val();
+                //val();
+                //.jqxDateTimeInput('value');
+                console.dir(collectedeStartDate);
+                var collectedeEndDate = null;
+                if ($('#eEndDateInput').val() != "") {
+                    collectedeEndDate = $('#eEndDateInput').val();
+
+                }
+
+                //const y = getRecord(collectedRatePerHour, collectedeStartDate);
+                //conflictRecord.setRecord(collectedRatePerHour, collectedeStartDate)
                 //  const x = conflictRecord.getRecord()
                 //console.log(x)
-                  const isConflict = conflictRecord.check(collectedRatePerHour, collectedeStartDate, collectedeEndDate)
-                  if (isConflict == true) {
-                      new Noty({
-                          text: 'DUPLICATED DATA!',
-                          theme: 'metroui',
-                          layout: 'center',
-                          type: 'error'
-                      }).show()
-                      return;
-                  }
-                 
-                
-                  var webFormData = new WebFormData(collectedRatePerHour, collectedeStartDate, collectedeEndDate);
-                  var webFormDataInString = JSON.stringify(webFormData);
-
-              //    $updateRateHandler = $.ajax({
-              //        method: 'POST',
-              //        url: '/API/AccountRates/' + g_cusId,
-              //        dataType: 'json',
-              //        contentType: 'application/json;',
-              //        data: "'" + webFormDataInString + "'"
-              //    })
-
-              //    $updateRateHandler.done(function (data, textStatus, jqXHR) {
-              //        noty({
-              //            text: data.message, type: 'success',
-              //            layout: 'center',
-              //            template: '<div class="noty_message"><span class="noty_text"></span>'
-
-              //        });
-              //        loadRatesData();
-              //    });
-
-              //    $updateRateHandler.fail(function (data, textStatus, jqXHR) {
-              //        noty({
-              //            text: data.responseJSON.message, type: 'error',
-              //            layout: 'center',
-              //            template: '<div class="noty_message"><span class="noty_text"></span>'
-              //        });
+                const isConflict = conflictRecord.check(collectedRatePerHour, collectedeStartDate, collectedeEndDate)
+                if (isConflict == true) {
+                    new Noty({
+                        text: 'DUPLICATED DATA!',
+                        theme: 'metroui',
+                        layout: 'center',
+                        type: 'error'
+                    }).show()
+                    return;
+                }
 
 
-              //    });
-              }
-              
-          });//END OF SAVE BUTTON
+                var webFormData = new WebFormData(collectedRatePerHour, collectedeStartDate, collectedeEndDate);
+                var webFormDataInString = JSON.stringify(webFormData);
+
+                //    $updateRateHandler = $.ajax({
+                //        method: 'POST',
+                //        url: '/API/AccountRates/' + g_cusId,
+                //        dataType: 'json',
+                //        contentType: 'application/json;',
+                //        data: "'" + webFormDataInString + "'"
+                //    })
+
+                //    $updateRateHandler.done(function (data, textStatus, jqXHR) {
+                //        noty({
+                //            text: data.message, type: 'success',
+                //            layout: 'center',
+                //            template: '<div class="noty_message"><span class="noty_text"></span>'
+
+                //        });
+                //        loadRatesData();
+                //    });
+
+                //    $updateRateHandler.fail(function (data, textStatus, jqXHR) {
+                //        noty({
+                //            text: data.responseJSON.message, type: 'error',
+                //            layout: 'center',
+                //            template: '<div class="noty_message"><span class="noty_text"></span>'
+                //        });
 
 
-        
+                //    });
+            }
+
+        });//END OF SAVE BUTTON
 
 
-      </script>
+
+
+
+    </script>
 
 }
 
