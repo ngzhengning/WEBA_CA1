@@ -159,34 +159,19 @@
 
 
             check(rph, sd, ed) {
-                // console.log(moment(this.rateList[0].eStartDate).format('DD/MM/YYYY'));
-
+               
                 for (var i = 0; i < this.rateList.length; i++) {
-                    //var nsd = moment().toISOString(sd).split('T')[0];
 
                     var date = sd;
                     var tt = date.split("/");
                     var nsd = tt[2] + '-' + tt[1] + '-' + tt[0];
-
-
-
-                  
+    
                    // var nsd = moment().format(tt, "DD/MM/YYYY");
 
-
                     var desd = formatDate(this.rateList[i].eStartDate)// That’s your formatted date.
-                    console.dir(desd);
-                
 
-                  //  let desd = moment().toISOString(this.rateList[i].eStartDate).split('T')[0];
                     //var esd = new Date(this.rateList[i].eStartDate);
                     //var desd = moment(esd).format("DD/MM/YYYY");
-              
-                 
-                    //console.dir(this.rateList[i].eStartDate = moment().format("L"));
-                    // this.rateList[i].eStartDate = moment().format();
-                    
-                    //(this.rateList[i].eStartDate
                     if ((this.rateList[i].ratePerHour === parseInt(rph)) && (desd == nsd)) {
                         //console.log("Duplicated data")
                         return true;
@@ -196,82 +181,58 @@
 
                         if (this.rateList[i].eEndDate != null) {
                             //var ned = moment().format(ed, "DD/MM/YYYY");
-                            //var ned = moment().toISOString(ed).split('T')[0];
 
                             var edate = ed;
                             var ett = edate.split("/");
                             var ned = ett[2] + '-' + ett[1] + '-' + ett[0];
 
 
-                           // var deed = moment().toISOString(this.rateList[i].eStartDate).split('T')[0];
                             var deed = formatDate(this.rateList[i].eEndDate)
                             //var eed = new Date(this.rateList[i].eEndDate);
                             //var deed = moment(eed).format("DD/MM/YYYY");
 
 
-                            //         // else if (moment(this.rateList[i].eEndDate).format('DD/MM/YYYY') == null) {
-
-                            //         this.rateList[i].eEndDate = moment().format();
-                            //         //sd = moment().format('DD/MM/YYYY');
-                            //console.dir(desd);
                             if (ned >= desd) {
-                                //             //ed >= moment(this.rateList[i].eStartDate).format('DD/MM/YYYY')
-                                //             //sd <= moment(this.rateList[i].eEndDate).format('DD/MM/YYYY')
+                                //ed >= moment(this.rateList[i].eStartDate).format('DD/MM/YYYY')
+                                //sd <= moment(this.rateList[i].eEndDate).format('DD/MM/YYYY')
 
                                 if (nsd <= deed) {
                                     alert("CORRECT");
                                     return true;
                                 }
                             }
-
-
-                            else if (nsd >= desd && ned <= deed)
-                                {                                 
-                                        return true;
+                            else if (nsd >= desd && ned <= deed) {
+                                return true;
                             }
 
-                            else if (nsd <= desd && ned >= deed)
-                            {
+                            else if (nsd <= desd && ned >= deed) {
                                 return true;
 
                             }
-
-
                             else {
                                 if (desd == nsd) {
                                     return true;
-
-                                }
-
-                            }
-
-
-                                     //else if ((sd <= moment(this.rateList[i].eStartDate).format('DD/MM/YYYY') && (ed >= moment(this.rateList[i].eEndDate).format('DD/MM/YYYY'))) ||
-                                     //    sd >= moment(this.rateList[i].eStartDate).format('DD/MM/YYYY') && ed <= moment(this.rateList[i].eEndDate).format('DD/MM/YYYY')) {
-
-                                     //   return true;
-                                     //}
-
-
+                               }
+                            }                          
                         }
                         else {
-
                             if (desd == nsd || this.rateList[i].ratePerHour === parseInt(rph)) {
                                 return true;
                             }
+                            
+                        }
                     }
+                    else {
+                        if (this.rateList[i].eEndDate == null) {
+                            return true;
 
-                        // else if (ed != null) {
-                        //// else if (moment(this.rateList[i].eEndDate).format('DD/MM/YYYY') == null) {
-                        //     if (sd <= moment(this.rateList[i].eEndDate).format('DD/MM/YYYY')) {
-                        //        alert("CORRECT");
-                        //         return true;
+                        }
+                        else if (desd == nsd || this.rateList[i].ratePerHour === parseInt(rph)) {
+                            return true;
+                        }
                     }
 
                 }
-
-
-
                 return false //will only reach here if the condition is not met
             }
 
@@ -446,7 +407,7 @@
                 if (isConflict == true) {
                     new Noty({
                         text: 'DUPLICATED DATA!',
-                        theme: 'metroui',
+                        theme: 'sunset',
                         layout: 'center',
                         type: 'error'
                     }).show()
@@ -457,33 +418,33 @@
                 var webFormData = new WebFormData(collectedRatePerHour, collectedeStartDate, collectedeEndDate);
                 var webFormDataInString = JSON.stringify(webFormData);
 
-                //    $updateRateHandler = $.ajax({
-                //        method: 'POST',
-                //        url: '/API/AccountRates/' + g_cusId,
-                //        dataType: 'json',
-                //        contentType: 'application/json;',
-                //        data: "'" + webFormDataInString + "'"
-                //    })
+                    $updateRateHandler = $.ajax({
+                        method: 'POST',
+                        url: '/API/AccountRates/' + g_cusId,
+                        dataType: 'json',
+                        contentType: 'application/json;',
+                        data: "'" + webFormDataInString + "'"
+                    })
 
-                //    $updateRateHandler.done(function (data, textStatus, jqXHR) {
-                //        noty({
-                //            text: data.message, type: 'success',
-                //            layout: 'center',
-                //            template: '<div class="noty_message"><span class="noty_text"></span>'
+                    $updateRateHandler.done(function (data, textStatus, jqXHR) {
+                        noty({
+                            text: data.message, type: 'success',
+                            layout: 'center',
+                            template: '<div class="noty_message"><span class="noty_text"></span>'
 
-                //        });
-                //        loadRatesData();
-                //    });
+                        });
+                        loadRatesData();
+                    });
 
-                //    $updateRateHandler.fail(function (data, textStatus, jqXHR) {
-                //        noty({
-                //            text: data.responseJSON.message, type: 'error',
-                //            layout: 'center',
-                //            template: '<div class="noty_message"><span class="noty_text"></span>'
-                //        });
+                    $updateRateHandler.fail(function (data, textStatus, jqXHR) {
+                        noty({
+                            text: data.responseJSON.message, type: 'error',
+                            layout: 'center',
+                            template: '<div class="noty_message"><span class="noty_text"></span>'
+                        });
 
 
-                //    });
+                    });
             }
 
         });//END OF SAVE BUTTON

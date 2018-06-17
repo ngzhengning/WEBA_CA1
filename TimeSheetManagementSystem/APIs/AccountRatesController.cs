@@ -65,8 +65,8 @@ namespace TimeSheetManagementSystem.APIs
             List<object> rateList = new List<object>();
             var rates = Database.AccountRates
                 .Include(x => x.CustomerAccount)
-                .Where(x => x.CustomerAccountId == id).ToList()
-               .OrderByDescending(x => x.EffectiveStartDate);
+                .Where(x => x.CustomerAccountId == id)
+               .OrderByDescending(x => x.EffectiveEndDate).ToList();
             string accountName = rates.FirstOrDefault().CustomerAccount.AccountName;
             foreach (var oneRate in rates)
             {
@@ -118,7 +118,7 @@ namespace TimeSheetManagementSystem.APIs
             var rates = Database.AccountRates
                 .Include(x => x.CustomerAccount)
                 .Where(x => x.CustomerAccountId == cid)
-                .OrderByDescending(x => x.EffectiveStartDate)
+                .OrderByDescending(x => x.EffectiveEndDate)
                 .ToList();
             foreach (var oneRate in rates)
             {

@@ -15,8 +15,7 @@
     "js-cookie": "2.1.4",
     "he": "1.1.1",
     "bootstrap-toggle": "2.2.2",
-    "jqwidgets": "2.0.2",
-    "moment-js" : "0.7.2"
+    "jqwidgets": "2.0.2"
     
   }
 }
