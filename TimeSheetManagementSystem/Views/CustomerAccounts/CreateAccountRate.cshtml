@@ -145,7 +145,7 @@
                     eStartDate = rates.eStartDate;
                     //eEndDate = rates.eEndDate;
                 }
-                $('#accountName').append(accountName);
+                $('#accountName').html(accountName);
 
             });
         }
@@ -197,10 +197,11 @@
                                 //sd <= moment(this.rateList[i].eEndDate).format('DD/MM/YYYY')
 
                                 if (nsd <= deed) {
-                                    alert("CORRECT");
+                                   // alert("CORRECT");
                                     return true;
                                 }
                             }
+        
                             else if (nsd >= desd && ned <= deed) {
                                 return true;
                             }
@@ -216,9 +217,10 @@
                             }                          
                         }
                         else {
-                            if (desd == nsd || this.rateList[i].ratePerHour === parseInt(rph)) {
+                            if (desd == ned) {
                                 return true;
                             }
+                            return false;
                             
                         }
                     }
@@ -401,12 +403,12 @@
 
                 //const y = getRecord(collectedRatePerHour, collectedeStartDate);
                 //conflictRecord.setRecord(collectedRatePerHour, collectedeStartDate)
-                //  const x = conflictRecord.getRecord()
+                //const x = conflictRecord.getRecord()
                 //console.log(x)
                 const isConflict = conflictRecord.check(collectedRatePerHour, collectedeStartDate, collectedeEndDate)
                 if (isConflict == true) {
                     new Noty({
-                        text: 'DUPLICATED DATA!',
+                        text: '<center><strong><p>Data Conflict!</p><p>Please check again before submitting!</p></strong><center>',
                         theme: 'sunset',
                         layout: 'center',
                         type: 'error'
@@ -427,21 +429,23 @@
                     })
 
                     $updateRateHandler.done(function (data, textStatus, jqXHR) {
-                        noty({
+                        new Noty({
                             text: data.message, type: 'success',
+                            theme: 'sunset',
                             layout: 'center',
                             template: '<div class="noty_message"><span class="noty_text"></span>'
 
-                        });
+                        }).show();
                         loadRatesData();
                     });
 
                     $updateRateHandler.fail(function (data, textStatus, jqXHR) {
-                        noty({
+                        new Noty({
                             text: data.responseJSON.message, type: 'error',
+                            theme:'sunset',
                             layout: 'center',
                             template: '<div class="noty_message"><span class="noty_text"></span>'
-                        });
+                        }).show();
 
 
                     });

@@ -124,10 +124,10 @@
         const eDate = $('#eEndDateInput');
         eDate.jqxDateTimeInput({ width: '230px', height: '25px', theme: 'blackberry', readonly: true });
 
-       
-       
+
+
         var g_rateId = getIdFromAddressBar();
-       
+
         function getIdFromAddressBar() {
             var urlArray = window.location.href.split('/');
             var id = urlArray[urlArray.length - 1];
@@ -155,11 +155,11 @@
         window.conflictRecord = null;
 
 
-        getRatesDetails().then(x => { 
+        getRatesDetails().then(x => {
             g_cusId = gid.getCustomerAccountId();
             loadRatesData(g_cusId);
         })
-        
+
         async function getRatesDetails() {
             $loadRateDataHandler = $.ajax({
                 type: 'GET',
@@ -179,9 +179,9 @@
                 $('#ratePerHourInput').val(ratePerHour);
                 eStartDate = rate.eStartDate;
                 eEndDate = rate.eEndDate;
-                $('#accountName').append(accountName);
+                $('#accountName').html(accountName);
 
-                // eDate.jqxDateTimeInput({'setDate': new Date(2014, 01, 1) }); 
+                // eDate.jqxDateTimeInput({'setDate': new Date(2014, 01, 1) });
                 // eStartDate = moment(rate.eStartDate).format("DD/MM/YYYY");
                 $('#eStartDateInput').jqxDateTimeInput('setDate', new Date(eStartDate));
 
@@ -208,7 +208,7 @@
         }
 
 
-        
+
 
         var i;
         function loadRatesData(x) {
@@ -223,9 +223,9 @@
             $loadRatesDataHandler.done(function (data, textStatus, jqXHR) {
 
                 var rateList = data;
-             
+
                 i = rateList.filter(x => x.accountRateId != g_rateId);
-        console.dir(i);
+                console.dir(i);
                 conflictRecord = new CheckConflict(i);
                 for (index = 0; index < rateList.length; index++) {
                     rates = rateList[index];
@@ -234,10 +234,10 @@
                     eStartDate = rates.eStartDate;
                 }
             });
-        } 
-         
+        }
 
-          class CheckConflict {
+
+        class CheckConflict {
 
             constructor(inData) {
                 this.rateList = inData;
@@ -245,14 +245,14 @@
 
 
             check(rph, sd, ed) {
-               
+
                 for (var i = 0; i < this.rateList.length; i++) {
 
                     var date = sd;
                     var tt = date.split("/");
                     var nsd = tt[2] + '-' + tt[1] + '-' + tt[0];
-    
-                   // var nsd = moment().format(tt, "DD/MM/YYYY");
+
+                    // var nsd = moment().format(tt, "DD/MM/YYYY");
 
                     var desd = formatDate(this.rateList[i].eStartDate)// That’s your formatted date.
 
@@ -283,7 +283,7 @@
                                 //sd <= moment(this.rateList[i].eEndDate).format('DD/MM/YYYY')
 
                                 if (nsd <= deed) {
-                                    alert("CORRECT");
+                                    //  alert("CORRECT");
                                     return true;
                                 }
                             }
@@ -298,14 +298,15 @@
                             else {
                                 if (desd == nsd) {
                                     return true;
-                               }
-                            }                          
+                                }
+                            }
                         }
                         else {
-                            if (desd == nsd || this.rateList[i].ratePerHour === parseInt(rph)) {
+                            if (desd == ned) {
                                 return true;
                             }
-                            
+                            return false;
+
                         }
                     }
                     else {
@@ -360,17 +361,17 @@
 
         }
 
-                    function formatDate(date) {
-                        var d = new Date(date),
-                            month = '' + (d.getMonth() + 1),
-                            day = '' + d.getDate(),
-                            year = d.getFullYear();
+        function formatDate(date) {
+            var d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
 
-                        if (month.length < 2) month = '0' + month;
-                        if (day.length < 2) day = '0' + day;
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
 
-                        return [year, month, day].join('-');
-                    }
+            return [year, month, day].join('-');
+        }
 
 
 
@@ -384,12 +385,12 @@
 
             }, "Please specify positive numbers in 2 decimal place".fontsize('2px').fontcolor('red'));
 
-           
+
             $.validator.addMethod("enddate", function (value, element) {
                 var sDate = $('#eStartDateInput').val('date');
                 var eDate = $('#eEndDateInput').val('date');
                 //console.dir(sDate); //retrieve values for checking
-                //console.dir(eDate); 
+                //console.dir(eDate);
                 return (eDate) >= (sDate) || eDate == null;
             }, "End Date should be greater than Start Date.".fontsize('2px').fontcolor('red'));
 
@@ -427,7 +428,7 @@
 
 
         $('#saveButton').on('click', function () {
-            
+
             $('#dataForm').validate();
             if ($('#dataForm').valid()) {
 
@@ -451,7 +452,7 @@
                 const isConflict = conflictRecord.check(collectedRatePerHour, collectedeStartDate, collectedeEndDate)
                 if (isConflict == true) {
                     new Noty({
-                        text: 'ERROR. Data conflict!',
+                        text: '<center><strong><p>Data Conflict!</p><p>Please check again before submitting!</p></strong><center>',
                         theme: 'sunset',
                         layout: 'center',
                         type: 'error'
@@ -478,20 +479,22 @@
 
 
                 $updateRateHandler.done(function (data, textStatus, jqXHR) {
-                    noty({
+                    new Noty({
                         text: data.message, type: 'success',
+                        theme: 'sunset',
                         layout: 'center',
                         template: '<div class="noty_message"><span class="noty_text"></span>'
-                    });
+                    }).show();
 
                 });
 
                 $updateRateHandler.fail(function (data, textStatus, jqXHR) {
-                    noty({
+                    new Noty({
                         text: data.responseJSON.message, type: 'error',
+                        theme: 'sunset',
                         layout: 'center',
                         template: '<div class="noty_message"><span class="noty_text"></span>'
-                    });
+                    }).show();
 
 
                 });
@@ -512,38 +515,43 @@
             })
 
             $deleteCustomerHandler.done(function (data, textStatus, jqXHR) {
-                noty({
+                let n = new Noty({
                     text: data.message,
                     type: 'success',
+                    theme: 'sunset',
                     layout: 'center',
                     template: '<div class="noty_message"><span class="noty_text"></span>',
                     buttons: [
-                        {
-                            addClass: 'btn btn-primary', text: 'Ok', onClick: function ($noty) {
-                                $noty.close();
-                                $('body').fadeOut(2000, redirectPage);
-                            }
-                        }
+                        Noty.button('OK', 'btn btn-primary', function () {
+                            n.close()
+                            $('body').fadeOut(500, redirectPage);
+                        })
+                        //addClass: 'btn btn-primary', text: 'Ok', onClick: function ($Noty) {
+                        //    n.close();
+                        //    $('body').fadeOut(2000, redirectPage);
+                        //}
+
                     ]
-                });
+                }).show();
             });//end of deleteSessionHandler.done()
 
             $deleteCustomerHandler.fail(function (data, textStatus, jqXHR) {
                 console.log(data);
-                noty({
+                new Noty({
 
                     text: data.responseJSON.message,
                     type: 'error',
+                    theme: 'sunset',
                     layout: 'center',
                     template: '<div class="noty_message"><span class="noty_text"></span>'
-                })
+                }).show();
             });
 
         }); //end of delete button
 
         function redirectPage() {
             location.replace('/CustomerAccounts/ManageAccountRates/' + customerAccountId);
-            };
+        };
 
 
 

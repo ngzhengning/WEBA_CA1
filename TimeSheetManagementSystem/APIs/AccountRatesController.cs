@@ -176,7 +176,6 @@ namespace TimeSheetManagementSystem.APIs
             //newAccount.CustomerAccountId = newCustomer.CustomerAccountId;
             decimal rate = Convert.ToDecimal(rateNewInput.ratePerHour.Value);
             
-
             newAccount.RatePerHour = rate;
 
 
@@ -188,7 +187,7 @@ namespace TimeSheetManagementSystem.APIs
                 //newAccount.EffectiveEndDate = null;
                 DateTime? eEndDate = Convert.ToDateTime(rateNewInput.eEndDate.Value);
                 newAccount.EffectiveEndDate = eEndDate;
-            } //fuck this module
+            } 
             //else
             //{
             //    DateTime eEndDate = Convert.ToDateTime(rateNewInput.eEndDate.Value);
@@ -250,7 +249,7 @@ namespace TimeSheetManagementSystem.APIs
 
             if (rateChangeInput.eEndDate.Value != null)
             {
-                //newAccount.EffectiveEndDate = null;
+                
                 DateTime? eEndDate = Convert.ToDateTime(rateChangeInput.eEndDate.Value);
                 oneRate.EffectiveEndDate = eEndDate;
             }
