@@ -333,21 +333,23 @@
 
                 //    });
 
-                    noty({
+                    new Noty({
                         text: data.message, type: 'success',
+                        theme: 'sunset',
                         layout: 'center',
                         template: '<div class="noty_message"><span class="noty_text"></span>'
-                    });
+                    }).show();
 
 
                 })
 
                 $updateCustomerHandler.fail(function (data, textStatus, jqXHR) {
-                    noty({
+                    new Noty({
                         text: data.responseJSON.message, type: 'error',
+                        theme: 'sunset',
                         layout: 'center',
                         template: '<div class="noty_message"><span class="noty_text"></span>'
-                    });
+                    }).show();
 
 
                 });

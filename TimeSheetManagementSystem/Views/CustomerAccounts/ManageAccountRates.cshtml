@@ -85,8 +85,7 @@
                 $tableBodyElement = $('#AccountRatesTableBody');
                
                 for (index = 0; index < rateList.length; index++) {
-                    rates = rateList[index];
-                   // console.dir(rates);
+                    rates = rateList[index];              
                     accountRateId = rates.accountRateId;
                    // accountName = rates.accountName;
 
@@ -106,16 +105,7 @@
 
                     }
                     ratePerHour = rates.ratePerHour;
-
-                   
-                    //console.dir(ratePerHour);
-                    //console.dir(eStartDate);
-                    //console.dir(eEndDate);
-                    //console.dir(accountName);
-                    console.dir(accountRateId);
-
-                   
-                   
+                  
                     $rowElement = $('<tr></tr>');
                     $cellElement = $('<td></td>', { text: ratePerHour });
                     $rowElement.append($cellElement);

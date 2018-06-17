@@ -112,11 +112,12 @@
             console.log(textStatus);
             console.log(data);
             console.log(jqXHR);
-            noty({
+            new Noty({
                 text: data.responseJSON.message, type: 'error',
+                theme: 'sunset',
                 layout: 'center',
                 template: '<div class="noty_message"><span class="noty_text"></span>'
-            });
+            }).show();
         });//end of $loadSessionDataHandler.fail()
     }//end of getSessionDetails() function (method);
 
@@ -140,12 +141,12 @@
     function setupFormValidationRules() {
         $.validator.addMethod("noSpace", function (value, element) {
             return value.indexOf(" ") < 0 && value != "";
-        }, "Please enter a session name");
+        }, "Please enter a session name".fontsize('2px').fontcolor('red'));
 
         $.validator.addMethod("noSpecial", function (value, element) {
             return this.optional(element) || //(value.match(/^[a-zA-Z\s]+$/))
                 (value.match(/^[\w.]+$/)) ;
-        }, 'No special Characters please');
+        }, 'No special Characters please'.fontsize('2px').fontcolor('red'));
 
 
 
@@ -160,9 +161,9 @@
 
             },
             messages: {
-                //required: 'Please enter a session name.',
-                //noSpace: 'Please enter a session name.',
-                //noSpecial :  'No Special Characters pelase'
+                sessionNameInput: {
+                    required: "This field is required".fontsize('3px').fontcolor('red')
+                }
 
             }
 
@@ -204,22 +205,24 @@
              });
 
              $updateSessionHandler.done(function (data, textStatus, jqXHR) {
-                 noty({
+                 new Noty({
                      text: data.message, type: 'success',
+                     theme: 'sunset',
                      layout: 'center',
                      template: '<div class="noty_message"><span class="noty_text"></span>'
-                 });
+                 }).show();
 
              });
 
              $updateSessionHandler.fail(function (data, textStatus, jqXHR) {
-                 noty({
+                 new Noty({
                      text: data.responseJSON.message,
                      type: 'error',
+                    theme:'sunset',
                      layout: 'center',
                      template: '<div class="noty_message"><span class="noty_text"></span>'
 
-                 });
+                 }).show();
              });
          }
             });//end of save button
@@ -235,32 +238,34 @@
                     url: '/API/SessionSynopses/' + g_sessionId
                 })
                 $deleteSessionHandler.done(function (data, textStatus, jqXHR) {
-                    noty({
+                    let n = new Noty({
                         text: data.message,
                         type: 'success',
+                        theme: 'sunset',
                         layout: 'center',
                         template: '<div class="noty_message"><span class="noty_text"></span>',
                         buttons: [
-                            {
-                                addClass: 'btn btn-primary', text: 'Ok', onClick: function ($noty) {
-                                    $noty.close();
-                                    $('body').fadeOut(2000, redirectPage);
-                                }
-                            }
+
+                            Noty.button('OK', 'btn btn-primary', function () {
+                                n.close();
+                                $('body').fadeOut(500, redirectPage);
+
+                            })
                         ]
-                    });
+                    }).show();
                 });//end of deleteSessionHandler.done()
 
 
                 $deleteSessionHandler.fail(function (data, textStatus, jqXHR) { 
                     console.log(data);
-                    noty({
+                    new Noty({
 
                         text: data.responseJSON.message,
                         type: 'error',
+                        theme: 'sunset',
                         layout: 'center',
                         template: '<div class="noty_message"><span class="noty_text"></span>'
-                    })
+                    }).show();
                 });
 
             })

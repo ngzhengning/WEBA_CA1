@@ -162,12 +162,12 @@
                 console.log(textStatus);
                 console.log(data);
                 console.log(jqXHR);
-                noty({
+                new Noty({
                     text: data.responseJSON.message, type: 'error',
                     layout: 'center',
                     template: '<div class="noty_message"><span class="noty_text"></span>'
 
-                });
+                }).show();
 
             });
         }
@@ -241,23 +241,25 @@
                 })
 
                 $updateCustomerHandler.done(function (data, textStatus, jqXHR) {
-                    noty({
+                    new Noty({
                         text: data.message,
                         type: 'success',
+                        theme: 'sunset',
                         layout: 'center',
                         template: '<div class="noty_message"><span class="noty_text"></span>'
-                    });
+                    }).show();
 
                 });
 
                 $updateCustomerHandler.fail(function (data, textStatus, jqXHR) {
-                    noty({
+                    new Noty({
                         text: data.responseJSON.message,
                         type: 'error',
+                        theme:' sunset',
                         layout: 'center',
                         template: '<div class="noty_message"><span class="noty_text"></span>'
 
-                    });
+                    }).show();
                 });
 
             }
@@ -274,31 +276,33 @@
             })
 
             $deleteCustomerHandler.done(function (data, textStatus, jqXHR) { 
-                noty({
+              let n = new  Noty({
                     text: data.message,
                     type: 'success',
+                     theme:'sunset',
                     layout: 'center',
                     template: '<div class="noty_message"><span class="noty_text"></span>',
                     buttons: [
-                        {
-                            addClass: 'btn btn-primary', text: 'Ok', onClick: function ($noty) {
-                                $noty.close();
-                                $('body').fadeOut(2000, redirectPage);
-                            }
-                        }
+                        
+                           Noty.button('Ok','btn btn-primary', function(){
+                                n.close();
+                                $('body').fadeOut(500, redirectPage);
+                            });
+                        
                     ]
-                });
+                }).show();
             });//end of deleteSessionHandler.done()
 
             $deleteCustomerHandler.fail(function (data, textStatus, jqXHR) {
                 console.log(data);
-                noty({
+                new Noty({
 
                     text: data.responseJSON.message,
+                    theme:'sunset',
                     type: 'error',
                     layout: 'center',
                     template: '<div class="noty_message"><span class="noty_text"></span>'
-                })
+                }).show()
             });
 
         });

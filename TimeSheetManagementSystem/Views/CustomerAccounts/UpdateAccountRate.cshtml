@@ -411,8 +411,6 @@
                     }
                 }
             });
-
-
         }//END OF VALIDATION
 
         $('#eEndDateInput').on('valueChanged', function () {
@@ -467,8 +465,6 @@
                 var webFormDataInString = JSON.stringify(webFormData);
 
 
-
-
                 $updateRateHandler = $.ajax({
                     type: 'PUT',
                     url: '/API/AccountRates/' + g_rateId,
@@ -495,8 +491,6 @@
                         layout: 'center',
                         template: '<div class="noty_message"><span class="noty_text"></span>'
                     }).show();
-
-
                 });
 
 
