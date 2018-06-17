@@ -188,7 +188,7 @@ namespace TimeSheetManagementSystem.APIs
                 //newAccount.EffectiveEndDate = null;
                 DateTime? eEndDate = Convert.ToDateTime(rateNewInput.eEndDate.Value);
                 newAccount.EffectiveEndDate = eEndDate;
-            }
+            } //fuck this module
             //else
             //{
             //    DateTime eEndDate = Convert.ToDateTime(rateNewInput.eEndDate.Value);
