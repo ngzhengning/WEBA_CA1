@@ -164,8 +164,7 @@ namespace TimeSheetManagementSystem.APIs
 
             //Create a OkObjectResult class instance, httpOkResult.
             //When creating the object, provide the previous message object into it.
-            OkObjectResult httpOkResult =
-                                    new OkObjectResult(successRequestResultMessage);
+            OkObjectResult httpOkResult = new OkObjectResult(successRequestResultMessage);
             //Send the OkObjectResult class object back to the client.
             return httpOkResult;
         }//End of Put() Web API method
@@ -182,7 +181,6 @@ namespace TimeSheetManagementSystem.APIs
             try
             {
                 //Copy out all the course data into the new Course instance,
-                //new.
                 newCourse.CourseAbbreviation = courseNewInput.courseAbbreviation.Value;
                 newCourse.CourseName = courseNewInput.courseName.Value;
                 newCourse.CreatedById = userId;
@@ -223,12 +221,12 @@ namespace TimeSheetManagementSystem.APIs
             };
             //Create a OkObjectResult class instance, httpOkResult.
             //When creating the object, provide the previous message object into it.
-            OkObjectResult httpOkResult =
-                                new OkObjectResult(successRequestResultMessage);
+            OkObjectResult httpOkResult = new OkObjectResult(successRequestResultMessage);
             //Send the OkObjectResult class object back to the client.
             return httpOkResult;
-
         }//End of POST api
+
+
          // DELETE api/Courses/5
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
@@ -244,7 +242,7 @@ namespace TimeSheetManagementSystem.APIs
                 //I use the following command.
                 Database.SaveChanges();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 customMessage = "Unable to delete course record.";
                 object httpFailRequestResultMessage = new { message = customMessage };
@@ -276,6 +274,5 @@ namespace TimeSheetManagementSystem.APIs
             int userInfoId = Database.UserInfo.Single(input => input.LoginUserName == userLoginId).UserInfoId;
             return userInfoId;
         }
-
     }//End of Web API controller class
 }//End of namespace

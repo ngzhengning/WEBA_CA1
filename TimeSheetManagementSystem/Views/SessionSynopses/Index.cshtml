@@ -38,30 +38,21 @@
 @section scripts{ 
     <script>
 
-
         loadSessionData();
 
         function loadSessionData() {
-            //Note: jQuery.ajax(..) is also often written is $.ajax(..)
             var $loadSessionDataHandler = $.ajax({
                 url: '/Api/SessionSynopses/',
                 method: 'GET',
                 dataType: 'json',
                 cache: false,
             });
+
             $loadSessionDataHandler.done(function (data, textStatus, jqXHR) {
                 //This done method will
                 //The (data) input parameter automatically captures the response from the
                 //Get() API method which is labelled to handle this GET request.
-
-                //I usually use the following code
-                //to inspect the returned result captured by the data input parameter
-                //from the web server.
-               
-
-                //After inspecting the data object with the console.log
-                //I have clear picture of the structure and used
-                //the following variable to represent the response.d
+              
                 var sessionList = data;
                 var SessionSynopsisId = '';
                 var createdBy = "";
@@ -71,7 +62,7 @@
                 var $tableElement = null;
                 var $cellElement = null;
                 var $rowElement = null;
-               // console.log(data);
+           
                 //-------- Find the table element -----------
                 //I am using the $tableElement variable
                 //to represent the found HTML element which has a matching id of courseTableBody
@@ -87,14 +78,10 @@
                     //Set this course variable to reference a course object
                     //inside the courseList Array.
                     sessions = sessionList[index];
-                    //console.dir(sessions);
-                    //Copy out the course information
                     sessionSynopsisId = sessions.sessionSynopsisId;
-                    //console.dir(sessionSynopsisId);
                     sessionSynopsisName = sessions.sessionSynopsisName;
-                    //console.dir(sessionSynopsisName);
-        
-
+                 
+       
                     isVisible = sessions.isVisible;
                     if (isVisible == true) {
                         isVisible = "\u2714";
@@ -102,10 +89,7 @@
                     }
                     else {
                         isVisible = "\u2718";
-
                     }
-                    //console.dir(isVisible);
-
                     createdBy = sessions.createdBy;
                     updatedBy = sessions.updatedBy;
                     
@@ -164,5 +148,4 @@
         }//end of loadCourseData();
        
     </script>
-
     }

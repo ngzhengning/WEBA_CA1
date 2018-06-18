@@ -1,5 +1,4 @@
 ﻿<div class="row">
-
     <div class="panel panel-primary">
         <div class="panel-heading clearfix">
             <div class="panel-heading">
@@ -13,7 +12,7 @@
         </div>
         <div class="panel-body">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-12" style="overflow-x:auto;">
                     <table class="table table-hover" border="0">
                         <thead>
                             <tr>
@@ -34,7 +33,7 @@
             </div>
         </div>
     </div>
-
+    
 </div>
 
 @section scripts
@@ -48,8 +47,8 @@
             method: 'GET',
             dataType: 'json',
             cache: false,
-
         });
+
         $loadCustomerDataHandler.done(function (data, textStatus, jqXHR) {
             var customerList = data;
             var CustomerAccountId = '';
@@ -61,9 +60,7 @@
             var $tableElement = null;
             var $cellElement = null;
             var $rowElement = null;
-
-
-            console.log(data);
+         
             $tableBodyElement = $('#CustomerAccountsTableBody');
 
             for (index = 0; index < customerList.length; index++) {
@@ -72,12 +69,12 @@
                 customerAccountId = customers.customerAccountId;
 
                 accountName = customers.accountName;
-                console.dir(AccountName);
+               
                 numOfRates = customers.numOfRates;
                 comments = customers.comments;
                 updatedBy = customers.updatedBy;
-                updatedAt = customers.updatedAt;
-                updatedAt = moment(new Date()).format("DD/MM/YYYY"); //moment formating date
+                updatedAt = moment(customers.updatedAt).format("DD/MM/YYYY");
+                //updatedAt = moment(new Date()).format("DD/MM/YYYY"); //moment formating date
 
                 $rowElement = $('<tr></tr>');
                 $cellElement = $('<td></td>', { text: accountName});
@@ -88,7 +85,6 @@
 
                 $cellElement = $('<td></td>', { text: 0 });
                 $rowElement.append($cellElement);
-
 
                 $cellElement = $('<td></td>', { text: comments });
                 $rowElement.append($cellElement);
@@ -102,29 +98,22 @@
                 $hyperLinkElement = $('<a>Update General Info</a>').attr('href', '/CustomerAccounts/UpdateCustomerAccount/' + customerAccountId);
                 $hyperLinkElement.addClass('btn btn-primary');
 
-
                 $cellElement = $('<td></td>');
-
 
                 $cellElement.append($hyperLinkElement);
                 $rowElement.append($cellElement);
-
 
                 $hyperLinkElement = $('<a>Manage Rates</a>').attr('href', '/CustomerAccounts/ManageAccountRates/' + customerAccountId);
                 $hyperLinkElement.addClass('btn btn-primary');
 
-
                 $cellElement = $('<td></td>');
-
 
                 $cellElement.append($hyperLinkElement);
                 $rowElement.append($cellElement);
 
-
                 $tableBodyElement.append($rowElement);
             }
-        }
-        );
+        });
 
         $loadCustomerDataHandler.fail(function (data, textStatus, jqXHR) {
             noty({
@@ -132,11 +121,10 @@
                 layout: 'center',
                 template: '<div class="noty_message"><span class="noty_text"></span>'
             });//end of noty()
-
         });
 
 
-    };
+    }; //end of loadCustomerData()
 
 
 </script>

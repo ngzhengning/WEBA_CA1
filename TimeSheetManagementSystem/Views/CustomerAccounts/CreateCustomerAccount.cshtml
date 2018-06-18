@@ -19,8 +19,6 @@
                                     <input type="text" id="accountNameInput" name="accountNameInput"
                                            maxlength="100" placeholder="Account Name" value="" />
                                 </td>
-
-
                             </tr>
                         </table>
                     </div>
@@ -125,7 +123,6 @@
 </div><!-- end of div element with class="row" -->
 
 @section scripts{
-
     <link href="~/lib/jqwidgets/jqwidgets/styles/jqx.base.css" rel="stylesheet" />
     <link href="~/lib/jqwidgets/jqwidgets/styles/jqx.blackberry.css" rel="stylesheet" />
 
@@ -133,10 +130,7 @@
     <script src="~/lib/jqwidgets/jqwidgets/jqx-all.js"></script>
     <script>
 
-
-
         $('td').css('width', '230px');
-
 
         $('.lblall').css('text-align', 'right');
         $('.lblall').css('display', 'block');
@@ -144,15 +138,11 @@
         $('.inptall').css('width', '400px');
         $('.inptall').css('padding-left', '30px');
 
-
         const sDate = $('#eStartDateInput');
         sDate.jqxDateTimeInput({ width: '230px', height: '25px', theme: 'blackberry', readonly: true, allowKeyboardDelete: false });
 
-
-
         const eDate = $('#eEndDateInput');
         eDate.jqxDateTimeInput({ width: '230px', height: '25px', theme: 'blackberry', readonly: true });
-
 
         setupFormValidationRules();
         function setupFormValidationRules() {
@@ -166,7 +156,6 @@
             //NUMBERS 2 DECIMAL PLACE ONLY
             $.validator.addMethod("numbers", function (value, element) {
                 return value.match(/^[0-9]+(\.[0-9]{1,2})?$/);
-
             }, "Please specify positive numbers in 2 decimal place".fontsize('2px').fontcolor('red'));
 
             $.validator.addMethod("enddate", function (value, element) {
@@ -176,7 +165,6 @@
                 //console.dir(eDate);
                 return (eDate) >= (sDate) || eDate == null;
             }, "End Date should be greater than Start Date.".fontsize('2px').fontcolor('red'));
-
 
             $("#dataForm").validate({
                 rules: {
@@ -190,44 +178,26 @@
                     },
                     eEndDateInput: {
                         enddate: true
-
                     }
-
                 },
                 messages: {
 
                     accountNameInput: {
                         required: "This field is required".fontsize('3px').fontcolor('red')
                     },
-
                     ratePerHourInput: {
                         required: "This field is required".fontsize('3px').fontcolor('red')
                     }
-
                 }
             })
-
-
         }//END OF VALIDATION
 
 
-        //function WebFormData(inAccountName, inIsVisible, inComments) {
-        //    this.AccountName = inAccountName;
-        //    this.IsVisible = inIsVisible;
-        //    this.Comments = inComments;
-        //}
-
-        //function WebFormData1(inRatePerHour, ineStartDate, ineEndDate) {
-        //    this.ratePerHour = inRatePerHour;
-        //    this.eStartDate = ineStartDate;
-        //    this.eEndDate = ineEndDate;
-        
-        //}
         function WebFormData(inAccountName, inIsVisible, inComments, inRatePerHour, ineStartDate, ineEndDate) {
-                   this.AccountName = inAccountName;
+            this.AccountName = inAccountName;
             this.IsVisible = inIsVisible;
             this.Comments = inComments;
-                  this.ratePerHour = inRatePerHour;
+            this.ratePerHour = inRatePerHour;
             this.eStartDate = ineStartDate;
             this.eEndDate = ineEndDate;
         }
@@ -238,7 +208,6 @@
             if ($(this).prop("checked") == true) {
                 check = 1;
                 this.val = 1;
-
             }
             else {
                 check = 0;
@@ -248,49 +217,24 @@
 
         $('#eEndDateInput').on('valueChanged', function () {
             $('#dataForm').valid();
-
         });
 
         $('#saveButton').on('click', function () {
             $('#dataForm').validate();
 
             if ($('#dataForm').valid()) {
-
                 visval;
                 var collectedAccountName = $('#accountNameInput').val();
                 var collectedVisibility = check;
                 var collectedComments = $('#commentsInput').val();
-
-
-                //var collectedeEndDate = null;
+ 
                 var collectedRatePerHour = $('#ratePerHourInput').val();
                 var collectedeStartDate = $('#eStartDateInput').val();
 
-
-                if ($('#eEndDateInput').val = null) {
-                    var collectedeEndDate = null;
-
+                var collectedeEndDate = null;
+                if ($('#eEndDateInput').val() != ""){
+                    collectedeEndDate = $('#eEndDateInput').val();
                 }
-                else {
-                    var collectedeEndDate = $('#eEndDateInput').val();
-                }
-                //if ($('#eEndDateInput').val = " ") {
-                //    var collectedeEndDate = null;
-
-                //}
-
-                //console.dir(collectedAccountName);
-                //console.dir(collectedVisibility);
-                ////console.dir(collectedComments);
-                //console.dir(collectedRatePerHour);
-                //console.dir(collectedeStartDate);
-                console.dir(collectedeEndDate);
-
-                //var webFormData = new WebFormData(collectedAccountName, collectedVisibility, collectedComments);
-                //var webFormDataInString = JSON.stringify(webFormData);
-
-                //var webFormData1 = new WebFormData1(collectedRatePerHour, collectedeStartDate, collectedeEndDate);
-                //var webFormDataInString1 = JSON.stringify(webFormData1);
 
                 var webFormData = new WebFormData(collectedAccountName, collectedVisibility, collectedComments, collectedRatePerHour, collectedeStartDate, collectedeEndDate);
                 var webFormDataInString = JSON.stringify(webFormData);
@@ -304,43 +248,12 @@
                 })
 
                 $updateCustomerHandler.done(function (data, textStatus, jqXHR) {
-
-                //    $updateRateHandler = $.ajax({
-                //        method: 'POST',
-                //        url: '/API/AccountRates/',
-                //        dataType: 'json',
-                //        contentType: 'application/json;',
-                //        data: "'" + webFormDataInString1 + "'"
-                //    })
-
-
-                //    $updateRateHandler.done(function (data, textStatus, jqXHR) {
-                //        noty({
-                //            text: data.message, type: 'success',
-                //            layout: 'center',
-                //            template: '<div class="noty_message"><span class="noty_text"></span>'
-                //        });
-
-                //    });
-
-                //    $updateRateHandler.fail(function (data, textStatus, jqXHR) {
-                //        noty({
-                //            text: data.responseJSON.message, type: 'error',
-                //            layout: 'center',
-                //            template: '<div class="noty_message"><span class="noty_text"></span>'
-                //        });
-
-
-                //    });
-
                     new Noty({
                         text: data.message, type: 'success',
                         theme: 'sunset',
                         layout: 'center',
                         template: '<div class="noty_message"><span class="noty_text"></span>'
                     }).show();
-
-
                 })
 
                 $updateCustomerHandler.fail(function (data, textStatus, jqXHR) {
@@ -350,20 +263,11 @@
                         layout: 'center',
                         template: '<div class="noty_message"><span class="noty_text"></span>'
                     }).show();
-
-
                 });
 
-
-
-
-
-
-
-            }
+            }//end of validate
 
         });//END OF SAVEBUTTON
 
     </script>
-
 }

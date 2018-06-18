@@ -32,8 +32,6 @@
                                     <div id="eStartDateInput" name="eStartDateInput">
                                     </div>
                                 </td>
-
-
                             </tr>
                         </table>
                     </div>
@@ -108,7 +106,6 @@
         $href.css('margin-left', '5px');
 
         $('td').css('width', '230px');
-
         $('.modal').hide();
 
         $('.lblall').css('text-align', 'right');
@@ -125,7 +122,6 @@
         eDate.jqxDateTimeInput({ width: '230px', height: '25px', theme: 'blackberry', readonly: true });
 
 
-
         var g_rateId = getIdFromAddressBar();
 
         function getIdFromAddressBar() {
@@ -133,7 +129,6 @@
             var id = urlArray[urlArray.length - 1];
             return id;
         };
-
 
 
         class CusID {
@@ -164,7 +159,6 @@
             $loadRateDataHandler = $.ajax({
                 type: 'GET',
                 url: '/API/AccountRates/RateDetail/' + g_rateId,
-
             });
 
             await $loadRateDataHandler.done(function (data, textStatus, jqXHR) {
@@ -208,8 +202,6 @@
         }
 
 
-
-
         var i;
         function loadRatesData(x) {
             console.log(x)
@@ -223,7 +215,6 @@
             $loadRatesDataHandler.done(function (data, textStatus, jqXHR) {
 
                 var rateList = data;
-
                 i = rateList.filter(x => x.accountRateId != g_rateId);
                 console.dir(i);
                 conflictRecord = new CheckConflict(i);
@@ -247,7 +238,6 @@
             check(rph, sd, ed) {
 
                 for (var i = 0; i < this.rateList.length; i++) {
-
                     var date = sd;
                     var tt = date.split("/");
                     var nsd = tt[2] + '-' + tt[1] + '-' + tt[0];
@@ -355,10 +345,8 @@
                         // console.log("false")
                         return false
                     }
-
                 }
             }
-
         }
 
         function formatDate(date) {
@@ -382,7 +370,6 @@
             //NUMBERS 2 DECIMAL PLACE ONLY
             $.validator.addMethod("numbers", function (value, element) {
                 return value.match(/^[0-9]+(\.[0-9]{1,2})?$/);
-
             }, "Please specify positive numbers in 2 decimal place".fontsize('2px').fontcolor('red'));
 
 
@@ -459,8 +446,6 @@
                 }
 
 
-
-
                 var webFormData = new WebFormData(collectedRatePerHour, collectedeStartDate, collectedeEndDate);
                 var webFormDataInString = JSON.stringify(webFormData);
 
@@ -492,8 +477,6 @@
                         template: '<div class="noty_message"><span class="noty_text"></span>'
                     }).show();
                 });
-
-
             }
         });
 
@@ -520,11 +503,6 @@
                             n.close()
                             $('body').fadeOut(500, redirectPage);
                         })
-                        //addClass: 'btn btn-primary', text: 'Ok', onClick: function ($Noty) {
-                        //    n.close();
-                        //    $('body').fadeOut(2000, redirectPage);
-                        //}
-
                     ]
                 }).show();
             });//end of deleteSessionHandler.done()

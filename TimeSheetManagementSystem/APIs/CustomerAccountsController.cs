@@ -69,15 +69,11 @@ namespace TimeSheetManagementSystem.APIs
                     Comments = oneCustomer.Comments,
                     UpdatedBy = oneCustomer.UpdatedBy.FullName,
                     UpdatedAt = oneCustomer.UpdatedAt
-
                 });
               
             }
             return new JsonResult(customerList);
         }
-
-
-
 
         // GET api/<controller>/5
         [HttpGet("{id}")]
@@ -98,19 +94,15 @@ namespace TimeSheetManagementSystem.APIs
             return new JsonResult(response);
         }
 
-
-
         // POST api/<controller>
         [HttpPost]
         public IActionResult Post([FromBody]string value)
-        {
-           
+        {   
             string customMessage = "";
             var customerNewInput = JsonConvert.DeserializeObject<dynamic>(value);
             CustomerAccount newCustomer = new CustomerAccount();
 
             int userId = GetUserIdFromUserInfo();
-
 
             newCustomer.AccountName = customerNewInput.AccountName.Value;
             Convert.ToBoolean(customerNewInput.IsVisible.Value);
@@ -128,16 +120,11 @@ namespace TimeSheetManagementSystem.APIs
             newCustomer.UpdatedById = userId;
             newCustomer.CreatedAt = DateTime.Now;
             newCustomer.UpdatedAt = DateTime.Now;
-            
-           
-
               
             try
             {
                 Database.CustomerAccounts.Add(newCustomer);
-                Database.SaveChanges();
-               //Database.SaveChangesAsync();
-               
+                Database.SaveChanges();             
             }
             catch (Exception ex)
             {
@@ -153,14 +140,8 @@ namespace TimeSheetManagementSystem.APIs
                     return BadRequest(httpFailRequestResultMessage);
                 }
             }
-            //var successRequestResultMessage = new
-            //{
-            //    message = "Saved Customer Account record"
-            //};
-
 
             var rateNewInput = JsonConvert.DeserializeObject<dynamic>(value);
-
             AccountRate newAccount = new AccountRate();
 
             //CustomerAccount newCustomer = new CustomerAccount();
@@ -171,33 +152,18 @@ namespace TimeSheetManagementSystem.APIs
             //{
             //newAccount.CustomerAccountId = ds;
             //}
-            newAccount.CustomerAccountId = newCustomer.CustomerAccountId;
-            //newAccount.CustomerAccountId = 19;
-
-            //newAccount.CustomerAccountId = newCustomer.CustomerAccountId;
+            newAccount.CustomerAccountId = newCustomer.CustomerAccountId;          
             decimal rate = Convert.ToDecimal(rateNewInput.ratePerHour.Value);
             newAccount.RatePerHour = rate;
 
-
             DateTime eStartDate = Convert.ToDateTime(rateNewInput.eStartDate.Value);
             newAccount.EffectiveStartDate = eStartDate;
-
-
-            //DateTime? eEndDate = Convert.ToDateTime(rateNewInput.eEndDate.Value);
-
-            if (rateNewInput.eEndDate.Value == "")
+        
+            if (rateNewInput.eEndDate.Value != null)
             {
-                newAccount.EffectiveEndDate = null;
-            }
-            else
-            {
-                //DateTime eEndDate = Convert.ToDateTime(rateNewInput.eEndDate.Value);
-                // newAccount.EffectiveEndDate = rateNewInput.eEndDate.Value;
-
                 DateTime? eEndDate = Convert.ToDateTime(rateNewInput.eEndDate.Value);
                 newAccount.EffectiveEndDate = eEndDate;
-            }
-
+            }       
             try
             {
                 Database.AccountRates.Add(newAccount);
@@ -206,14 +172,13 @@ namespace TimeSheetManagementSystem.APIs
 
             catch (Exception)
             {
-
                 customMessage = "Unable to save Rates data ";
                 object httpFailRequestResultMessage = new { message = customMessage };
                 //Return a HTTP response of Bad Request status
                 //and embed the anonymous object's content within the message-body segmet.
                 return BadRequest(httpFailRequestResultMessage);
-
             }
+
             var successRequestResultMessage = new
             {
                 message = "Saved Rate and Customer record"
@@ -226,8 +191,6 @@ namespace TimeSheetManagementSystem.APIs
             //Send the OkObjectResult class object back to the client.
             return httpOkResult;
         }
-
-    
 
 
 
@@ -242,18 +205,14 @@ namespace TimeSheetManagementSystem.APIs
             var oneCustomer = Database.CustomerAccounts
                             .Where(x => x.CustomerAccountId == id).Single();
 
-
-            oneCustomer.AccountName = customerChangeInput.AccountName.Value;
-     
+            oneCustomer.AccountName = customerChangeInput.AccountName.Value;  
             Boolean dd = Convert.ToBoolean(customerChangeInput.IsVisible.Value);
             oneCustomer.IsVisible = dd;
 
             oneCustomer.Comments = customerChangeInput.Comments.Value;
 
-
             oneCustomer.UpdatedById = userId;
             oneCustomer.UpdatedAt = DateTime.Now;
-
             
             try
             {
@@ -286,8 +245,7 @@ namespace TimeSheetManagementSystem.APIs
             //Send the OkObjectResult class object back to the client.
             return httpOkResult;
         }
-    
-        
+         
 
         // DELETE api/<controller>/5
         [HttpDelete("{id}")]

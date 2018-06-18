@@ -47,6 +47,7 @@ namespace TimeSheetManagementSystem.APIs
             _smsSender = smsSender;
             _logger = loggerFactory.CreateLogger<AccountController>();
         }
+
         // GET: api/<controller>
         //[HttpGet]
         //public JsonResult Get()
@@ -56,7 +57,6 @@ namespace TimeSheetManagementSystem.APIs
         //    var rates = Database.AccountRates
         //                 .
         //}
-
 
         // GET api/<controller>/5
         [HttpGet("{id}")]
@@ -77,17 +77,12 @@ namespace TimeSheetManagementSystem.APIs
                     //AccountName = oneRate.CustomerAccount.AccountName,
                     RatePerHour = oneRate.RatePerHour,
                     eStartDate = oneRate.EffectiveStartDate,
-
                     eEndDate = oneRate.EffectiveEndDate
-
                 });
-
             };
-
-
             return new JsonResult(new { rateList, accountName });
-
         }
+
         [HttpGet("RateDetail/{rid}")]
         public IActionResult RateDetail(int rid)
         {
@@ -104,7 +99,6 @@ namespace TimeSheetManagementSystem.APIs
                 CustomerAccountId= oneCustomer.CustomerAccountId,
                 RatePerHour = oneRate.RatePerHour,
                 eStartDate = oneRate.EffectiveStartDate,
-
                 eEndDate = oneRate.EffectiveEndDate
             };
              return new JsonResult(response);
@@ -129,15 +123,11 @@ namespace TimeSheetManagementSystem.APIs
                     //AccountName = oneRate.CustomerAccount.AccountName,
                     RatePerHour = oneRate.RatePerHour,
                     eStartDate = oneRate.EffectiveStartDate,
-
                     eEndDate = oneRate.EffectiveEndDate
-
                 });
-
             };
             return new JsonResult(rateList);
         }
-
 
 
 
@@ -174,8 +164,7 @@ namespace TimeSheetManagementSystem.APIs
             oneSession.UpdatedAt = DateTime.Now;
             oneSession.UpdatedById = userid;
             //newAccount.CustomerAccountId = newCustomer.CustomerAccountId;
-            decimal rate = Convert.ToDecimal(rateNewInput.ratePerHour.Value);
-            
+            decimal rate = Convert.ToDecimal(rateNewInput.ratePerHour.Value);            
             newAccount.RatePerHour = rate;
 
 
@@ -183,8 +172,7 @@ namespace TimeSheetManagementSystem.APIs
             newAccount.EffectiveStartDate = eStartDate;
 
             if (rateNewInput.eEndDate.Value != null)
-            {
-                //newAccount.EffectiveEndDate = null;
+            {              
                 DateTime? eEndDate = Convert.ToDateTime(rateNewInput.eEndDate.Value);
                 newAccount.EffectiveEndDate = eEndDate;
             } 
@@ -219,7 +207,6 @@ namespace TimeSheetManagementSystem.APIs
             OkObjectResult httpOkResult = new OkObjectResult(successRequestResultMessage);
             return httpOkResult;
         }//end of post
-
 
 
         // PUT api/<controller>/5
@@ -273,7 +260,6 @@ namespace TimeSheetManagementSystem.APIs
                                     new OkObjectResult(successRequestResultMessage);
             //Send the OkObjectResult class object back to the client.
             return httpOkResult;
-
         }
 
         // DELETE api/<controller>/5
@@ -289,7 +275,7 @@ namespace TimeSheetManagementSystem.APIs
                 Database.SaveChanges();
             }
 
-            catch (Exception ex)
+            catch (Exception)
             {
                 customMessage = "Unable to delete Rate record";
                 object httpFailRequestResultMessage = new { message = customMessage };
@@ -303,7 +289,6 @@ namespace TimeSheetManagementSystem.APIs
                        new OkObjectResult(successRequestResultMessage);
             //Send the OkObjectResult class object back to the client.
             return httpOkResult;
-
     }
 
         public int GetUserIdFromUserInfo()

@@ -36,6 +36,7 @@ namespace TimeSheetManagementSystem.APIs
             */
             Database = database;
         }
+
         // GET: api/Company
         [HttpGet]
         public IActionResult Get()

@@ -42,7 +42,6 @@
     <script>
 
 
-
         //VALIDATION METHODS
         setupFormValidationRules();
         function setupFormValidationRules() {
@@ -108,7 +107,6 @@
         });
 
 
-
         function WebFormData(inSessionSynopsisName, inIsVisible) {
             this.SessionSynopsisName = inSessionSynopsisName;
             this.IsVisible = inIsVisible;
@@ -128,14 +126,13 @@
                 var webFormDataInString = JSON.stringify(webFormData);
 
                 $updateSessionHandler = $.ajax({
-
                     method: 'POST',
                     url: '/API/SessionSynopses/',
                     dataType: 'json',
                     contentType: 'application/json;',
                     data: "'" + webFormDataInString + "'"
-
                 })
+
                 $updateSessionHandler.done(function (data, textStatus, jqXHR) {
                     new Noty({
                         text: data.message, type: 'success',
@@ -143,7 +140,6 @@
                         theme: 'sunset',
                         template: '<div class="noty_message"><span class="noty_text"></span>'
                     }).show();
-
                 });
 
                 $updateSessionHandler.fail(function (data, textStatus, jqXHR) {
@@ -152,17 +148,12 @@
                         layout: 'center',
                         theme: 'sunset',
                         template: '<div class="noty_message"><span class="noty_text"></span>'
-
-
-
                     }).show();
-
                 });
 
-            }
+            }//end of data validate
 
         });//end of savebutton
-
 
 
         //JQUERY VALIDATION NOTES

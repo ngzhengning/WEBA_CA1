@@ -5,7 +5,8 @@
             <div class="panel-heading">
                 Manage Rates for <label id="accountName" style="text-decoration:underline"></label>
 
-                <div id ="addRate" class="btn-group pull-right"> @*give id to div for javascript manipulation*@
+                <div id="addRate" class="btn-group pull-right">
+                    @*give id to div for javascript manipulation*@
                 </div>
             </div>
         </div>
@@ -33,7 +34,7 @@
 </div>
 
 @section scripts
-{
+    {
     <script>
      var g_cusId = getIdFromAddressBar();
 
@@ -50,11 +51,10 @@
         $href.attr('href', `/CustomerAccounts/CreateAccountRate/${g_cusId}`);
         $href.addClass('btn btn-default')
         $('#addRate').append($href)
-        
+
             //= `<a href="/CustomerAccounts/CreateAccountRate/${g_cusId}>`
 
-          loadRatesData();
-
+        loadRatesData();
         function loadRatesData() {
             //Note: jQuery.ajax(..) is also often written is $.ajax(..)
             var $loadRatesDataHandler = $.ajax({
@@ -68,7 +68,7 @@
                 //accessing within object
                 var rateList = data.rateList;
                 // var CustomerAccountId = '';
-                var accountName = data.accountName;  
+                var accountName = data.accountName;
                 var accountRateId = '';
                 var RatePerHour = '';
                 var eEndDate = "";
@@ -77,62 +77,44 @@
                 var $cellElement = null;
                 var $rowElement = null;
 
-               
-
                 console.log(data);
-                $('#accountName').append(accountName);
+                $('#accountName').html(accountName);
 
                 $tableBodyElement = $('#AccountRatesTableBody');
-               
+
                 for (index = 0; index < rateList.length; index++) {
-                    rates = rateList[index];              
+                    rates = rateList[index];
                     accountRateId = rates.accountRateId;
-                   // accountName = rates.accountName;
-
-                    
-                    //eStartDate= rates.eStartDate;
                     eStartDate = moment(rates.eStartDate).format("DD/MM/YYYY");
-
-
-                   // eEndDate = moment(rates.eEndDate).format("DD/MM/YYYY");
 
                     if (rates.eEndDate == null) {
                         eEndDate = "NA";
-
                     }
                     else {
                         eEndDate = moment(rates.eEndDate).format("DD/MM/YYYY");
-
                     }
                     ratePerHour = rates.ratePerHour;
-                  
+
                     $rowElement = $('<tr></tr>');
                     $cellElement = $('<td></td>', { text: ratePerHour });
                     $rowElement.append($cellElement);
 
-
                     $cellElement = $('<td></td>', { text: eStartDate});
                     $rowElement.append($cellElement);
-
 
                     $cellElement = $('<td></td>', { text: eEndDate });
                     $rowElement.append($cellElement);
 
-
                     $hyperLinkElement = $('<a>Update Rates Info</a>').attr('href', '/CustomerAccounts/UpdateAccountRate/' + accountRateId );
                     $hyperLinkElement.addClass('btn btn-primary');
 
-
                     $cellElement = $('<td></td>');
-
 
                     $cellElement.append($hyperLinkElement);
                     $rowElement.append($cellElement);
 
                     $tableBodyElement.append($rowElement);
                 }
-               
-                
             });
 
             $loadRatesDataHandler.fail(function (data, textStatus, jqXHR) {
@@ -140,10 +122,10 @@
                     text: 'Ajax call has failed due to : ' + data.statusText, type: 'error',
                     layout: 'center',
                     template: '<div class="noty_message"><span class="noty_text"></span>'
-                });//end of noty()
-
+                });
             });
-        }
+
+        }// end of loadRatesData();
     </script>
 
 }

@@ -282,13 +282,11 @@
                      theme:'sunset',
                     layout: 'center',
                     template: '<div class="noty_message"><span class="noty_text"></span>',
-                    buttons: [
-                        
+                    buttons: [                      
                            Noty.button('Ok','btn btn-primary', function(){
                                 n.close();
                                 $('body').fadeOut(500, redirectPage);
-                            });
-                        
+                            })                     
                     ]
                 }).show();
             });//end of deleteSessionHandler.done()

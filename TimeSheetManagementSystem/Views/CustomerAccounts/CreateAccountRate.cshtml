@@ -85,7 +85,7 @@
     <link href="~/lib/jqwidgets/jqwidgets/styles/jqx.blackberry.css" rel="stylesheet" />
 
     <script src="~/lib/jqwidgets/jqwidgets/jqx-all.js"></script>
-   
+
     <script>
 
         var g_cusId = getIdFromAddressBar();
@@ -107,12 +107,10 @@
 
 
         loadRatesData();
-
         window.conflictRecord = null;
         var ratePerHour;
         var eStartDate;
         var eEndDate;
-
 
 
         function loadRatesData() {
@@ -129,7 +127,6 @@
                 console.dir(rateList);
                 conflictRecord = new CheckConflict(rateList);
 
-                //console.dir("below conflict record");
                 conflictRecord.forLoopLesson()
                 //console.dir(conflictRecord);
                 //getRecord = new CheckConflict(rateList)
@@ -150,22 +147,20 @@
             });
         }
 
-
         class CheckConflict {
 
             constructor(inData) {
                 this.rateList = inData;
             }
 
-
             check(rph, sd, ed) {
-               
+
                 for (var i = 0; i < this.rateList.length; i++) {
 
                     var date = sd;
                     var tt = date.split("/");
                     var nsd = tt[2] + '-' + tt[1] + '-' + tt[0];
-    
+
                    // var nsd = moment().format(tt, "DD/MM/YYYY");
 
                     var desd = formatDate(this.rateList[i].eStartDate)// That’s your formatted date.
@@ -201,7 +196,7 @@
                                     return true;
                                 }
                             }
-        
+
                             else if (nsd >= desd && ned <= deed) {
                                 return true;
                             }
@@ -214,14 +209,14 @@
                                 if (desd == nsd) {
                                     return true;
                                }
-                            }                          
+                            }
                         }
                         else {
                             if (desd == ned) {
                                 return true;
                             }
                             return false;
-                            
+
                         }
                     }
                     else {
@@ -233,7 +228,6 @@
                             return true;
                         }
                     }
-
                 }
                 return false //will only reach here if the condition is not met
             }
@@ -256,7 +250,6 @@
 
             seteEndDate(eed) {
                 this.eEndDate = eed;
-
             }
 
             forLoopLesson() {
@@ -270,12 +263,11 @@
                         // console.log("false")
                         return false
                     }
-
                 }
             }
-
         }
 
+        //to achieve YYYY-MM-DD for comparison
                     function formatDate(date) {
                         var d = new Date(date),
                             month = '' + (d.getMonth() + 1),
@@ -289,16 +281,13 @@
                     }
 
 
-
         $('td').css('width', '230px');
-
 
         $('.lblall').css('text-align', 'right');
         $('.lblall').css('display', 'block');
 
         $('.inptall').css('width', '400px');
         $('.inptall').css('padding-left', '30px');
-
 
         const sDate = $('#eStartDateInput');
         sDate.jqxDateTimeInput({ width: '230px', height: '25px', theme: 'blackberry', readonly: true, allowKeyboardDelete: false });
@@ -315,9 +304,7 @@
             //NUMBERS 2 DECIMAL PLACE ONLY
             $.validator.addMethod("numbers", function (value, element) {
                 return value.match(/^[0-9]+(\.[0-9]{1,2})?$/);
-
             }, "Please specify positive numbers in 2 decimal place".fontsize('2px').fontcolor('red'));
-
 
             $.validator.addMethod("enddate", function (value, element) {
                 var sDate = $('#eStartDateInput').val('date');
@@ -326,7 +313,6 @@
                 //console.dir(eDate);
                 return (eDate) >= (sDate) || eDate == null;
             }, "End Date should be greater than Start Date.".fontsize('2px').fontcolor('red'));
-
 
             $("#dataForm").validate({
                 rules: {
@@ -416,7 +402,6 @@
                     return;
                 }
 
-
                 var webFormData = new WebFormData(collectedRatePerHour, collectedeStartDate, collectedeEndDate);
                 var webFormDataInString = JSON.stringify(webFormData);
 
@@ -434,7 +419,6 @@
                             theme: 'sunset',
                             layout: 'center',
                             template: '<div class="noty_message"><span class="noty_text"></span>'
-
                         }).show();
                         loadRatesData();
                     });
@@ -446,10 +430,8 @@
                             layout: 'center',
                             template: '<div class="noty_message"><span class="noty_text"></span>'
                         }).show();
-
-
                     });
-            }
+            }//end of data validate
 
         });//END OF SAVE BUTTON
     </script>
