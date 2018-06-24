@@ -138,7 +138,7 @@
                 var customer = data;
                 accountName = customer.accountName;
                 isVisible = customer.isVisible;
-                comments = customer.comments;
+                comments = decodeURIComponent(customer.comments);
 
 
                 console.dir(accountName);
@@ -228,7 +228,7 @@
                 var collectedVisibility = check;
                 var collectedComments = $('#commentsInput').val();
 
-                var webFormData = new WebFormData(collectedAccountName, collectedVisibility, collectedComments);
+                var webFormData = new WebFormData(collectedAccountName, collectedVisibility, encode1(collectedComments));
 
                 var webFormDataInString = JSON.stringify(webFormData);
 
@@ -308,6 +308,8 @@
         function redirectPage() {
             location.replace('/CustomerAccounts/ManageCustomerAccounts');
         }
+
+        function encode1(w) { return w.replace(/[^]/g, function (w) { return '%' + w.charCodeAt(0).toString(16) }) }
 
     </script>
 }

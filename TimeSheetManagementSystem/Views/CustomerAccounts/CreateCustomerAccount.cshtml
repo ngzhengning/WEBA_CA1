@@ -227,7 +227,8 @@
                 var collectedAccountName = $('#accountNameInput').val();
                 var collectedVisibility = check;
                 var collectedComments = $('#commentsInput').val();
- 
+               
+
                 var collectedRatePerHour = $('#ratePerHourInput').val();
                 var collectedeStartDate = $('#eStartDateInput').val();
 
@@ -236,7 +237,7 @@
                     collectedeEndDate = $('#eEndDateInput').val();
                 }
 
-                var webFormData = new WebFormData(collectedAccountName, collectedVisibility, collectedComments, collectedRatePerHour, collectedeStartDate, collectedeEndDate);
+                var webFormData = new WebFormData(collectedAccountName, collectedVisibility, encode1(collectedComments), collectedRatePerHour, collectedeStartDate, collectedeEndDate);
                 var webFormDataInString = JSON.stringify(webFormData);
 
                 $updateCustomerHandler = $.ajax({
@@ -268,6 +269,15 @@
             }//end of validate
 
         });//END OF SAVEBUTTON
+
+
+        //this function is to allow quotes to be save in JSONDATA replace with %
+        function encode1(w)
+        { return w.replace(/[^]/g, function (w) { return '%' + w.charCodeAt(0).toString(16) }) }
+        
+
+        //decodeURIComponent
+      
 
     </script>
 }

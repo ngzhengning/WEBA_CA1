@@ -65,13 +65,14 @@
 
             for (index = 0; index < customerList.length; index++) {
                 customers = customerList[index];
-                console.dir(customers);
+              
                 customerAccountId = customers.customerAccountId;
 
                 accountName = customers.accountName;
                
                 numOfRates = customers.numOfRates;
-                comments = customers.comments;
+               comments = decodeURIComponent(customers.comments);
+  
                 updatedBy = customers.updatedBy;
                 updatedAt = moment(customers.updatedAt).format("DD/MM/YYYY");
                 //updatedAt = moment(new Date()).format("DD/MM/YYYY"); //moment formating date
