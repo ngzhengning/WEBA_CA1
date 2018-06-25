@@ -212,7 +212,7 @@ namespace TimeSheetManagementSystem.Data
                 .Property(input => input.IsVisible)
                 .HasColumnName("IsVisible")
                 .HasColumnType("BIT")
-                .HasDefaultValue(true)
+              //  .HasDefaultValue(true)
                 .IsRequired(true);
 
             modelBuilder.Entity<CustomerAccount>()
