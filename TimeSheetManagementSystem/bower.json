@@ -9,13 +9,16 @@
     "jquery-validation": "1.14.0",
     "jquery-validation-unobtrusive": "3.2.6",
     "bootstrap-timepicker": "0.5.2",
-    "bootstrap-datepicker": "1.6.4",
     "noty": "3.1.0",
     "less": "2.7.2",
     "js-cookie": "2.1.4",
     "he": "1.1.1",
     "bootstrap-toggle": "2.2.2",
-    "jqwidgets": "2.0.2"
-  
+    "jqwidgets": "v5.6.0",
+    "lodash": "4.17.4-amd",
+    "bootstrap-datepicker": "v1.8.0"
+  },
+  "resolutions": {
+    "jquery": ">= 1.7.2"
   }
 }

@@ -30,14 +30,16 @@
 
                                 <td class="inptall">
                                     @*<div id="eStartDateInput" name="eStartDateInput">
-                                      </div>*@
-
-                                    <div class="input-group date" id="datepicker">
-                                        <input type="text" class="form-control" value="02-2018">
-                                        <div class="input-group-addon">
-                                            <span class="glyphicon glyphicon-th"></span>
-                                        </div>
+        </div>*@
+                                    <div class='date-picker input-group date' id="sdatepicker">
+                                        <input type='text' class="form-control"  readonly="readonly" required="required"/>
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
                                     </div>
+
+                                   
+
 
                                 </td>
 
@@ -50,18 +52,26 @@
                     <div class="form-group col-md-12">
                         <table border="0">
                             <tr>
-                                <td class="lblall"><label for="eEndDateInput">Effective end date</label></td>
+                                <!--eEndDateInput-->
+                                <td class="lblall"><label for="edatepicker">Effective end date</label></td>
 
                                 <td class="inptall">
                                     @*<div id="eEndDateInput" name="eEndDateInput">
-                        </div>*@
-
+        </div>*@
+                                    <div class='date-picker input-group date' id="edatepicker">
+                                        <input type='text' class="form-control" readonly="readonly" name="edatepicker" />
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                   
+                                    </div>
+                                
                                 </td>
 
                             </tr>
                             <tr>
                                 <td class="lblall"></td>
-                                <td class="inptall"><label id="inputeEndDateInput-error" class="error" for="inputeEndDateInput"></label></td>
+                                <td class="inptall"><label id="edatepicker-error" class="error" for="edatepicker"></label></td>
                             </tr>
                         </table>
 
@@ -74,7 +84,7 @@
                                 <input type="button" class="btn btn-primary" value="Save" id="saveButton" />
                                 @*  <a class="btn btn-default" asp-action="ManageCustomerAccounts" asp-controller="CustomerAccounts">Cancel</a>*@
                                 <div id="cancel" class="btn-group pull-right">
-                                    @*give id to div for javascript manipulation*@
+
                                 </div>
 
                             </div>
@@ -82,11 +92,8 @@
                     </div>
 
                     @*<span class="btn btn-danger">-</span>
-        <input type="number" min="2000" max="2040" value="2000" readonly/>
-        <span class="btn btn-warning">+</span>*@
-                   
-
-
+                        <input type="number" min="2000" max="2040" value="2000" readonly/>
+                        <span class="btn btn-warning">+</span>*@
                 </form>
 
             </div><!-- end of div element which has the class="panel-body" -->
@@ -95,378 +102,393 @@
 </div><!-- end of div element with class="row" -->
 
 
-@section scripts{
+@section Scripts{
+    <link href="~/lib/bootstrap-datepicker/dist/css/bootstrap-datepicker.css" rel="stylesheet" />
     <link href="~/lib/jqwidgets/jqwidgets/styles/jqx.base.css" rel="stylesheet" />
     <link href="~/lib/jqwidgets/jqwidgets/styles/jqx.blackberry.css" rel="stylesheet" />
     <script src="~/lib/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
-    <link href="~/lib/bootstrap-datepicker/dist/css/bootstrap-datepicker.css" rel="stylesheet" />
     <script src="~/lib/jqwidgets/jqwidgets/jqx-all.js"></script>
 
     <script>
-        $('td').css('width', '230px');
 
-        $('.lblall').css('text-align', 'right');
-        $('.lblall').css('display', 'block');
-
-        $('.inptall').css('width', '400px');
-        $('.inptall').css('padding-left', '30px');
-
-
-        $("#datepicker").datepicker({
+        $('#sdatepicker').datepicker({                            
             format: "mm-yyyy",
-            startView: "months",
+            viewMode: "months",
             minViewMode: "months",
-            orientation: 'bottom',
-            autoclose: 'true'
+            autoclose: true,
+            orientation: 'bottom'
+            
         });
 
+        $("#edatepicker").datepicker({
+            format: "mm-yyyy",
+            viewMode: "months",
+            minViewMode: "months",
+            autoclose: true,
+            orientation: 'bottom',
+             clearBtn: true
+        }); 
 
-      
-      
+    </script>
+
+    <script>
+            $('td').css('width', '230px');
+
+            $('.lblall').css('text-align', 'right');
+            $('.lblall').css('display', 'block');
+
+            $('.inptall').css('width', '400px');
+            $('.inptall').css('padding-left', '30px');
+
+            var g_cusId = getIdFromAddressBar();
+
+            function getIdFromAddressBar() {
+                var urlArray = window.location.href.split('/');
+                var id = urlArray[urlArray.length - 1];
+                return id;
+            };
+
+            //CANCEL BUTTON
+            const button = document.getElementById('cancel')
+            const $href = $('<a>Cancel</a>')
+
+            $href.attr('href', `/CustomerAccounts/ManageAccountRates/${g_cusId}`);
+            $href.addClass('btn btn-default');
+            $href.css('margin-left', '5px');
+            $('#cancel').append($href);
 
 
-
-        var g_cusId = getIdFromAddressBar();
-
-        function getIdFromAddressBar() {
-            var urlArray = window.location.href.split('/');
-            var id = urlArray[urlArray.length - 1];
-            return id;
-        };
-
-        //CANCEL BUTTON
-        const button = document.getElementById('cancel')
-        const $href = $('<a>Cancel</a>')
-
-        $href.attr('href', `/CustomerAccounts/ManageAccountRates/${g_cusId}`);
-        $href.addClass('btn btn-default');
-        $href.css('margin-left', '5px');
-        $('#cancel').append($href);
+            loadRatesData();
+            window.conflictRecord = null;
+            var ratePerHour;
+            var eStartDate;
+            var eEndDate;
 
 
-        loadRatesData();
-        window.conflictRecord = null;
-        var ratePerHour;
-        var eStartDate;
-        var eEndDate;
+            function loadRatesData() {
+                var $loadRatesDataHandler = $.ajax({
+                    url: '/Api/AccountRates/' + g_cusId,
+                    method: 'GET',
+                    dataType: 'json',
+                    cache: false,
+                });
 
+                $loadRatesDataHandler.done(function (data, textStatus, jqXHR) {
 
-        function loadRatesData() {
-            var $loadRatesDataHandler = $.ajax({
-                url: '/Api/AccountRates/' + g_cusId,
-                method: 'GET',
-                dataType: 'json',
-                cache: false,
-            });
+                    var rateList = data.rateList;
+                    console.dir(rateList);
+                    conflictRecord = new CheckConflict(rateList);
 
-            $loadRatesDataHandler.done(function (data, textStatus, jqXHR) {
+                    conflictRecord.forLoopLesson()
+                    //console.dir(conflictRecord);
+                    //getRecord = new CheckConflict(rateList)
+                    // console.dir(conflictRecord);
+                    // getConflict.setRecord();
 
-                var rateList = data.rateList;
-                console.dir(rateList);
-                conflictRecord = new CheckConflict(rateList);
+                    var accountName = data.accountName;   //retrieve the accountName
 
-                conflictRecord.forLoopLesson()
-                //console.dir(conflictRecord);
-                //getRecord = new CheckConflict(rateList)
-                // console.dir(conflictRecord);
-                // getConflict.setRecord();
+                    for (index = 0; index < rateList.length; index++) {
+                        rates = rateList[index];
+                        ratePerHour = rates.ratePerHour;
+                        //console.dir(ratePerHour);
+                        eStartDate = rates.eStartDate;
+                        //eEndDate = rates.eEndDate;
+                    }
+                    $('#accountName').html(accountName);
 
-                var accountName = data.accountName;   //retrieve the accountName
-
-                for (index = 0; index < rateList.length; index++) {
-                    rates = rateList[index];
-                    ratePerHour = rates.ratePerHour;
-                    //console.dir(ratePerHour);
-                    eStartDate = rates.eStartDate;
-                    //eEndDate = rates.eEndDate;
-                }
-                $('#accountName').html(accountName);
-
-            });
-        }
-
-        class CheckConflict {
-
-            constructor(inData) {
-                this.rateList = inData;
+                });
             }
 
-            check(rph, sd, ed) {
+            class CheckConflict {
 
-                for (var i = 0; i < this.rateList.length; i++) {
+                constructor(inData) {
+                    this.rateList = inData;
+                }
 
-                    var date = sd;
-                    var tt = date.split("/");
-                    var nsd = tt[2] + '-' + tt[1] + '-' + tt[0];
+                check(rph, sd, ed) {
 
-                    // var nsd = moment().format(tt, "DD/MM/YYYY");
+                    for (var i = 0; i < this.rateList.length; i++) {
 
-                    var desd = formatDate(this.rateList[i].eStartDate)// That’s your formatted date.
+                        var date = sd;
+                        var tt = date.split('-');
+                        var nsd = tt[0] + '-' + tt[1] + '-' + tt[2];
 
-                    //var esd = new Date(this.rateList[i].eStartDate);
-                    //var desd = moment(esd).format("DD/MM/YYYY");
-                    if ((this.rateList[i].ratePerHour === parseInt(rph)) && (desd == nsd)) {
-                        //console.log("Duplicated data")
-                        return true;
-                    }
+                        // var nsd = moment().format(tt, "DD/MM/YYYY");
 
-                    else if (ed != null) {
+                        var desd = formatDate(this.rateList[i].eStartDate)// That’s your formatted date.
 
-                        if (this.rateList[i].eEndDate != null) {
-                            //var ned = moment().format(ed, "DD/MM/YYYY");
+                        //var esd = new Date(this.rateList[i].eStartDate);
+                        //var desd = moment(esd).format("DD/MM/YYYY");
+                        if ((this.rateList[i].ratePerHour === parseInt(rph)) && (desd == nsd)) {
+                            //console.log("Duplicated data")
+                            return true;
+                        }
 
-                            var edate = ed;
-                            var ett = edate.split("/");
-                            var ned = ett[2] + '-' + ett[1] + '-' + ett[0];
+                        else if (ed != null) {
+
+                            if (this.rateList[i].eEndDate != null) {
+                                //var ned = moment().format(ed, "DD/MM/YYYY");
+
+                                var edate = ed;
+                                var ett = edate.split('-');
+                                var ned = ett[0] + '-' + ett[1] + '-' + ett[2];
 
 
-                            var deed = formatDate(this.rateList[i].eEndDate)
-                            //var eed = new Date(this.rateList[i].eEndDate);
-                            //var deed = moment(eed).format("DD/MM/YYYY");
+                                var deed = formatDate(this.rateList[i].eEndDate)
+                                //var eed = new Date(this.rateList[i].eEndDate);
+                                //var deed = moment(eed).format("DD/MM/YYYY");
 
 
-                            if (ned >= desd) {
-                                //ed >= moment(this.rateList[i].eStartDate).format('DD/MM/YYYY')
-                                //sd <= moment(this.rateList[i].eEndDate).format('DD/MM/YYYY')
+                                if (ned >= desd) {
+                                    //ed >= moment(this.rateList[i].eStartDate).format('DD/MM/YYYY')
+                                    //sd <= moment(this.rateList[i].eEndDate).format('DD/MM/YYYY')
 
-                                if (nsd <= deed) {
-                                    // alert("CORRECT");
+                                    if (nsd <= deed) {
+                                        // alert("CORRECT");
+                                        return true;
+                                    }
+                                }
+
+                                else if (nsd >= desd && ned <= deed) {
                                     return true;
                                 }
-                            }
 
-                            else if (nsd >= desd && ned <= deed) {
-                                return true;
-                            }
+                                else if (nsd <= desd && ned >= deed) {
+                                    return true;
 
-                            else if (nsd <= desd && ned >= deed) {
-                                return true;
-
+                                }
+                                else {
+                                    if (desd == nsd) {
+                                        return true;
+                                    }
+                                }
                             }
                             else {
-                                if (desd == nsd) {
+                                if (desd == ned) {
                                     return true;
                                 }
+                                return false;
+
                             }
                         }
                         else {
-                            if (desd == ned) {
+                            if (this.rateList[i].eEndDate == null) {
+                                return true;
+
+                            }
+                            else if (desd == nsd || this.rateList[i].ratePerHour === parseInt(rph)) {
                                 return true;
                             }
-                            return false;
-
                         }
                     }
-                    else {
-                        if (this.rateList[i].eEndDate == null) {
-                            return true;
+                    return false //will only reach here if the condition is not met
+                }
 
+                setRecord(rph, sd, ed) {
+                    this.ratePerHour = rph;
+                    this.eStartDate = sd;
+                    this.eEndDate = ed;
+
+                }
+                getRecord() {
+                    return { rate: this.ratePerHour, eStartDate: this.eStartDate };
+                }
+                setRate(ratePerHour) {
+                    this.ratePerHour = ratePerHour;
+                }
+                seteStartDate(esd) {
+                    this.eStartDate = esd;
+                }
+
+                seteEndDate(eed) {
+                    this.eEndDate = eed;
+                }
+
+                forLoopLesson() {
+                    let data = [2, 3, 4, 5]
+                    for (let i = 0; i < data.length; i++) {
+                        if (data[i] === 4) {
+                            //  console.log("true")
+                            return true
                         }
-                        else if (desd == nsd || this.rateList[i].ratePerHour === parseInt(rph)) {
-                            return true;
+                        else {
+                            // console.log("false")
+                            return false
                         }
                     }
                 }
-                return false //will only reach here if the condition is not met
             }
 
-            setRecord(rph, sd, ed) {
-                this.ratePerHour = rph;
-                this.eStartDate = sd;
-                this.eEndDate = ed;
+            //to achieve YYYY-MM-DD for comparison
+            function formatDate(date) {
+                var d = new Date(date),
+                    month = '' + (d.getMonth() + 1),
+                    day = '' + d.getDate(),
+                    year = d.getFullYear();
 
-            }
-            getRecord() {
-                return { rate: this.ratePerHour, eStartDate: this.eStartDate };
-            }
-            setRate(ratePerHour) {
-                this.ratePerHour = ratePerHour;
-            }
-            seteStartDate(esd) {
-                this.eStartDate = esd;
+                if (month.length < 2) month = '0' + month;
+                if (day.length < 2) day = '0' + day;
+
+                return [year, month, day].join('-');
             }
 
-            seteEndDate(eed) {
-                this.eEndDate = eed;
-            }
-
-            forLoopLesson() {
-                let data = [2, 3, 4, 5]
-                for (let i = 0; i < data.length; i++) {
-                    if (data[i] === 4) {
-                        //  console.log("true")
-                        return true
-                    }
-                    else {
-                        // console.log("false")
-                        return false
-                    }
-                }
-            }
-        }
-
-        //to achieve YYYY-MM-DD for comparison
-        function formatDate(date) {
-            var d = new Date(date),
-                month = '' + (d.getMonth() + 1),
-                day = '' + d.getDate(),
-                year = d.getFullYear();
-
-            if (month.length < 2) month = '0' + month;
-            if (day.length < 2) day = '0' + day;
-
-            return [year, month, day].join('-');
-        }
-
-
-      
-
-        //const sDate = $('#eStartDateInput');
-        //sDate.jqxDateTimeInput({ width: '230px', height: '25px', theme: 'blackberry', readonly: true, allowKeyboardDelete: false });
 
 
 
-        //const eDate = $('#eEndDateInput');
-        //eDate.jqxDateTimeInput({ width: '230px', height: '25px', theme: 'blackberry', readonly: true });
+            //const sDate = $('#eStartDateInput');
+            //sDate.jqxDateTimeInput({ width: '230px', height: '25px', theme: 'blackberry', readonly: true, allowKeyboardDelete: false });
+
+            //const eDate = $('#eEndDateInput');
+            //eDate.jqxDateTimeInput({ width: '230px', height: '25px', theme: 'blackberry', readonly: true });
 
 
-        setupFormValidationRules();
-        function setupFormValidationRules() {
+            setupFormValidationRules();
+            function setupFormValidationRules() {
 
-            //NUMBERS 2 DECIMAL PLACE ONLY
-            $.validator.addMethod("numbers", function (value, element) {
-                return value.match(/^[0-9]+(\.[0-9]{1,2})?$/);
-            }, "Please specify positive numbers in 2 decimal place".fontsize('2px').fontcolor('red'));
+                //NUMBERS 2 DECIMAL PLACE ONLY
+                $.validator.addMethod("numbers", function (value, element) {
+                    return value.match(/^[0-9]+(\.[0-9]{1,2})?$/);
+                }, "Please specify positive numbers in 2 decimal place".fontsize('2px').fontcolor('red'));
 
-            $.validator.addMethod("enddate", function (value, element) {
-                var sDate = $('#eStartDateInput').val('date');
-                var eDate = $('#eEndDateInput').val('date');
-                //console.dir(sDate); //retrieve values for checking
-                //console.dir(eDate);
-                return (eDate) >= (sDate) || eDate == null;
-            }, "End Date should be greater than Start Date.".fontsize('2px').fontcolor('red'));
+                $.validator.addMethod("enddate", function (value, element) {
+                   // var sDate = $('#eStartDateInput').val('date');
+                  //  var eDate = $('#eEndDateInput').val('date');
 
-            $("#dataForm").validate({
-                rules: {
-                    ratePerHourInput: {
-                        required: true,
-                        numbers: true
+                    var sDate = formatDate($('#sdatepicker').datepicker('getDate'));      
+                    var eDate = formatDate($('#edatepicker').datepicker('getDate'));
+        
+                    
+                    return (eDate) >= (sDate) || eDate == null;
+                }, "End Date should be greater than Start Date.".fontsize('2px').fontcolor('red'));
+
+                $("#dataForm").validate({
+                    rules: {
+                        ratePerHourInput: {
+                            required: true,
+                            numbers: true
+                        },
+                        edatepicker: {
+                            enddate: true
+                        }
                     },
-                    eEndDateInput: {
-                        enddate: true
+                    messages: {
+                        ratePerHourInput: {
+                            required: "This field is required".fontsize('3px').fontcolor('red')
+                        }
                     }
-                },
-                messages: {
-                    ratePerHourInput: {
-                        required: "This field is required".fontsize('3px').fontcolor('red')
+                });
+            }//END OF VALIDATION
+
+
+            //function conflictChecker(rateList) {
+            //    var list = rateList;
+            //    //return list;
+            //    check(collectedRatePerHour)
+            //    {
+            //for (var i = 0; i < list.length; i++) {
+            //    if (list[i].ratePerHour === collectedRatePerHour) {
+            //        console.log("Duplicated data")
+            //        return true;
+            //    }
+            //    else {
+            //        return false;
+
+            //    }
+
+            //}
+            //    }
+            //        console.dir(rateList);
+            //        console.dir(list);
+            //}
+
+            //const x = new conflictChecker(data)
+            //x.check(collectedData)
+            //const xyz = new conflictChecker(data2)
+            //xyz.check(collectedData)
+
+  
+
+            function WebFormData(inRatePerHour, ineStartDate, ineEndDate) {
+                this.ratePerHour = inRatePerHour;
+                this.eStartDate = ineStartDate;
+                this.eEndDate = ineEndDate;
+            }
+
+            $('#saveButton').on('click', function () {
+
+                $('#dataForm').validate();
+
+                if ($('#dataForm').valid()) {          
+
+                    var sdate = $('#sdatepicker').data('datepicker').getFormattedDate('yyyy/mm/01');
+                    //USED TO RETRIEVE VALUE FROM THE DATEPICKER
+                    //$('#edatepicker').datepicker('getDate'));                
+
+                    var collectedRatePerHour = $('#ratePerHourInput').val();
+                    // var collectedeStartDate = $('#eStartDateInput').val();
+                    var collectedeStartDate = formatDate(sdate);
+     
+
+
+                    var collectedeEndDate = null;
+                    if ($('#edatepicker').datepicker('getDate') != null) {
+
+                    var eyear = $('#edatepicker').data('datepicker').getFormattedDate('yyyy');
+                    var emonth = $('#edatepicker').data('datepicker').getFormattedDate('mm');
+                        var edate = new Date(eyear, emonth, 0);
+                        collectedeEndDate = formatDate(edate);
+
                     }
-                }
-            });
-        }//END OF VALIDATION
+  
+                    //const y = getRecord(collectedRatePerHour, collectedeStartDate);
+                    //conflictRecord.setRecord(collectedRatePerHour, collectedeStartDate)
+                    //const x = conflictRecord.getRecord()
+                    //console.log(x)
 
+                    const isConflict = conflictRecord.check(collectedRatePerHour, collectedeStartDate, collectedeEndDate)
+                    if (isConflict == true) {
+                        new Noty({
+                            text: '<center><strong><p>Data Conflict!</p><p>Please check again before submitting!</p></strong><center>',
+                            theme: 'sunset',
+                            layout: 'center',
+                            type: 'error'
+                        }).show()
+                        return;
+                    }
 
-        //function conflictChecker(rateList) {
-        //    var list = rateList;
-        //    //return list;
-        //    check(collectedRatePerHour)
-        //    {
-        //for (var i = 0; i < list.length; i++) {
-        //    if (list[i].ratePerHour === collectedRatePerHour) {
-        //        console.log("Duplicated data")
-        //        return true;
-        //    }
-        //    else {
-        //        return false;
+                    var webFormData = new WebFormData(collectedRatePerHour, collectedeStartDate, collectedeEndDate);
+                    var webFormDataInString = JSON.stringify(webFormData);
 
-        //    }
+                    $updateRateHandler = $.ajax({
+                        method: 'POST',
+                        url: '/API/AccountRates/' + g_cusId,
+                        dataType: 'json',
+                        contentType: 'application/json;',
+                        data: "'" + webFormDataInString + "'"
+                    })
 
-        //}
-        //    }
-        //        console.dir(rateList);
-        //        console.dir(list);
-        //}
+                    $updateRateHandler.done(function (data, textStatus, jqXHR) {
+                        new Noty({
+                            text: data.message, type: 'success',
+                            theme: 'sunset',
+                            layout: 'center',
+                            template: '<div class="noty_message"><span class="noty_text"></span>'
+                        }).show();
+                        loadRatesData();
+                    });
 
-        //const x = new conflictChecker(data)
-        //x.check(collectedData)
-        //const xyz = new conflictChecker(data2)
-        //xyz.check(collectedData)
+                    $updateRateHandler.fail(function (data, textStatus, jqXHR) {
+                        new Noty({
+                            text: data.responseJSON.message, type: 'error',
+                            theme: 'sunset',
+                            layout: 'center',
+                            template: '<div class="noty_message"><span class="noty_text"></span>'
+                        }).show();
+                    });
+                }//end of data validate
 
-        $('#eEndDateInput').on('valueChanged', function () {
-            $('#dataForm').valid();
-
-        });
-
-        function WebFormData(inRatePerHour, ineStartDate, ineEndDate) {
-            this.ratePerHour = inRatePerHour;
-            this.eStartDate = ineStartDate;
-            this.eEndDate = ineEndDate;
-        }
-
-        $('#saveButton').on('click', function () {
-
-            $('#dataForm').validate();
-
-            if ($('#dataForm').valid()) {
-                console.dir($('#datepicker').data('datepicker').getFormattedDate('yyyy/mm'));
-                var collectedRatePerHour = $('#ratePerHourInput').val();
-                var collectedeStartDate = $('#eStartDateInput').val();
-                //val();
-                //.jqxDateTimeInput('value');
-                console.dir(collectedeStartDate);
-                var collectedeEndDate = null;
-                if ($('#eEndDateInput').val() != "") {
-                    collectedeEndDate = $('#eEndDateInput').val();
-
-                }
-
-                //const y = getRecord(collectedRatePerHour, collectedeStartDate);
-                //conflictRecord.setRecord(collectedRatePerHour, collectedeStartDate)
-                //const x = conflictRecord.getRecord()
-                //console.log(x)
-                const isConflict = conflictRecord.check(collectedRatePerHour, collectedeStartDate, collectedeEndDate)
-                if (isConflict == true) {
-                    new Noty({
-                        text: '<center><strong><p>Data Conflict!</p><p>Please check again before submitting!</p></strong><center>',
-                        theme: 'sunset',
-                        layout: 'center',
-                        type: 'error'
-                    }).show()
-                    return;
-                }
-
-                var webFormData = new WebFormData(collectedRatePerHour, collectedeStartDate, collectedeEndDate);
-                var webFormDataInString = JSON.stringify(webFormData);
-
-                //$updateRateHandler = $.ajax({
-                //    method: 'POST',
-                //    url: '/API/AccountRates/' + g_cusId,
-                //    dataType: 'json',
-                //    contentType: 'application/json;',
-                //    data: "'" + webFormDataInString + "'"
-                //})
-
-                //$updateRateHandler.done(function (data, textStatus, jqXHR) {
-                //    new Noty({
-                //        text: data.message, type: 'success',
-                //        theme: 'sunset',
-                //        layout: 'center',
-                //        template: '<div class="noty_message"><span class="noty_text"></span>'
-                //    }).show();
-                //    loadRatesData();
-                //});
-
-                //$updateRateHandler.fail(function (data, textStatus, jqXHR) {
-                //    new Noty({
-                //        text: data.responseJSON.message, type: 'error',
-                //        theme: 'sunset',
-                //        layout: 'center',
-                //        template: '<div class="noty_message"><span class="noty_text"></span>'
-                //    }).show();
-                //});
-            }//end of data validate
-
-        });//END OF SAVE BUTTON
-    </script>
+            });//END OF SAVE BUTTON
+        </script>
 
 }
 
