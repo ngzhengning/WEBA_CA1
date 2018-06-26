@@ -1,0 +1,14 @@
+{
+  "name": "lodash",
+  "homepage": "https://github.com/lodash/lodash",
+  "version": "4.17.4-amd",
+  "_release": "4.17.4-amd",
+  "_resolution": {
+    "type": "version",
+    "tag": "4.17.4-amd",
+    "commit": "0b05b05cf89f0ca304939b63cb68edc8b0f75304"
+  },
+  "_source": "https://github.com/lodash/lodash.git",
+  "_target": "4.17.4-amd",
+  "_originalSource": "lodash"
+}
