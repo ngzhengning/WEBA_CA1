@@ -29,8 +29,16 @@
                                 <td class="lblall"><label for="eStartDateInput">Effective start date</label></td>
 
                                 <td class="inptall">
-                                    <div id="eStartDateInput" name="eStartDateInput">
+                                    @*<div id="eStartDateInput" name="eStartDateInput">
+                                      </div>*@
+
+                                    <div class="input-group date" id="datepicker">
+                                        <input type="text" class="form-control" value="02-2018">
+                                        <div class="input-group-addon">
+                                            <span class="glyphicon glyphicon-th"></span>
+                                        </div>
                                     </div>
+
                                 </td>
 
 
@@ -45,9 +53,9 @@
                                 <td class="lblall"><label for="eEndDateInput">Effective end date</label></td>
 
                                 <td class="inptall">
-                                    <div id="eEndDateInput" name="eEndDateInput">
+                                    @*<div id="eEndDateInput" name="eEndDateInput">
+                        </div>*@
 
-                                    </div>
                                 </td>
 
                             </tr>
@@ -72,6 +80,13 @@
                             </div>
                         </div>
                     </div>
+
+                    @*<span class="btn btn-danger">-</span>
+        <input type="number" min="2000" max="2040" value="2000" readonly/>
+        <span class="btn btn-warning">+</span>*@
+                   
+
+
                 </form>
 
             </div><!-- end of div element which has the class="panel-body" -->
@@ -83,10 +98,25 @@
 @section scripts{
     <link href="~/lib/jqwidgets/jqwidgets/styles/jqx.base.css" rel="stylesheet" />
     <link href="~/lib/jqwidgets/jqwidgets/styles/jqx.blackberry.css" rel="stylesheet" />
-
+    <script src="~/lib/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
+    <link href="~/lib/bootstrap-datepicker/dist/css/bootstrap-datepicker.css" rel="stylesheet" />
     <script src="~/lib/jqwidgets/jqwidgets/jqx-all.js"></script>
-
+ 
     <script>
+       
+        $("#datepicker").datepicker({
+            format: "mm-yyyy",
+            startView: "months",
+            minViewMode: "months",
+            orientation: 'bottom',
+            autoclose: 'true',
+          
+        });
+
+      
+      
+
+
 
         var g_cusId = getIdFromAddressBar();
 
@@ -161,7 +191,7 @@
                     var tt = date.split("/");
                     var nsd = tt[2] + '-' + tt[1] + '-' + tt[0];
 
-                   // var nsd = moment().format(tt, "DD/MM/YYYY");
+                    // var nsd = moment().format(tt, "DD/MM/YYYY");
 
                     var desd = formatDate(this.rateList[i].eStartDate)// That’s your formatted date.
 
@@ -192,7 +222,7 @@
                                 //sd <= moment(this.rateList[i].eEndDate).format('DD/MM/YYYY')
 
                                 if (nsd <= deed) {
-                                   // alert("CORRECT");
+                                    // alert("CORRECT");
                                     return true;
                                 }
                             }
@@ -208,7 +238,7 @@
                             else {
                                 if (desd == nsd) {
                                     return true;
-                               }
+                                }
                             }
                         }
                         else {
@@ -268,17 +298,17 @@
         }
 
         //to achieve YYYY-MM-DD for comparison
-                    function formatDate(date) {
-                        var d = new Date(date),
-                            month = '' + (d.getMonth() + 1),
-                            day = '' + d.getDate(),
-                            year = d.getFullYear();
+        function formatDate(date) {
+            var d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
 
-                        if (month.length < 2) month = '0' + month;
-                        if (day.length < 2) day = '0' + day;
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
 
-                        return [year, month, day].join('-');
-                    }
+            return [year, month, day].join('-');
+        }
 
 
         $('td').css('width', '230px');
@@ -289,13 +319,13 @@
         $('.inptall').css('width', '400px');
         $('.inptall').css('padding-left', '30px');
 
-        const sDate = $('#eStartDateInput');
-        sDate.jqxDateTimeInput({ width: '230px', height: '25px', theme: 'blackberry', readonly: true, allowKeyboardDelete: false });
+        //const sDate = $('#eStartDateInput');
+        //sDate.jqxDateTimeInput({ width: '230px', height: '25px', theme: 'blackberry', readonly: true, allowKeyboardDelete: false });
 
 
 
-        const eDate = $('#eEndDateInput');
-        eDate.jqxDateTimeInput({ width: '230px', height: '25px', theme: 'blackberry', readonly: true });
+        //const eDate = $('#eEndDateInput');
+        //eDate.jqxDateTimeInput({ width: '230px', height: '25px', theme: 'blackberry', readonly: true });
 
 
         setupFormValidationRules();
@@ -375,7 +405,7 @@
             $('#dataForm').validate();
 
             if ($('#dataForm').valid()) {
-
+                console.dir($('#datepicker').data('datepicker').getFormattedDate('yyyy/mm'));
                 var collectedRatePerHour = $('#ratePerHourInput').val();
                 var collectedeStartDate = $('#eStartDateInput').val();
                 //val();
@@ -405,32 +435,32 @@
                 var webFormData = new WebFormData(collectedRatePerHour, collectedeStartDate, collectedeEndDate);
                 var webFormDataInString = JSON.stringify(webFormData);
 
-                    $updateRateHandler = $.ajax({
-                        method: 'POST',
-                        url: '/API/AccountRates/' + g_cusId,
-                        dataType: 'json',
-                        contentType: 'application/json;',
-                        data: "'" + webFormDataInString + "'"
-                    })
+                //$updateRateHandler = $.ajax({
+                //    method: 'POST',
+                //    url: '/API/AccountRates/' + g_cusId,
+                //    dataType: 'json',
+                //    contentType: 'application/json;',
+                //    data: "'" + webFormDataInString + "'"
+                //})
 
-                    $updateRateHandler.done(function (data, textStatus, jqXHR) {
-                        new Noty({
-                            text: data.message, type: 'success',
-                            theme: 'sunset',
-                            layout: 'center',
-                            template: '<div class="noty_message"><span class="noty_text"></span>'
-                        }).show();
-                        loadRatesData();
-                    });
+                //$updateRateHandler.done(function (data, textStatus, jqXHR) {
+                //    new Noty({
+                //        text: data.message, type: 'success',
+                //        theme: 'sunset',
+                //        layout: 'center',
+                //        template: '<div class="noty_message"><span class="noty_text"></span>'
+                //    }).show();
+                //    loadRatesData();
+                //});
 
-                    $updateRateHandler.fail(function (data, textStatus, jqXHR) {
-                        new Noty({
-                            text: data.responseJSON.message, type: 'error',
-                            theme:'sunset',
-                            layout: 'center',
-                            template: '<div class="noty_message"><span class="noty_text"></span>'
-                        }).show();
-                    });
+                //$updateRateHandler.fail(function (data, textStatus, jqXHR) {
+                //    new Noty({
+                //        text: data.responseJSON.message, type: 'error',
+                //        theme: 'sunset',
+                //        layout: 'center',
+                //        template: '<div class="noty_message"><span class="noty_text"></span>'
+                //    }).show();
+                //});
             }//end of data validate
 
         });//END OF SAVE BUTTON
