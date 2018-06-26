@@ -101,17 +101,25 @@
     <script src="~/lib/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
     <link href="~/lib/bootstrap-datepicker/dist/css/bootstrap-datepicker.css" rel="stylesheet" />
     <script src="~/lib/jqwidgets/jqwidgets/jqx-all.js"></script>
- 
+
     <script>
-       
+        $('td').css('width', '230px');
+
+        $('.lblall').css('text-align', 'right');
+        $('.lblall').css('display', 'block');
+
+        $('.inptall').css('width', '400px');
+        $('.inptall').css('padding-left', '30px');
+
+
         $("#datepicker").datepicker({
             format: "mm-yyyy",
             startView: "months",
             minViewMode: "months",
             orientation: 'bottom',
-            autoclose: 'true',
-          
+            autoclose: 'true'
         });
+
 
       
       
@@ -311,13 +319,7 @@
         }
 
 
-        $('td').css('width', '230px');
-
-        $('.lblall').css('text-align', 'right');
-        $('.lblall').css('display', 'block');
-
-        $('.inptall').css('width', '400px');
-        $('.inptall').css('padding-left', '30px');
+      
 
         //const sDate = $('#eStartDateInput');
         //sDate.jqxDateTimeInput({ width: '230px', height: '25px', theme: 'blackberry', readonly: true, allowKeyboardDelete: false });
