@@ -54,7 +54,7 @@
 
                     <div class="form-group col-md-12">
                         <h4 style="padding-left:18px">Rate per hour</h4>
-                        
+
                         <table border="0">
                             <tr>
                                 <td class="lblall"> <label for="ratePerHourInput">Rate per hour</label></td>
@@ -70,14 +70,23 @@
                     <div class="form-group col-md-12">
                         <table border="0">
                             <tr>
-                                <td class="lblall"><label for="eStartDateInput">Effective start date</label></td>
+                                <td class="lblall"><label for="sdatepicker">Effective start date</label></td>
 
                                 <td class="inptall">
-                                    <div id="eStartDateInput" name="eStartDateInput">
+                                    @*<div id="eStartDateInput" name="eStartDateInput">
+                                 </div>*@
+                                    <div class='date-picker input-group date' id="sdatepicker">
+                                        <input type='text' class="form-control" readonly="readonly" name="sdatepicker" />
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
                                     </div>
                                 </td>
+                            </tr>
 
-
+                            <tr>
+                                <td class="lblall"></td>
+                                <td class="inptall"><label id="sdatepicker-error" class="error" for="sdatepicker"></label></td>
                             </tr>
                         </table>
                     </div>
@@ -86,18 +95,25 @@
                     <div class="form-group col-md-12">
                         <table border="0">
                             <tr>
-                                <td class="lblall"><label for="eEndDateInput">Effective end date</label></td>
+                                <td class="lblall"><label for="edatepicker">Effective end date</label></td>
 
                                 <td class="inptall">
-                                    <div id="eEndDateInput" name="eEndDateInput">
-
+                                    @*<div id="eEndDateInput" name="eEndDateInput">
+                                     </div>*@
+                                    <div class='date-picker input-group date' id="edatepicker">
+                                        <input type='text' class="form-control" readonly="readonly" name="edatepicker" />
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
                                     </div>
+
+
                                 </td>
 
                             </tr>
                             <tr>
                                 <td class="lblall"></td>
-                                <td class="inptall"><label id="inputeEndDateInput-error" class="error" for="inputeEndDateInput"></label></td>
+                                <td class="inptall"><label id="edatepicker-error" class="error" for="edatepicker"></label></td>
                             </tr>
                         </table>
 
@@ -125,10 +141,30 @@
 @section scripts{
     <link href="~/lib/jqwidgets/jqwidgets/styles/jqx.base.css" rel="stylesheet" />
     <link href="~/lib/jqwidgets/jqwidgets/styles/jqx.blackberry.css" rel="stylesheet" />
-
+    <link href="~/lib/bootstrap-datepicker/dist/css/bootstrap-datepicker.css" rel="stylesheet" />
     <script src="~/lib/bootstrap-toggle/js/bootstrap-toggle.js"></script>
     <script src="~/lib/jqwidgets/jqwidgets/jqx-all.js"></script>
+    <script src="~/lib/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
     <script>
+           $('#sdatepicker').datepicker({
+            format: "mm-yyyy",
+            viewMode: "months",
+            minViewMode: "months",
+            autoclose: true,
+            orientation: 'bottom'
+
+        });
+
+        $("#edatepicker").datepicker({
+            format: "mm-yyyy",
+            viewMode: "months",
+            minViewMode: "months",
+            autoclose: true,
+            orientation: 'bottom',
+            clearBtn: true
+        });
+
+
 
         $('td').css('width', '230px');
 
@@ -138,13 +174,28 @@
         $('.inptall').css('width', '400px');
         $('.inptall').css('padding-left', '30px');
 
-        const sDate = $('#eStartDateInput');
-        sDate.jqxDateTimeInput({ width: '230px', height: '25px', theme: 'blackberry', readonly: true, allowKeyboardDelete: false });
+        //const sDate = $('#eStartDateInput');
+       // sDate.jqxDateTimeInput({ width: '230px', height: '25px', theme: 'blackberry', readonly: true, allowKeyboardDelete: false });
 
-        const eDate = $('#eEndDateInput');
-        eDate.jqxDateTimeInput({ width: '230px', height: '25px', theme: 'blackberry', readonly: true });
-
+       // const eDate = $('#eEndDateInput');
+        //eDate.jqxDateTimeInput({ width: '230px', height: '25px', theme: 'blackberry', readonly: true });
         setupFormValidationRules();
+
+
+        function formatDate(date) {
+            var d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
+
+            return [year, month, day].join('-');
+        }
+
+
+        
         function setupFormValidationRules() {
 
             //NO BLANK FIELD
@@ -159,10 +210,17 @@
             }, "Please specify positive numbers in 2 decimal place".fontsize('2px').fontcolor('red'));
 
             $.validator.addMethod("enddate", function (value, element) {
-                var sDate = $('#eStartDateInput').val('date');
-                var eDate = $('#eEndDateInput').val('date');
-                //console.dir(sDate); //retrieve values for checking
-                //console.dir(eDate);
+               // var sDate = $('#eStartDateInput').val('date');
+               // var eDate = $('#eEndDateInput').val('date');
+             var sDate = formatDate($('#sdatepicker').datepicker('getDate'));
+                var eDate = null;
+                if ($('#edatepicker').datepicker('getDate') != null) {
+                    var eyear = $('#edatepicker').data('datepicker').getFormattedDate('yyyy');
+                    var emonth = $('#edatepicker').data('datepicker').getFormattedDate('mm');
+                    var edate = new Date(eyear, emonth, 0);
+                    eDate = formatDate(edate);
+                }
+              
                 return (eDate) >= (sDate) || eDate == null;
             }, "End Date should be greater than Start Date.".fontsize('2px').fontcolor('red'));
 
@@ -176,9 +234,13 @@
                         required: true,
                         numbers: true
                     },
-                    eEndDateInput: {
+                    edatepicker: {
                         enddate: true
+                    },
+                    sdatepicker: {
+                        required: true
                     }
+                   
                 },
                 messages: {
 
@@ -186,6 +248,9 @@
                         required: "This field is required".fontsize('3px').fontcolor('red')
                     },
                     ratePerHourInput: {
+                        required: "This field is required".fontsize('3px').fontcolor('red')
+                    },
+                    sdatepicker:{
                         required: "This field is required".fontsize('3px').fontcolor('red')
                     }
                 }
@@ -201,7 +266,7 @@
             this.eStartDate = ineStartDate;
             this.eEndDate = ineEndDate;
         }
-        
+
         var check = 1;
         var visval = $("#visibilityInput").change(function () {
 
@@ -227,15 +292,28 @@
                 var collectedAccountName = $('#accountNameInput').val();
                 var collectedVisibility = check;
                 var collectedComments = $('#commentsInput').val();
-               
 
                 var collectedRatePerHour = $('#ratePerHourInput').val();
-                var collectedeStartDate = $('#eStartDateInput').val();
 
+               // var collectedeStartDate = $('#eStartDateInput').val();
+                var sdate = $('#sdatepicker').data('datepicker').getFormattedDate('yyyy/mm/01');
+                var collectedeStartDate = formatDate(sdate);
+
+
+                //var collectedeEndDate = null;
+                //if ($('#eEndDateInput').val() != ""){
+                //    collectedeEndDate = $('#eEndDateInput').val();
+                //}
                 var collectedeEndDate = null;
-                if ($('#eEndDateInput').val() != ""){
-                    collectedeEndDate = $('#eEndDateInput').val();
+                if ($('#edatepicker').datepicker('getDate') != null) {
+                    var eyear = $('#edatepicker').data('datepicker').getFormattedDate('yyyy');
+                    var emonth = $('#edatepicker').data('datepicker').getFormattedDate('mm');
+                    var edate = new Date(eyear, emonth, 0);
+                    collectedeEndDate = formatDate(edate);
+
                 }
+
+
 
                 var webFormData = new WebFormData(collectedAccountName, collectedVisibility, encode1(collectedComments), collectedRatePerHour, collectedeStartDate, collectedeEndDate);
                 var webFormDataInString = JSON.stringify(webFormData);
@@ -274,10 +352,10 @@
         //this function is to allow quotes to be save in JSONDATA replace with %
         function encode1(w)
         { return w.replace(/[^]/g, function (w) { return '%' + w.charCodeAt(0).toString(16) }) }
-        
+
 
         //decodeURIComponent
-      
+
 
     </script>
 }

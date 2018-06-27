@@ -26,10 +26,16 @@
                     <div class="form-group col-md-12">
                         <table border="0">
                             <tr>
-                                <td class="lblall"><label for="eStartDateInput">Effective start date</label></td>
+                                <td class="lblall"><label for="sdatepicker">Effective start date</label></td>
 
                                 <td class="inptall">
-                                    <div id="eStartDateInput" name="eStartDateInput">
+                                    @*<div id="eStartDateInput" name="eStartDateInput">
+                                  </div>*@
+                                    <div class='date-picker input-group date' id="sdatepicker">
+                                        <input type='text' class="form-control" readonly="readonly" required="required" name="sdatepicker" />
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
                                     </div>
                                 </td>
                             </tr>
@@ -40,18 +46,26 @@
                     <div class="form-group col-md-12">
                         <table border="0">
                             <tr>
-                                <td class="lblall"><label for="eEndDateInput">Effective end date</label></td>
+                                <td class="lblall"><label for="edatepicker">Effective end date</label></td>
 
                                 <td class="inptall">
-                                    <div id="eEndDateInput" name="eEndDateInput">
+                                    @*<div id="eEndDateInput" name="eEndDateInput">
+        </div>*@
+
+                                    <div class='date-picker input-group date' id="edatepicker">
+                                        <input type='text' class="form-control" readonly="readonly" name="edatepicker" />
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
 
                                     </div>
+
                                 </td>
 
                             </tr>
                             <tr>
                                 <td class="lblall"></td>
-                                <td class="inptall"><label id="inputeEndDateInput-error" class="error" for="inputeEndDateInput"></label></td>
+                                <td class="inptall"><label id="edatepicker-error" class="error" for="edatepicker"></label></td>
                             </tr>
                         </table>
 
@@ -95,10 +109,32 @@
 
 @section scripts{
 
+    <link href="~/lib/bootstrap-datepicker/dist/css/bootstrap-datepicker.css" rel="stylesheet" />
     <link href="~/lib/jqwidgets/jqwidgets/styles/jqx.base.css" rel="stylesheet" />
     <link href="~/lib/jqwidgets/jqwidgets/styles/jqx.blackberry.css" rel="stylesheet" />
+    <script src="~/lib/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
     <script src="~/lib/jqwidgets/jqwidgets/jqx-all.js"></script>
     <script>
+         $('#sdatepicker').datepicker({                            
+            format: "mm-yyyy",
+            viewMode: "months",
+            minViewMode: "months",
+            autoclose: true,
+            orientation: 'bottom'
+            
+        });
+
+        $("#edatepicker").datepicker({
+            format: "mm-yyyy",
+            viewMode: "months",
+            minViewMode: "months",
+            autoclose: true,
+            orientation: 'bottom',
+             clearBtn: true
+        }); 
+
+
+
 
         const button = document.getElementById('cancel');
         const $href = $('<a>Cancel</a>');
@@ -115,11 +151,11 @@
         $('.inptall').css('padding-left', '30px');
 
 
-        const sDate = $('#eStartDateInput');
+     /*   const sDate = $('#eStartDateInput');
         sDate.jqxDateTimeInput({ width: '230px', height: '25px', theme: 'blackberry', readonly: true, allowKeyboardDelete: false });
 
         const eDate = $('#eEndDateInput');
-        eDate.jqxDateTimeInput({ width: '230px', height: '25px', theme: 'blackberry', readonly: true });
+        eDate.jqxDateTimeInput({ width: '230px', height: '25px', theme: 'blackberry', readonly: true }); */
 
 
         var g_rateId = getIdFromAddressBar();
@@ -177,14 +213,19 @@
 
                 // eDate.jqxDateTimeInput({'setDate': new Date(2014, 01, 1) });
                 // eStartDate = moment(rate.eStartDate).format("DD/MM/YYYY");
-                $('#eStartDateInput').jqxDateTimeInput('setDate', new Date(eStartDate));
+                //$('#eStartDateInput').jqxDateTimeInput('setDate', new Date(eStartDate));
+
+
+                $('#sdatepicker').datepicker('setDate', new Date(eStartDate));
 
                 if (eEndDate == null) {
 
-                    $('#eEndDateInput').jqxDateTimeInput('setDate', new Date(""));
+                    //$('#eEndDateInput').jqxDateTimeInput('setDate', new Date(""));
+                    $('#edatepicker').datepicker('setDate', new Date(""));
                 }
                 else {
-                    $('#eEndDateInput').jqxDateTimeInput('setDate', new Date(eEndDate));
+                   // $('#eEndDateInput').jqxDateTimeInput('setDate', new Date(eEndDate));
+                    $('#edatepicker').datepicker('setDate', new Date(eEndDate));
                 }
             });
 
@@ -239,12 +280,14 @@
 
                 for (var i = 0; i < this.rateList.length; i++) {
                     var date = sd;
-                    var tt = date.split("/");
-                    var nsd = tt[2] + '-' + tt[1] + '-' + tt[0];
+                    var tt = date.split("-");
+                    var nsd = tt[0] + '-' + tt[1] + '-' + tt[2];
 
                     // var nsd = moment().format(tt, "DD/MM/YYYY");
 
-                    var desd = formatDate(this.rateList[i].eStartDate)// That’s your formatted date.
+                    var estartd = formatDate(this.rateList[i].eStartDate)// That’s your formatted date.
+                    var sdd = estartd.split('-');
+                    var desd = sdd[0] + '-' + sdd[1];
 
                     //var esd = new Date(this.rateList[i].eStartDate);
                     //var desd = moment(esd).format("DD/MM/YYYY");
@@ -253,17 +296,26 @@
                         return true;
                     }
 
+                    else if (desd == nsd) {
+                        return true;
+
+                    }
+
+
                     else if (ed != null) {
 
                         if (this.rateList[i].eEndDate != null) {
                             //var ned = moment().format(ed, "DD/MM/YYYY");
 
                             var edate = ed;
-                            var ett = edate.split("/");
-                            var ned = ett[2] + '-' + ett[1] + '-' + ett[0];
+                            var ett = edate.split("-");
+                            var ned = ett[0] + '-' + ett[1] + '-' + ett[2];
 
 
-                            var deed = formatDate(this.rateList[i].eEndDate)
+                            var dsd = formatDate(this.rateList[i].eEndDate);
+                            var eee = dsd.split('-');
+
+                            var deed = eee[0] + '-' + eee[1];
                             //var eed = new Date(this.rateList[i].eEndDate);
                             //var deed = moment(eed).format("DD/MM/YYYY");
 
@@ -285,20 +337,25 @@
                                 return true;
 
                             }
-                            else {
-                                if (desd == nsd) {
-                                    return true;
-                                }
-                            }
-                        }
-                        else {
-                            if (desd == ned) {
+                            else if (desd == nsd) {
                                 return true;
                             }
-                            return false;
+                        }
 
+                        else {
+
+                            var edate = ed;
+                            var ett = ed.split('-');
+                            var ned = ett[0] + '-' + ett[1] /*+ '-' + ett[2]*/;
+
+
+
+                            if (ned == desd && this.rateList[i].ratePerHour === parseInt(rph)) {
+                                return true;
+                            }
                         }
                     }
+
                     else {
                         if (this.rateList[i].eEndDate == null) {
                             return true;
@@ -308,8 +365,9 @@
                             return true;
                         }
                     }
-
                 }
+
+                
                 return false //will only reach here if the condition is not met
             }
 
@@ -374,10 +432,20 @@
 
 
             $.validator.addMethod("enddate", function (value, element) {
-                var sDate = $('#eStartDateInput').val('date');
-                var eDate = $('#eEndDateInput').val('date');
-                //console.dir(sDate); //retrieve values for checking
-                //console.dir(eDate);
+                //var sDate = $('#eStartDateInput').val('date');
+                //var eDate = $('#eEndDateInput').val('date');
+                var sDate = formatDate($('#sdatepicker').datepicker('getDate'));
+                //var eDate = formatDate($('#edatepicker').datepicker('getDate'));
+
+                var eDate = null;
+                if ($('#edatepicker').datepicker('getDate') != null) {
+                    var eyear = $('#edatepicker').data('datepicker').getFormattedDate('yyyy');
+                    var emonth = $('#edatepicker').data('datepicker').getFormattedDate('mm');
+                    var edate = new Date(eyear, emonth, 0);
+                    eDate = formatDate(edate);
+                }
+
+              
                 return (eDate) >= (sDate) || eDate == null;
             }, "End Date should be greater than Start Date.".fontsize('2px').fontcolor('red'));
 
@@ -387,7 +455,7 @@
                         required: true,
                         numbers: true
                     },
-                    eEndDateInput: {
+                    edatepicker: {
                         enddate: true
                     }
 
@@ -418,21 +486,25 @@
             if ($('#dataForm').valid()) {
 
                 var collectedRatePerHour = $('#ratePerHourInput').val();
-                var collectedeStartDate = $('#eStartDateInput').val();
+                //var collectedeStartDate = $('#eStartDateInput').val();
+                var sdate = $('#sdatepicker').data('datepicker').getFormattedDate('yyyy/mm/01');
+                var collectedeStartDate = formatDate(sdate);
 
 
-                //if ($('#eEndDateInput').val = null) {
-                //    var collectedeEndDate = null;
-                //}
-                //else {
-                //    var collectedeEndDate = $('#eEndDateInput').val();
+                //var collectedeEndDate = null;
+                //if ($('#eEndDateInput').val() != "") {
+                //    collectedeEndDate = $('#eEndDateInput').val();
                 //}
 
                 var collectedeEndDate = null;
-                if ($('#eEndDateInput').val() != "") {
-                    collectedeEndDate = $('#eEndDateInput').val();
+                if ($('#edatepicker').datepicker('getDate') != null) {
+                    var eyear = $('#edatepicker').data('datepicker').getFormattedDate('yyyy');
+                    var emonth = $('#edatepicker').data('datepicker').getFormattedDate('mm');
+                    var edate = new Date(eyear, emonth, 0);
+                    collectedeEndDate = formatDate(edate);
 
                 }
+
 
                 const isConflict = conflictRecord.check(collectedRatePerHour, collectedeStartDate, collectedeEndDate)
                 if (isConflict == true) {

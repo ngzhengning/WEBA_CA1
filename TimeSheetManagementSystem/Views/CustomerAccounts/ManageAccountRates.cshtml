@@ -16,7 +16,7 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <!-- <th>Session ID</th>-->
+                                <!-- <th>Session ID</th>--> 
                                 <th>Rate per hour</th>
                                 <th>Effective Start Date</th>
                                 <th>Effective End Date</th>
@@ -92,7 +92,9 @@
                     }
                     else {
                         eEndDate = moment(rates.eEndDate).format("DD/MM/YYYY");
-                    }
+                    }                   
+
+
                     ratePerHour = rates.ratePerHour;
 
                     $rowElement = $('<tr></tr>');
