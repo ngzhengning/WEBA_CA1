@@ -97,99 +97,103 @@ namespace TimeSheetManagementSystem.APIs
         // POST api/<controller>
         [HttpPost]
         public IActionResult Post([FromBody]string value)
-        {   
-            string customMessage = "";
-            var customerNewInput = JsonConvert.DeserializeObject<dynamic>(value);
-            CustomerAccount newCustomer = new CustomerAccount();
+        {
+            using (var transaction = Database.Database.BeginTransaction())
+            {
+                string customMessage = "";
+                var customerNewInput = JsonConvert.DeserializeObject<dynamic>(value);
+                CustomerAccount newCustomer = new CustomerAccount();
 
-            int userId = GetUserIdFromUserInfo();
+                int userId = GetUserIdFromUserInfo();
 
-            newCustomer.AccountName = customerNewInput.AccountName.Value;
-            Convert.ToBoolean(customerNewInput.IsVisible.Value);
-            Boolean dd = Convert.ToBoolean(customerNewInput.IsVisible.Value);
-            newCustomer.IsVisible = dd;
-            if (customerNewInput.Comments.Value == "")
-            {
-                newCustomer.Comments = null;
-            }
-            else
-            {
-                newCustomer.Comments = customerNewInput.Comments.Value;
-            }
-            newCustomer.CreatedById = userId;
-            newCustomer.UpdatedById = userId;
-            newCustomer.CreatedAt = DateTime.Now;
-            newCustomer.UpdatedAt = DateTime.Now;
-              
-            try
-            {
-                Database.CustomerAccounts.Add(newCustomer);
-                Database.SaveChanges();             
-            }
-            catch (Exception ex)
-            {
-                if (ex.InnerException.Message
-                          .Contains("CustomerAccount_AccountName_UniqueConstraint") == true)
+                newCustomer.AccountName = customerNewInput.AccountName.Value;
+                Convert.ToBoolean(customerNewInput.IsVisible.Value);
+                Boolean dd = Convert.ToBoolean(customerNewInput.IsVisible.Value);
+                newCustomer.IsVisible = dd;
+                if (customerNewInput.Comments.Value == "")
                 {
-                    customMessage = "Unable to save Customer Account record due " +
-                                "to another record having the same name : " +
-                                 customerNewInput.AccountName.Value;
+                    newCustomer.Comments = null;
+                }
+                else
+                {
+                    newCustomer.Comments = customerNewInput.Comments.Value;
+                }
+                newCustomer.CreatedById = userId;
+                newCustomer.UpdatedById = userId;
+                newCustomer.CreatedAt = DateTime.Now;
+                newCustomer.UpdatedAt = DateTime.Now;
+
+                try
+                {
+                    Database.CustomerAccounts.Add(newCustomer);
+                    Database.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    if (ex.InnerException.Message
+                              .Contains("CustomerAccount_AccountName_UniqueConstraint") == true)
+                    {
+                        customMessage = "Unable to save Customer Account record due " +
+                                    "to another record having the same name : " +
+                                     customerNewInput.AccountName.Value;
+                        object httpFailRequestResultMessage = new { message = customMessage };
+                        //Return a HTTP response of Bad Request status
+                        //and embed the anonymous object's content within the message-body segmet.
+                        return BadRequest(httpFailRequestResultMessage);
+                    }
+                }
+
+                var rateNewInput = JsonConvert.DeserializeObject<dynamic>(value);
+                AccountRate newAccount = new AccountRate();
+
+                //CustomerAccount newCustomer = new CustomerAccount();
+                //var ds = Database.CustomerAccounts.Select(x => x.CustomerAccountId).Last();
+                //will require to save customer first.
+
+                //foreach (var one in ds)
+                //{
+                //newAccount.CustomerAccountId = ds;
+                //}
+                newAccount.CustomerAccountId = newCustomer.CustomerAccountId;
+                decimal rate = Convert.ToDecimal(rateNewInput.ratePerHour.Value);
+                newAccount.RatePerHour = rate;
+
+                DateTime eStartDate = Convert.ToDateTime(rateNewInput.eStartDate.Value);
+                newAccount.EffectiveStartDate = eStartDate;
+
+                if (rateNewInput.eEndDate.Value != null)
+                {
+                    DateTime? eEndDate = Convert.ToDateTime(rateNewInput.eEndDate.Value);
+                    newAccount.EffectiveEndDate = eEndDate;
+                }
+                try
+                {
+                    Database.AccountRates.Add(newAccount);
+                    Database.SaveChanges();
+                    transaction.Commit();
+                }
+
+                catch (Exception)
+                {
+                    customMessage = "Unable to save Rates data ";
                     object httpFailRequestResultMessage = new { message = customMessage };
                     //Return a HTTP response of Bad Request status
                     //and embed the anonymous object's content within the message-body segmet.
                     return BadRequest(httpFailRequestResultMessage);
                 }
+
+                var successRequestResultMessage = new
+                {
+                    message = "Saved Rate and Customer record"
+                };
+
+                //Create a OkObjectResult class instance, httpOkResult.
+                //When creating the OkObjectResult class instance, provide 
+                //the anonymous object, successRequestResultMessage into it.
+                OkObjectResult httpOkResult = new OkObjectResult(successRequestResultMessage);
+                //Send the OkObjectResult class object back to the client.
+                return httpOkResult;
             }
-
-            var rateNewInput = JsonConvert.DeserializeObject<dynamic>(value);
-            AccountRate newAccount = new AccountRate();
-
-            //CustomerAccount newCustomer = new CustomerAccount();
-            //var ds = Database.CustomerAccounts.Select(x => x.CustomerAccountId).Last();
-            //will require to save customer first.
-
-            //foreach (var one in ds)
-            //{
-            //newAccount.CustomerAccountId = ds;
-            //}
-            newAccount.CustomerAccountId = newCustomer.CustomerAccountId;          
-            decimal rate = Convert.ToDecimal(rateNewInput.ratePerHour.Value);
-            newAccount.RatePerHour = rate;
-
-            DateTime eStartDate = Convert.ToDateTime(rateNewInput.eStartDate.Value);
-            newAccount.EffectiveStartDate = eStartDate;
-        
-            if (rateNewInput.eEndDate.Value != null)
-            {
-                DateTime? eEndDate = Convert.ToDateTime(rateNewInput.eEndDate.Value);
-                newAccount.EffectiveEndDate = eEndDate;
-            }       
-            try
-            {
-                Database.AccountRates.Add(newAccount);
-                Database.SaveChanges();
-            }
-
-            catch (Exception)
-            {
-                customMessage = "Unable to save Rates data ";
-                object httpFailRequestResultMessage = new { message = customMessage };
-                //Return a HTTP response of Bad Request status
-                //and embed the anonymous object's content within the message-body segmet.
-                return BadRequest(httpFailRequestResultMessage);
-            }
-
-            var successRequestResultMessage = new
-            {
-                message = "Saved Rate and Customer record"
-            };
-
-            //Create a OkObjectResult class instance, httpOkResult.
-            //When creating the OkObjectResult class instance, provide 
-            //the anonymous object, successRequestResultMessage into it.
-            OkObjectResult httpOkResult = new OkObjectResult(successRequestResultMessage);
-            //Send the OkObjectResult class object back to the client.
-            return httpOkResult;
         }
 
 

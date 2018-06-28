@@ -50,8 +50,6 @@
                                     </div>
                                 </div>
 
-
-
                                 <input type="button" class="btn btn-primary" value="Save" id="saveButton" />
                                 <a class="btn btn-default" asp-action="Index" asp-controler="Courses">Cancel</a>
                             </div>
@@ -67,11 +65,8 @@
     <script src="~/lib/bootstrap-toggle/js/bootstrap-toggle.js"></script>
     <script>
 
-
         $('.modal').hide();
-
         var g_sessionId = getIdFromAddressBar();
-
         function getIdFromAddressBar() {
             var urlArray = window.location.href.split('/');
             var id = urlArray[urlArray.length - 1];
@@ -79,9 +74,7 @@
         };
 
         getSessionDetails();
-
         function getSessionDetails() {
-
             $loadSessionDataHandler = $.ajax({
                 type: 'GET',
                 url: '/API/SessionSynopses/' + g_sessionId,
@@ -150,7 +143,6 @@
                         required: true,
                         noSpace: true,
                         noSpecial: true
-
                     }
 
                 },
@@ -158,11 +150,8 @@
                     sessionNameInput: {
                         required: "This field is required".fontsize('3px').fontcolor('red')
                     }
-
                 }
-
             });
-
         }//end of setupFormValidationRules()
 
 

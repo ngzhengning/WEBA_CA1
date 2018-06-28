@@ -50,7 +50,6 @@
                 return value.match(/^([a-zA-Z0-9]+[a-zA-Z0-9\s]*[a-zA-Z0-9]+|[a-zA-Z0-9]*)$/);
             }, "Invalid format/Empty field".fontsize('2px').fontcolor('red'));
 
-
             //value.trim().length != 0;
             //$.validator.addMethod("noSpace", function (value, element) {
             //    return (value.match(/^[a-z0-9\ \s]+$/))  || value != "";
@@ -70,26 +69,20 @@
             }, 'No special Characters please'.fontsize('2px').fontcolor('red'));
 
 
-
             $("#dataForm").validate({
                 rules: {
                     sessionNameInput: {
                         required: true,              
                         noSpecial: true,
                         noSpace: true
-
                     }
-
                 },
                 messages: {
                     sessionNameInput: {
                         required: "This field is required".fontsize('3px').fontcolor('red')
                     }
-
                 }
-
             });
-
         }
 
         var check = 1;
@@ -172,7 +165,6 @@
         ////jQuery.validator.addMethod("nameRegex", function (value, element) {
         ////    return this.optional(element) || /^[a-z\\s]+$/i.test(value);
         ////}, "Name must contain only letters. No Space Allowed");
-
 
         ///^[\w._]+$/i take care of underscores
     </script>

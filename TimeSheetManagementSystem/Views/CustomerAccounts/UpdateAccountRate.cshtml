@@ -357,6 +357,10 @@
                     }
 
                     else {
+                        var dsd = formatDate(this.rateList[i].eEndDate);
+                        var eee = dsd.split('-');
+                        var deed = eee[0] + '-' + eee[1];
+
                         if (this.rateList[i].eEndDate == null) {
                             return true;
 
@@ -389,7 +393,6 @@
 
             seteEndDate(eed) {
                 this.eEndDate = eed;
-
             }
 
             forLoopLesson() {
