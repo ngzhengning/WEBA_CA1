@@ -1,0 +1,868 @@
+﻿<div class="row">
+    <div class="col-md-offset-2  col-md-8">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Update Account Details for <label id="accountName" style="text-decoration:underline"></label>
+                <div class="btn-group pull-right">
+
+                </div>
+            </div>
+            <div class="panel-body">
+
+                <form id="dataForm" role="form" class="form-horizontal">
+                    <div class="form-group col-md-12">
+                        <table border="0">
+                            <tr>
+                                <td class="lblall"> <label for="weekDayInput">Week Day Name</label></td>
+
+                                <td class="inptall">
+                                    @*<input type="text" id="ratePerHourInput" name="ratePerHourInput"
+                                        placeholder="Week Day Name" value="" />*@
+                                    <div id="weekDayInput">
+
+                                    </div>
+                                </td>
+                            </tr>
+
+                        </table>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <table>
+                            <tr>
+                                <td class="lblall"></td>
+                                <td class="inptall"> <input type="button" class="btn btn-default" value="Check Current Account Details" id="chkAccount" /></td>
+                            </tr>
+                        </table>
+
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <table border="0">
+                            <tr>
+                                <td class="lblall"><label for="stimepicker">Start Time</label></td>
+
+                                <td class="inptall">
+                                    <div class="input-group bootstrap-timepicker timepicker">
+                                        <input id="stimepicker" type="text" class="form-control input-small" readonly="readonly" name="stimepicker">
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr hidden>
+                                
+                                <td><label id="stimepicker-error" class="error" for="stimepicker"></label></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <table border="0">
+                            <tr>
+                                <td class="lblall"><label for="etimepicker">End Time</label></td>
+                                <td class="inptall">
+                                    <div class="input-group bootstrap-timepicker timepicker">
+                                        <input id="etimepicker" type="text" class="form-control input-small" readonly="readonly" name="etimepicker">
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr hidden>
+                                <td><label id="etimepicker-error" class="error" for="stimepicker"></label></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <table border="0">
+                            <tr>
+                                <td class="lblall"><label for="sdatepicker">Effective Start Date</label></td>
+                                <td class="inptall">
+                                    <div class='date-picker input-group date' id="sdatepicker">
+                                        <input type='text' class="form-control" readonly="readonly" name="sdatepicker" />
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        </table>
+                    </div>
+
+
+                    <div class="form-group col-md-12">
+                        <table border="0">
+                            <tr>
+                                <!--eEndDateInput-->
+                                <td class="lblall"><label for="edatepicker">Effective end date</label></td>
+
+                                <td class="inptall">
+                                    @*<div id="eEndDateInput" name="eEndDateInput">
+                                        </div>*@
+                                    <div class='date-picker input-group date' id="edatepicker">
+                                        <input type='text' class="form-control" readonly="readonly" name="edatepicker" />
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                    </div>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="lblall"></td>
+                                <td class="inptall"><label id="edatepicker-error" class="error" for="edatepicker"></label></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <table border="0">
+                            <tr>
+                                <td class="lblall"> <label for="visibilityInput">Is Visible</label></td>
+
+                                <td class="inptall">
+
+                                    <input type="checkbox" data-toggle="toggle" name="visibilityInput" id="visibilityInput" checked />
+                                </td>
+                            </tr>
+
+                        </table>
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <label class="control-label col-md-1"></label>
+                        <div class="col-md-10">
+                            <div class="pull-right">
+                                <input type="button" class="btn btn-danger" value="Delete" data-toggle="modal" data-target="#confirm-delete" /> <!--id="deleteButton" in this line-->
+
+                                <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <strong>Delete Account rate record</strong>
+                                            </div>
+                                            <div class="modal-body">
+                                                Are you sure about deleting this record?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                                <a class="btn btn-danger btn-ok" id="deleteButton">Delete</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="button" class="btn btn-primary" value="Save" id="saveButton" />
+                                <!--<a class="btn btn-default" asp-action="ManageCustomerAccounts" asp-controller="CustomerAccounts">Cancel</a> <!--cancel redirect page issue-->
+                                <div id="cancel" class="btn-group pull-right">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+            </div><!-- end of div element which has the class="panel-body" -->
+        </div><!-- end of the div element which has the class="panel" -->
+    </div><!-- end of the div element which as the  class="col-md-offset-2 col-sm-8"-->
+</div><!-- end of div element with class="row" -->
+
+<div class="panel-body">
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-hover" border="1" id="accountTable">
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Effective Start Date</th>
+                        <th>Effective End Date</th>
+                        <th>Visibility</th>
+                    </tr>
+                </thead>
+                <tbody id="AccountDetailsTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+@section scripts{
+    <link href="~/lib/bootstrap-timepicker/css/timepicker.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap-datepicker/dist/css/bootstrap-datepicker.css" rel="stylesheet" />
+    <link href="~/lib/jqwidgets/jqwidgets/styles/jqx.base.css" rel="stylesheet" />
+    <link href="~/lib/jqwidgets/jqwidgets/styles/jqx.energyblue.css" rel="stylesheet" />
+    <script src="~/lib/bootstrap-timepicker/js/bootstrap-timepicker.js"></script>
+    <script src="~/lib/bootstrap-toggle/js/bootstrap-toggle.js"></script>
+    <script src="~/lib/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
+    <script src="~/lib/jqwidgets/jqwidgets/jqx-all.js"></script>
+
+    <script>
+        $('td').css('width', '230px');
+        $("#accountTable").hide();
+        $('.lblall').css('text-align', 'right');
+        $('.lblall').css('display', 'block');
+
+        $('.inptall').css('width', '400px');
+        $('.inptall').css('padding-left', '30px');
+
+        const button = document.getElementById('cancel');
+        const $href = $('<a>Cancel</a>');
+        $href.addClass('btn btn-default');
+        $href.css('margin-left', '5px');
+
+        $('#stimepicker').timepicker({
+            defaultTime: 'current',
+            minuteStep: 1,
+            disableFocus: true,
+            template: 'dropdown',
+            format: 'HH:mm'
+        }).end().on('keypress', function (e) {
+            e.preventDefault();
+            return false;
+        });
+
+
+        $('#etimepicker').timepicker({
+            defaultTime: 'current',
+            minuteStep: 1,
+            disableFocus: true,
+            template: 'dropdown',
+            format: 'HH:mm'
+        }).end().on('keypress', function (e) {
+            e.preventDefault();
+            return false;
+        });
+
+
+
+        $('#sdatepicker').datepicker({
+            format: "mm-yyyy",
+            viewMode: "months",
+            minViewMode: "months",
+            autoclose: true,
+            orientation: 'bottom'
+
+        });
+
+
+        $('#edatepicker').datepicker({
+            format: "mm-yyyy",
+            viewMode: "months",
+            minViewMode: "months",
+            autoclose: true,
+            orientation: 'bottom',
+            clearBtn: true
+        });
+
+        var source = [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday"
+        ];
+
+        $("#weekDayInput").jqxDropDownList({ source: source, selectedIndex: 0, width: '200', height: '25', theme: 'energyblue', animationType: 'fade' });
+
+
+        var g_accId = getIdFromAddressBar();
+
+        function getIdFromAddressBar() {
+            var urlArray = window.location.href.split('/');
+            var id = urlArray[urlArray.length - 1];
+            return id;
+        };
+
+        function mintoTime(min) {
+            var minutes = min;
+            var m = minutes % 60;
+            var h = (minutes - m) / 60;
+            var ampm = h >= 12 ? 'PM' : 'AM';
+            if (h >= 12) {
+                h -= 12;
+            }
+            return total = h + ":" + (m < 10 ? "0" : "") + m + " " + ampm;
+        }
+
+
+        class CusID {
+
+            constructor() {
+                this.customerAccountId = null;
+            }
+            setCustomerAccountId(id) {
+                this.customerAccountId = id;
+
+            }
+            getCustomerAccountId() {
+                return this.customerAccountId;
+            }
+        }
+
+        const gid = new CusID();
+        let g_cusId;
+        window.conflictRecord = null;
+        window.dateConflict = null;
+
+        getAccountDetails().then(x => {
+            g_cusId = gid.getCustomerAccountId();
+            loadAccountDetails(g_cusId);
+            loadRateDetails(g_cusId);
+        })
+
+        async function getAccountDetails() {
+            $loadAccountDataHandler = $.ajax({
+                type: 'GET',
+                url: '/API/AccountDetails/AccountDetail/' + g_accId,
+            });
+            await $loadAccountDataHandler.done(function (data, textStatus, jqXHR) {
+                var account = data;
+                console.dir(account);
+                accountName = account.accountname;
+                eStartDate = account.eStartDate;
+                customerAccountId = account.customeraccountId;
+                eEndDate = account.eEndDate;
+                weekNum = account.dayOfWeekNumber;
+                startTime = account.startTime;
+                endTime = account.endTime;
+                isVisible = account.isVisible;
+                switch (weekNum) {
+                    case 1:
+                        $("#weekDayInput").jqxDropDownList({ selectedIndex: 0 });
+                        break;
+                    case 2:
+                        $("#weekDayInput").jqxDropDownList({ selectedIndex: 1 });
+                        break;
+                    case 3:
+                        $("#weekDayInput").jqxDropDownList({ selectedIndex: 2 });
+                        break;
+                    case 4:
+                        $("#weekDayInput").jqxDropDownList({ selectedIndex: 3 });
+                        break;
+                    case 5:
+                        $("#weekDayInput").jqxDropDownList({ selectedIndex: 4 });
+                        break;
+                    case 6:
+                        $("#weekDayInput").jqxDropDownList({ selectedIndex: 5 });
+                        break;
+                    case 7:
+                        $("#weekDayInput").jqxDropDownList({ selectedIndex: 6 });
+                        break;
+                }
+
+                $('#stimepicker').timepicker('setTime', mintoTime(startTime));
+                $('#etimepicker').timepicker('setTime', mintoTime(endTime));
+                $href.attr('href', `/AccountDetails/ManageAccountDetailsForOneCustomerAccount/${customerAccountId}`);
+                $('#cancel').append($href);
+                gid.setCustomerAccountId(customerAccountId);
+
+
+                $('#accountName').html(accountName);
+                $('#sdatepicker').datepicker('setDate', new Date(eStartDate));
+
+                if (eEndDate == null) {
+                    $('#edatepicker').datepicker('setDate', new Date(""));
+                }
+                else {
+                    $('#edatepicker').datepicker('setDate', new Date(eEndDate));
+                }
+                if (isVisible == false) {
+                    $('#visibilityInput').bootstrapToggle('off');
+                    this.val = 0;
+                }
+                else {
+                    $('#visibilityInput').bootstrapToggle('on');
+                    this.val = 1;
+                }
+
+
+            });
+            $loadAccountDataHandler.fail(function (data, textStatus, jqXHR) {
+                console.log(textStatus);
+                console.log(data);
+                console.log(jqXHR);
+                noty({
+                    text: data.responseJSON.message, type: 'error',
+                    layout: 'center',
+                    template: '<div class="noty_message"><span class="noty_text"></span>'
+
+                });
+            });
+        }
+
+
+        //RETRIEVE ALL ACCOUNT DETAIL FOR VALIDATION
+        var i;
+        function loadAccountDetails(x) {
+            console.dir(x);
+            var $loadAccountDetailsHandler = $.ajax({
+                url: '/API/AccountDetails/GetAccountDetail/' + x,
+                method: 'GET',
+                dataType: 'json',
+                cache: false,
+            });
+
+            $loadAccountDetailsHandler.done(function (data, textStatus, jqXHR) {
+                var accList = data;
+                i = accList.filter(x => x.accountDetailId != g_accId);
+                console.dir(i);
+                conflictRecord = new CheckConflict(i);
+
+                for (index = 0; index < accList.length; index++) {
+                    account = accList[index];
+                    startTime = account.startTime;
+                    endTime = account.endTime;
+                    dayNum = account.dayOfWeekNumber;
+                }
+            });
+        }
+
+
+
+        function loadRateDetails(x) {
+         
+            var $loadRateDetailsHandler = $.ajax({
+                url: '/API/AccountDetails/GetRateDetail/' + x,
+                method: 'GET',
+                dataType: 'json',
+                cache: false,
+            });
+
+            $loadRateDetailsHandler.done(function (data, textStatus, jqXHR) {
+                var dateList = data;
+                //i = accList.filter(x => x.accountDetailId != g_accId);
+
+                //dateConflict = new checkDate(dateList);
+
+                for (index = 0; index < dateList.length; index++) {
+                    date = dateList[index];
+                    startTime = date.startTime;
+                    endTime = date.endTime;
+                }
+            });
+        }
+
+        class checkDate {
+            constructor(inDate) {
+                this.dateList = inDate;
+
+            }
+            check(sd, ed) {
+                var withinSD = false;
+                for (var i = 0; i < this.dateList.length; i++) {
+
+                    var withinED = false;
+                    var date = sd;
+                    var tt = date.split("-");
+                    var nsd = tt[0] + '-' + tt[1] /*+ '-' + tt[2]*/;
+
+                    var estartd = formatDate(this.dateList[i].eStartDate)// That’s your formatted date.
+                    var sdd = estartd.split('-');
+                    var desd = sdd[0] + '-' + sdd[1];
+
+                    if (ed != null) {
+                        if (this.dateList[i].eEndDate != null) {
+                            var edate = ed;
+                            var ett = edate.split("-");
+                            var ned = ett[0] + '-' + ett[1] /*+ '-' + ett[2]*/;
+
+                            var dsd = formatDate(this.dateList[i].eEndDate);
+                            var eee = dsd.split('-');
+                            var deed = eee[0] + '-' + eee[1];
+
+                            if (ned <= deed) {
+                                withinED = true;
+                            }
+
+                            if (withinED) {
+                                if (nsd >= desd && nsd <= deed) {
+                                    withinSD = true;
+                                    withinED = true;
+                                    break;
+                                }
+                            }
+                        }
+                        else {
+                            if (nsd >= desd) {
+                                withinSD = true;
+                                withinED = true;
+                            }
+
+                        }
+                    }
+                    else {
+                        var dsd = formatDate(this.dateList[i].eEndDate);
+                        var eee = dsd.split('-');
+                        var deed = eee[0] + '-' + eee[1];
+                        if (this.dateList[i].eEndDate != null) {
+                            if (nsd >= desd && nsd <= deed) {
+                                withinSD = true;
+                                withinED = true;
+                            }
+                        }
+                        else {
+                            if (nsd >= desd) {
+                                withinSD = true;
+                                withinED = true;
+                            }
+                        }
+                    }
+                }// end of for loop
+
+                if (withinED && withinSD) {
+                    return false;
+                }
+                else {
+                    return true;
+
+                }
+            }
+        }
+
+
+
+        class CheckConflict {
+            constructor(inData) {
+                this.accList = inData;
+            }
+            check(day, ust, uet, sd, ed) {
+
+
+
+                for (var i = 0; i < this.accList.length; i++) {
+
+                    var date = sd;
+                    var tt = date.split("-");
+                    var nsd = tt[0] + '-' + tt[1] /*+ '-' + tt[2]*/;
+
+
+                    var estartd = formatDate(this.accList[i].eStartDate)// That’s your formatted date.
+                    var sdd = estartd.split('-');
+                    var desd = sdd[0] + '-' + sdd[1];
+
+                    if (ed != null) {
+                        if (this.accList[i].eEndDate != null) {
+                            var edate = ed;
+                            var ett = edate.split("-");
+                            var ned = ett[0] + '-' + ett[1] /*+ '-' + ett[2]*/;
+
+                            var dsd = formatDate(this.accList[i].eEndDate);
+                            var eee = dsd.split('-');
+                            var deed = eee[0] + '-' + eee[1];
+
+
+                            if (nsd >= desd && ned <= deed) {
+                                if (day === this.accList[i].dayOfWeekNumber) {
+                                    if (ust >= this.accList[i].startTime && ust <= this.accList[i].endTime) {
+                                        return true;
+                                    }
+                                    else if (uet <= this.accList[i].endTime && uet >= this.accList[i].startTime) {
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            if (nsd >= desd) {
+                                if (day === this.accList[i].dayOfWeekNumber) {
+                                    if (ust >= this.accList[i].startTime && ust <= this.accList[i].endTime) {
+                                        return true;
+                                    }
+                                    else if (uet <= this.accList[i].endTime && uet >= this.accList[i].startTime) {
+                                        return true;
+                                    }
+                                }
+
+                            }
+
+                        }
+                    }
+                    else {
+                        if (this.accList[i].eEndDate != null) {
+                            var dsd = formatDate(this.accList[i].eEndDate);
+                            var eee = dsd.split('-');
+                            var deed = eee[0] + '-' + eee[1];
+
+                            if (nsd >= desd && nsd <= deed) {
+                                if (day === this.accList[i].dayOfWeekNumber) {
+                                    if (ust >= this.accList[i].startTime && ust <= this.accList[i].endTime) {
+                                        return true;
+                                    }
+                                    else if (uet <= this.accList[i].endTime && uet >= this.accList[i].startTime) {
+                                        return true;
+                                    }
+                                }
+
+                            }
+                        }
+                        else {
+                            if (nsd >= desd) {
+                                if (day === this.accList[i].dayOfWeekNumber) {
+                                    if (ust >= this.accList[i].startTime && ust <= this.accList[i].endTime) {
+                                        return true;
+                                    }
+                                    else if (uet <= this.accList[i].endTime && uet >= this.accList[i].startTime) {
+                                        return true;
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+
+        function formatDate(date) {
+            var d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
+            return [year, month, day].join('-');
+        }
+
+
+        function getMin(time) {
+            //=== is same data type
+            //== is compare value
+            //= is assign value
+            arr = time.split(':');
+            hour = parseInt(arr[0]);
+            min = parseInt(arr[1]);
+            var n = time.includes('PM');
+            if (n == true) {
+                hour += 12;
+            }
+            //console.dir("Total Minutes" + ((hour * 60) + min));
+            const totalMin = ((hour * 60) + min);
+            return totalMin;
+        }
+
+        var check = 1;
+        var visval = $("#visibilityInput").change(function () {
+
+            if ($(this).prop("checked") == true) {
+                check = 1;
+                this.val = 1;
+            }
+            else {
+                check = 0;
+                this.val = 0;
+            }
+        });
+      
+        setupFormValidationRules();
+
+        function setupFormValidationRules() {
+            $.validator.addMethod("endtime", function (value, element) {
+                var sTime = $('#stimepicker').val();
+                var ssTime = getMin(sTime);
+                var eTime = $('#etimepicker').val();
+                var eeTime = getMin(eTime);
+                return (eeTime) >= (ssTime);
+            }, "End Time should be greater than start time".fontsize('2px').fontcolor('red'));
+
+
+            $.validator.addMethod("enddate", function (value, element) {
+                //var sDate = $('#eStartDateInput').val('date');
+                //var eDate = $('#eEndDateInput').val('date');
+                var sDate = formatDate($('#sdatepicker').datepicker('getDate'));
+                //var eDate = formatDate($('#edatepicker').datepicker('getDate'));
+
+                var eDate = null;
+                if ($('#edatepicker').datepicker('getDate') != null) {
+                    var eyear = $('#edatepicker').data('datepicker').getFormattedDate('yyyy');
+                    var emonth = $('#edatepicker').data('datepicker').getFormattedDate('mm');
+                    var edate = new Date(eyear, emonth, 0);
+                    eDate = formatDate(edate);
+                }
+                return (eDate) >= (sDate) || eDate == null;
+            }, "End Date should be greater than Start Date.".fontsize('2px').fontcolor('red'));
+
+
+            $("#dataForm").validate({
+
+                rules: {
+                    edatepicker: {
+                        enddate: true
+                    },
+                    etimepicker: {
+                        endtime: true,
+                        required:true
+                    },
+                    stimepicker: {
+                        required: true
+
+                    }
+
+                }, messages: {
+                    etimepicker: {
+                        required: "This field is required".fontsize('3px').fontcolor('red')
+                    },
+
+                    stimepicker: {
+                        required: "This field is required".fontsize('3px').fontcolor('red')
+                    }
+
+                }
+            });
+        }
+
+
+
+        function WebFormData(inWeekDayName, inStartTime, inEndTime, ineStartDate, ineEndDate, inIsVisible) {
+            this.weekDayname = inWeekDayName;
+            this.startTime = inStartTime;
+            this.endTime = inEndTime;
+            this.eStartDate = ineStartDate;
+            this.eEndDate = ineEndDate;
+            this.IsVisible = inIsVisible;
+        }
+
+
+        $('#saveButton').on('click', function () {
+            $('#dataForm').validate();
+            if ($('#dataForm').valid()) {
+            visval;
+            var sdate = $('#sdatepicker').data('datepicker').getFormattedDate('yyyy/mm/01');
+            var collectedeStartDate = formatDate(sdate);
+
+
+            var collectedeEndDate = null;
+            if ($('#edatepicker').datepicker('getDate') != null) {
+                var eyear = $('#edatepicker').data('datepicker').getFormattedDate('yyyy');
+                var emonth = $('#edatepicker').data('datepicker').getFormattedDate('mm');
+                var edate = new Date(eyear, emonth, 0);
+                collectedeEndDate = formatDate(edate);
+
+            }
+
+            var collectedDay = $("#weekDayInput").val();
+            switch (collectedDay) {
+                case "Monday":
+                    collectedDay = 1;
+                    break;
+                case "Tuesday":
+                    collectedDay = 2;
+                    break;
+                case "Wednesday":
+                    collectedDay = 3;
+                    break;
+                case "Thursday":
+                    collectedDay = 4;
+                    break;
+                case "Friday":
+                    collectedDay = 5;
+                    break;
+                case "Saturday":
+                    collectedDay = 6;
+                    break;
+                case "Sunday":
+                    collectedDay = 7;
+                    break;
+            }
+
+            var sTime = $('#stimepicker').val();
+            var collectedsTime = getMin(sTime);
+
+            var eTime = $('#etimepicker').val();
+            var collectedeTime = getMin(eTime);
+            var collectedVisibility = check;
+            console.dir(collectedeTime);
+            //const dtConflict = dateConflict.check(collectedeStartDate, collectedeEndDate);
+
+            const isConflict = conflictRecord.check(collectedDay, collectedsTime, collectedeTime, collectedeStartDate, collectedeEndDate)
+            if (/*dtConflict == true ||*/ isConflict == true) {
+                new Noty({
+                    text: '<center><strong><p>Data Conflict!</p><p>Please check again before submitting!</p></strong><center>',
+                    theme: 'sunset',
+                    layout: 'center',
+                    type: 'error'
+                }).show()
+                return;
+            }
+
+            var webFormData = new WebFormData(collectedDay, collectedsTime, collectedeTime, collectedeStartDate, collectedeEndDate, collectedVisibility);
+            console.dir(webFormData);
+            $updateAccountDetailHandler = $.ajax({
+                type: 'PUT',
+                url: '/API/AccountDetails/' + g_accId,
+                data: webFormData
+
+            })
+            $updateAccountDetailHandler.done(function (data, textStatus, jqXHR) {
+                new Noty({
+                    text: data.message, type: 'success',
+                    layout: 'center',
+                    theme: 'sunset',
+                    template: '<div class="noty_message"><span class="noty_text"></span>'
+                }).show();
+            });
+
+            $updateAccountDetailHandler.fail(function (data, textStatus, jqXHR) {
+                new Noty({
+                    text: data.responseJSON.message, type: 'error',
+                    layout: 'center',
+                    theme: 'sunset',
+                    template: '<div class="noty_message"><span class="noty_text"></span>'
+                }).show();
+            });
+
+            };
+        });
+
+        $('#deleteButton').on('click', function () {
+            $('.modal-dialog').fadeOut(1000);
+
+            $deleteAccountHandler = $.ajax({
+
+                type: 'DELETE',
+                url: '/API/AccountDetails/' + g_accId
+
+            })
+
+            $deleteAccountHandler.done(function (data, textStatus, jqXHR) {
+                let n = new Noty({
+                    text: data.message,
+                    type: 'success',
+                    theme: 'sunset',
+                    layout: 'center',
+                    template: '<div class="noty_message"><span class="noty_text"></span>',
+                    buttons: [
+                        Noty.button('OK', 'btn btn-primary', function () {
+                            n.close()
+                            $('body').fadeOut(500, redirectPage);
+                        })
+                    ]
+                }).show();
+            });//end of deleteSessionHandler.done()
+
+            $deleteAccountHandler.fail(function (data, textStatus, jqXHR) {
+                console.log(data);
+                new Noty({
+
+                    text: data.responseJSON.message,
+                    type: 'error',
+                    theme: 'sunset',
+                    layout: 'center',
+                    template: '<div class="noty_message"><span class="noty_text"></span>'
+                }).show();
+            });
+
+        }); //end of delete button
+
+        function redirectPage() {
+            location.replace('/AccountDetails/ManageAccountDetailsForOneCustomerAccount/' + g_cusId);
+        };
+
+
+
+    </script>
+
+}

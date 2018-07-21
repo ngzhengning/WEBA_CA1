@@ -210,7 +210,7 @@
                 eStartDate = rate.eStartDate;
                 eEndDate = rate.eEndDate;
                 $('#accountName').html(accountName);
-
+                
                 // eDate.jqxDateTimeInput({'setDate': new Date(2014, 01, 1) });
                 // eStartDate = moment(rate.eStartDate).format("DD/MM/YYYY");
                 //$('#eStartDateInput').jqxDateTimeInput('setDate', new Date(eStartDate));
@@ -257,7 +257,6 @@
 
                 var rateList = data;
                 i = rateList.filter(x => x.accountRateId != g_rateId);
-                console.dir(i);
                 conflictRecord = new CheckConflict(i);
                 for (index = 0; index < rateList.length; index++) {
                     rates = rateList[index];
@@ -281,7 +280,7 @@
                 for (var i = 0; i < this.rateList.length; i++) {
                     var date = sd;
                     var tt = date.split("-");
-                    var nsd = tt[0] + '-' + tt[1] + '-' + tt[2];
+                    var nsd = tt[0] + '-' + tt[1] /*+ '-' + tt[2]*/;
 
                     // var nsd = moment().format(tt, "DD/MM/YYYY");
 
@@ -309,7 +308,7 @@
 
                             var edate = ed;
                             var ett = edate.split("-");
-                            var ned = ett[0] + '-' + ett[1] + '-' + ett[2];
+                            var ned = ett[0] + '-' + ett[1] /*+ '-' + ett[2]*/;
 
 
                             var dsd = formatDate(this.rateList[i].eEndDate);
@@ -340,6 +339,7 @@
                             else if (desd == nsd) {
                                 return true;
                             }
+
                         }
 
                         else {
@@ -355,7 +355,7 @@
                             }
                         }
                     }
-
+       
                     else {
                         var dsd = formatDate(this.rateList[i].eEndDate);
                         var eee = dsd.split('-');
@@ -522,15 +522,15 @@
 
 
                 var webFormData = new WebFormData(collectedRatePerHour, collectedeStartDate, collectedeEndDate);
-                var webFormDataInString = JSON.stringify(webFormData);
+                //var webFormDataInString = JSON.stringify(webFormData);
 
 
                 $updateRateHandler = $.ajax({
                     type: 'PUT',
                     url: '/API/AccountRates/' + g_rateId,
-                    dataType: 'json',
-                    contentType: 'application/json;',
-                    data: "'" + webFormDataInString + "'"
+                    //dataType: 'json',
+                    //contentType: 'application/json;',
+                    data: webFormData
                 })
 
 

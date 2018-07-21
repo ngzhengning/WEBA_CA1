@@ -1,0 +1,177 @@
+﻿<div class="row">
+    <div class="panel panel-primary">
+        <div class="panel-heading clearfix">
+            <div class="panel-heading">
+                Manage Account Details for <label id="accountName" style="text-decoration:underline"></label>
+
+                <div id="addRate" class="btn-group pull-right">
+                    @*give id to div for javascript manipulation*@
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Day</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                                <th>Effective Start Date</th>
+                                <th>Effective End Date</th>
+                                <th>Visibility</th>
+                                <th>Actions</th>
+                                <th>&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody id="AccountDetailsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+
+    <script>
+        var g_cusId = getIdFromAddressBar();
+
+        function getIdFromAddressBar() {
+            var urlArray = window.location.href.split('/');
+            var id = urlArray[urlArray.length - 1];
+            return id;
+        };
+
+        function mintoTime(min) {
+            var minutes = min;
+            var m = minutes % 60;
+            var h = (minutes - m) / 60;
+            var ampm = h >= 12 ? 'PM' : 'AM';
+            if (h >= 12) {
+                h -= 12;
+            }
+            return total = h + ":" + (m < 10 ? "0" : "") + m + " " + ampm;
+        }
+
+        loadAccountData();
+
+
+        function loadAccountData() {
+            //Note: jQuery.ajax(..) is also often written is $.ajax(..)
+            var $loadAccountDataHandler = $.ajax({
+                url: '/API/AccountDetails/' + g_cusId,
+                method: 'GET',
+                dataType: 'json',
+                cache: false,
+            });
+
+            $loadAccountDataHandler.done(function (data, textStatus, jqXHR) {
+                var accountList = data.accountList;
+                var accountName = data.accountName;
+                var accountDetailId = '';
+                var dayOfWeekNumber = '';
+                var startTime = "";
+                var endTime = "";
+                var eEndDate = "";
+                var eStartDate = "";
+                var isVisible = "";
+                var $tableElement = null;
+                var $cellElement = null;
+                var $rowElement = null;
+
+                console.dir(data);
+                $('#accountName').html(accountName);
+
+                $tableBodyElement = $('#AccountDetailsTableBody');
+                for (index = 0; index < accountList.length; index++) {
+                    account = accountList[index];
+                    accountDetailId = account.accountRateId;
+                    eStartDate = moment(account.eStartDate).format("DD/MM/YYYY");
+
+                    if (account.eEndDate == null) {
+                        eEndDate = "NA";
+                    }
+                    else {
+                        eEndDate = moment(account.eEndDate).format("DD/MM/YYYY");
+                    }
+
+                    dayOfWeekNumber = account.dayOfWeekNumber;
+                    switch (dayOfWeekNumber) {
+                        case 1:
+                            dayOfWeekNumber = "Monday";
+                            break;
+                        case 2:
+                            dayOfWeekNumber = "Tuesday";
+                            break;
+                        case 3:
+                            dayOfWeekNumber = "Wednesday";
+                            break;
+                        case 4:
+                            dayOfWeekNumber = "Thursday";
+                            break;
+                        case 5:
+                            dayOfWeekNumber = "Friday";
+                            break;
+                        case 6:
+                            dayOfWeekNumber = "Saturday";
+                            break;
+                        case 7:
+                            dayOfWeekNumber = "Sunday";
+                            break;
+                    }
+
+                    endTime = account.endTime;
+                    startTime = account.startTime;
+                    accountDetailId = account.accountDetailId;
+                    if (account.isVisible = true) {
+                        isVisible = "\u2714";
+
+                    }
+                    else {
+                        isVisible = "\u2718";
+                    }
+
+                    $rowElement = $('<tr></tr>');
+                    $cellElement = $('<td></td>', { text: dayOfWeekNumber });
+                    $rowElement.append($cellElement);
+
+                    $cellElement = $('<td></td>', { text: mintoTime(startTime) });
+                    $rowElement.append($cellElement);
+
+                    $cellElement = $('<td></td>', { text: mintoTime(endTime) });
+                    $rowElement.append($cellElement);
+
+                    $cellElement = $('<td></td>', { text: eStartDate });
+                    $rowElement.append($cellElement);
+
+                    $cellElement = $('<td></td>', { text: eEndDate });
+                    $rowElement.append($cellElement);
+
+                    $cellElement = $('<td></td>', { text: isVisible });
+                    $rowElement.append($cellElement);
+
+                    $hyperLinkElement = $('<a>Update account Info</a>').attr('href', '/AccountDetails/UpdateOneAccountDetail/' + accountDetailId);
+                    $hyperLinkElement.addClass('btn btn-primary');
+
+                    $cellElement = $('<td></td>');
+
+                    $cellElement.append($hyperLinkElement);
+                    $rowElement.append($cellElement);
+
+                    $tableBodyElement.append($rowElement);
+                }
+            });
+
+            $loadAccountDataHandler.fail(function (data, textStatus, jqXHR) {
+                noty({
+                    text: 'Ajax call has failed due to : ' + data.statusText, type: 'error',
+                    layout: 'center',
+                    template: '<div class="noty_message"><span class="noty_text"></span>'
+                });
+            });
+
+        }// end of loadRatesData();
+    </script>
+}

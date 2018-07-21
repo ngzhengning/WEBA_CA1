@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using System.Globalization;
+using Microsoft.AspNetCore.Http;
+
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -133,49 +135,43 @@ namespace TimeSheetManagementSystem.APIs
 
         // POST api/<controller>
         [HttpPost("{id}")]
-        public IActionResult Post(int id,[FromBody]string value)
+        public IActionResult Post(int id,IFormCollection value)
         {
-            //GG SECTION
             string customMessage = "";
-            var rateNewInput = JsonConvert.DeserializeObject<dynamic>(value);
-
-            //retrieve ID 
+           // var rateNewInput = JsonConvert.DeserializeObject<dynamic>(value);
             var oneSession = Database.CustomerAccounts   
                .Where(x => x.CustomerAccountId == id).Single();
 
-
-            //List<object> rateList = new List<object>();   
-            //var test = Database.AccountRates
-            //        .Where(x=>x.CustomerAccountId==oneSession.CustomerAccountId).ToList();
-
-           
-            //var oneDb = Database.AccountRates
-            //            .Include(x => x.RatePerHour);
-
-            //var ds = Database.CustomerAccounts
-            //    .Select(x => x.CustomerAccountId).ToList();
-            //foreach (var one in ds)
-            //{
-            //}
-
             AccountRate newAccount = new AccountRate();
             int userid = GetUserIdFromUserInfo();
+
             newAccount.CustomerAccountId = oneSession.CustomerAccountId;
             oneSession.UpdatedAt = DateTime.Now;
             oneSession.UpdatedById = userid;
+
+            newAccount.RatePerHour = Convert.ToDecimal(value["ratePerHour"]);
             //newAccount.CustomerAccountId = newCustomer.CustomerAccountId;
-            decimal rate = Convert.ToDecimal(rateNewInput.ratePerHour.Value);            
-            newAccount.RatePerHour = rate;
+            //decimal rate = Convert.ToDecimal(rateNewInput.ratePerHour.Value);            
+            //newAccount.RatePerHour = rate;
+            newAccount.EffectiveStartDate = Convert.ToDateTime(value["eStartDate"]);
+            //DateTime eStartDate = Convert.ToDateTime(rateNewInput.eStartDate.Value);
+            //newAccount.EffectiveStartDate = eStartDate;
 
+            var eEndDate = value["eEndDate"];
+            if(eEndDate!="")
+            {
+                newAccount.EffectiveEndDate = Convert.ToDateTime(value["eEndDate"]);
+            }
+            else
+            {
+                newAccount.EffectiveEndDate = null;
+            }
 
-            DateTime eStartDate = Convert.ToDateTime(rateNewInput.eStartDate.Value);
-            newAccount.EffectiveStartDate = eStartDate;
-
-            if (rateNewInput.eEndDate.Value != null)
-            {              
-                DateTime? eEndDate = Convert.ToDateTime(rateNewInput.eEndDate.Value);
-                newAccount.EffectiveEndDate = eEndDate;
-            } 
+            //if (rateNewInput.eEndDate.Value != null)
+            //{              
+            //    DateTime? eEndDate = Convert.ToDateTime(rateNewInput.eEndDate.Value);
+            //    newAccount.EffectiveEndDate = eEndDate;
+            //} 
             //else
             //{
             //    DateTime eEndDate = Convert.ToDateTime(rateNewInput.eEndDate.Value);
@@ -183,13 +179,11 @@ namespace TimeSheetManagementSystem.APIs
             //    DateTime? eEndDate = Convert.ToDateTime(rateNewInput.eEndDate.Value);
             //    newAccount.EffectiveEndDate = eEndDate;
             //}
-
             try
             {
                 Database.AccountRates.Add(newAccount);
                 Database.SaveChanges();
             }
-
             catch (Exception)
             {
                 customMessage = "Unable to save Rates data ";
@@ -197,8 +191,8 @@ namespace TimeSheetManagementSystem.APIs
                 //Return a HTTP response of Bad Request status
                 //and embed the anonymous object's content within the message-body segmet.
                 return BadRequest(httpFailRequestResultMessage);
-
             }
+
             var successRequestResultMessage = new
             {
                 message = "Saved Rate record"
@@ -211,10 +205,10 @@ namespace TimeSheetManagementSystem.APIs
 
         // PUT api/<controller>/5
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody]string value)
+        public IActionResult Put(int id, IFormCollection value)
         {
             string customMessage = "";
-            var rateChangeInput = JsonConvert.DeserializeObject<dynamic>(value);
+            //var rateChangeInput = JsonConvert.DeserializeObject<dynamic>(value);
 
             var oneRate = Database.AccountRates
                         .Where(x => x.AccountRateId == id).Single();
@@ -225,21 +219,27 @@ namespace TimeSheetManagementSystem.APIs
             int userId = GetUserIdFromUserInfo();
             oneCustomer.UpdatedById = userId;
             oneCustomer.UpdatedAt = DateTime.Now;
-
-
-            decimal rate = Convert.ToDecimal(rateChangeInput.ratePerHour.Value);
-            oneRate.RatePerHour = rate;
-         
-
-            DateTime eStartDate = Convert.ToDateTime(rateChangeInput.eStartDate.Value);
-            oneRate.EffectiveStartDate = eStartDate;
-
-            if (rateChangeInput.eEndDate.Value != null)
+            oneRate.RatePerHour = Convert.ToDecimal(value["ratePerHour"]);
+            //decimal rate = Convert.ToDecimal(rateChangeInput.ratePerHour.Value);
+            //oneRate.RatePerHour = rate;
+            oneRate.EffectiveStartDate = Convert.ToDateTime(value["eStartDate"]);
+            //DateTime eStartDate = Convert.ToDateTime(rateChangeInput.eStartDate.Value);
+            //oneRate.EffectiveStartDate = eStartDate;
+            var eEndDate = value["eEndDate"];
+            if(eEndDate!="")
             {
-                
-                DateTime? eEndDate = Convert.ToDateTime(rateChangeInput.eEndDate.Value);
-                oneRate.EffectiveEndDate = eEndDate;
+                oneRate.EffectiveEndDate = Convert.ToDateTime(value["eEndDate"]);
             }
+            else
+            {
+                oneRate.EffectiveEndDate = null;
+            }
+            //if (rateChangeInput.eEndDate.Value != null)
+            //{
+                
+            //    DateTime? eEndDate = Convert.ToDateTime(rateChangeInput.eEndDate.Value);
+            //    oneRate.EffectiveEndDate = eEndDate;
+            //}
             try
             {
                 Database.SaveChanges();
@@ -298,7 +298,19 @@ namespace TimeSheetManagementSystem.APIs
             return userInfoId;
         }
 
-  
+        //comments for http Post
+        //List<object> rateList = new List<object>();   
+        //var test = Database.AccountRates
+        //        .Where(x=>x.CustomerAccountId==oneSession.CustomerAccountId).ToList();          
+        //var oneDb = Database.AccountRates
+        //            .Include(x => x.RatePerHour);
+
+        //var ds = Database.CustomerAccounts
+        //    .Select(x => x.CustomerAccountId).ToList();
+        //foreach (var one in ds)
+        //{
+        //}
+
 
 
     }

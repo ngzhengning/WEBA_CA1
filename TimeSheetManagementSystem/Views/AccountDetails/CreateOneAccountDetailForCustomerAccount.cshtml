@@ -1,0 +1,376 @@
+﻿<div class="row">
+    <div class="col-md-offset-2  col-md-8">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Create Account Rates for <label id="accountName" style="text-decoration:underline"></label>
+                <div class="btn-group pull-right">
+
+                </div>
+            </div>
+            <div class="panel-body">
+
+                <form id="dataForm" role="form" class="form-horizontal">
+                    <div class="form-group col-md-12">
+                        <table border="0">
+                            <tr>
+                                <td class="lblall"> <label for="weekDayInput">Week Day Name</label></td>
+
+                                <td class="inptall">
+                                    @*<input type="text" id="ratePerHourInput" name="ratePerHourInput"
+                                        placeholder="Week Day Name" value="" />*@
+                                    <div id="weekDayInput">
+
+                                    </div>
+                                </td>
+                            </tr>
+
+                        </table>
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <table border="0">
+                            <tr>
+                                <td class="lblall"><label for="stimepicker">Start Time</label></td>
+
+                                <td class="inptall">
+                                    <div class="input-group bootstrap-timepicker timepicker">
+                                        <input id="stimepicker" type="text" class="form-control input-small" readonly="readonly">
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <table border="0">
+                            <tr>
+                                <td class="lblall"><label for="etimepicker">End Time</label></td>
+
+                                <td class="inptall">
+                                    <div class="input-group bootstrap-timepicker timepicker">
+                                        <input id="etimepicker" type="text" class="form-control input-small" readonly="readonly">
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+
+                    <div class="form-group col-md-12">
+                        <table border="0">
+                            <tr>
+                                <td class="lblall"><label for="sdatepicker">Effective Start Date</label></td>
+                                <td class="inptall">
+                                    <div class='date-picker input-group date' id="sdatepicker">
+                                        <input type='text' class="form-control" readonly="readonly" name="sdatepicker" />
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        </table>
+                    </div>
+
+
+                    <div class="form-group col-md-12">
+                        <table border="0">
+                            <tr>
+                                <!--eEndDateInput-->
+                                <td class="lblall"><label for="edatepicker">Effective end date</label></td>
+
+                                <td class="inptall">
+                                    @*<div id="eEndDateInput" name="eEndDateInput">
+                                        </div>*@
+                                    <div class='date-picker input-group date' id="edatepicker">
+                                        <input type='text' class="form-control" readonly="readonly" name="edatepicker" />
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                    </div>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="lblall"></td>
+                                <td class="inptall"><label id="edatepicker-error" class="error" for="edatepicker"></label></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <table border="0">
+                            <tr>
+                                <td class="lblall"> <label for="visibilityInput">Is Visible</label></td>
+
+                                <td class="inptall">
+
+                                    <input type="checkbox" data-toggle="toggle" name="visibilityInput" id="visibilityInput" checked />
+                                </td>
+                            </tr>
+
+                        </table>
+                    </div>
+
+
+
+                    <div class="form-group col-md-12">
+                        <label class="control-label col-md-1"></label>
+                        <div class="col-md-10">
+                            <div class="pull-right">
+                                <input type="button" class="btn btn-primary" value="Save" id="saveButton" />
+                                @*  <a class="btn btn-default" asp-action="ManageCustomerAccounts" asp-controller="CustomerAccounts">Cancel</a>*@
+                                <div id="cancel" class="btn-group pull-right">
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    @*<span class="btn btn-danger">-</span>
+                        <input type="number" min="2000" max="2040" value="2000" readonly/>
+                        <span class="btn btn-warning">+</span>*@
+                </form>
+
+            </div><!-- end of div element which has the class="panel-body" -->
+        </div><!-- end of the div element which has the class="panel" -->
+    </div><!-- end of the div element which as the  class="col-md-offset-2 col-sm-8"-->
+</div><!-- end of div element with class="row" -->
+
+@section scripts{
+    <link href="~/lib/bootstrap-timepicker/css/timepicker.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap-datepicker/dist/css/bootstrap-datepicker.css" rel="stylesheet" />
+    <link href="~/lib/jqwidgets/jqwidgets/styles/jqx.base.css" rel="stylesheet" />
+    <link href="~/lib/jqwidgets/jqwidgets/styles/jqx.energyblue.css" rel="stylesheet" />
+    <script src="~/lib/bootstrap-timepicker/js/bootstrap-timepicker.js"></script>
+    <script src="~/lib/bootstrap-toggle/js/bootstrap-toggle.js"></script>
+    <script src="~/lib/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
+    <script src="~/lib/jqwidgets/jqwidgets/jqx-all.js"></script>
+
+    <script>
+        $('td').css('width', '230px');
+
+        $('.lblall').css('text-align', 'right');
+        $('.lblall').css('display', 'block');
+
+        $('.inptall').css('width', '400px');
+        $('.inptall').css('padding-left', '30px');
+
+
+        $('#stimepicker').timepicker({
+            defaultTime: 'current',
+            minuteStep: 1,
+            disableFocus: true,
+            template: 'dropdown',
+            format: 'HH:mm'
+        }).end().on('keypress paste', function (e) {
+            e.preventDefault();
+            return false;
+        });
+
+
+        $('#etimepicker').timepicker({
+            defaultTime: 'current',
+            minuteStep: 1,
+            disableFocus: true,
+            template: 'dropdown'
+        }).end().on('keypress paste', function (e) {
+            e.preventDefault();
+            return false;
+        });
+
+        $('#sdatepicker').datepicker({
+            format: "mm-yyyy",
+            viewMode: "months",
+            minViewMode: "months",
+            autoclose: true,
+            orientation: 'bottom'
+
+        });
+
+
+        $('#edatepicker').datepicker({
+            format: "mm-yyyy",
+            viewMode: "months",
+            minViewMode: "months",
+            autoclose: true,
+            orientation: 'bottom',
+            clearBtn: true
+        });
+
+        var source = [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday"
+        ];
+
+        $("#weekDayInput").jqxDropDownList({ source: source, selectedIndex: 0, width: '200', height: '25', theme: 'energyblue', animationType: 'fade' });
+
+        var g_cusId = getIdFromAddressBar();
+
+        function getIdFromAddressBar() {
+            var urlArray = window.location.href.split('/');
+            var id = urlArray[urlArray.length - 1];
+            return id;
+        };
+
+        function getMin(time) {
+            //=== is same data type
+            //== is compare value
+            //= is assign value
+            arr = time.split(':');
+            hour = parseInt(arr[0]);
+            min = parseInt(arr[1]);
+            var n = time.includes('PM');
+            if (n == true) {
+                hour += 12;
+            }
+            //console.dir("Total Minutes" + ((hour * 60) + min));
+            const totalMin = ((hour * 60) + min);
+            return totalMin;
+        }
+
+
+        function formatDate(date) {
+            var d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
+
+            return [year, month, day].join('-');
+        }
+
+
+        var check = 1;
+        var visval = $("#visibilityInput").change(function () {
+
+            if ($(this).prop("checked") == true) {
+                check = 1;
+                this.val = 1;
+            }
+            else {
+                check = 0;
+                this.val = 0;
+            }
+        });
+
+
+
+        function WebFormData(inWeekDayName, inStartTime, inEndTime, ineStartDate, ineEndDate, inIsVisible) {
+            this.weekDayname = inWeekDayName;
+            this.startTime = inStartTime;
+            this.endTime = inEndTime;
+            this.eStartDate = ineStartDate;
+            this.eEndDate = ineEndDate;
+            this.isVisible = inIsVisible;
+        }
+
+        $('#saveButton').on('click', function () {
+
+            var collectedDay = $("#weekDayInput").val();
+            switch (collectedDay) {
+                case "Monday":
+                    collectedDay = 1;
+                    break;
+                case "Tuesday":
+                    collectedDay = 2;
+                    break;
+                case "Wednesday":
+                    collectedDay = 3;
+                    break;
+                case "Thursday":
+                    collectedDay = 4;
+                    break;
+                case "Friday":
+                    collectedDay = 5;
+                    break;
+                case "Saturday":
+                    collectedDay = 6;
+                    break;
+                case "Sunday":
+                    collectedDay = 7;
+                    break;
+            }
+
+            var sTime = $('#stimepicker').val();
+            var collectedsTime = getMin(sTime);
+
+            var eTime = $('#etimepicker').val();
+            var collectedeTime = getMin(eTime);
+
+
+            var sdate = $('#sdatepicker').data('datepicker').getFormattedDate('yyyy/mm/01');
+            var collectedeStartDate = formatDate(sdate);
+
+
+            var collectedeEndDate = null;
+            if ($('#edatepicker').datepicker('getDate') != null) {
+                var eyear = $('#edatepicker').data('datepicker').getFormattedDate('yyyy');
+                var emonth = $('#edatepicker').data('datepicker').getFormattedDate('mm');
+                var edate = new Date(eyear, emonth, 0);
+                collectedeEndDate = formatDate(edate);
+            }
+            var collectedVisibility = check;
+            
+            var webFormData = new WebFormData(collectedDay, collectedsTime, collectedeTime, collectedeStartDate, collectedeEndDate, collectedVisibility);
+
+            console.dir(webFormData);
+            $updateAccountHandler = $.ajax({
+                method: 'POST',
+                url: '/API/AccountDetails/' + g_cusId,
+                data: webFormData
+            })
+            
+
+            $updateAccountHandler.done(function (data, textStatus, jqXHR) {
+                new Noty({
+                    text: data.message, type: 'success',
+                    layout: 'center',
+                    theme: 'sunset',
+                    template: '<div class="noty_message"><span class="noty_text"></span>'
+                }).show();
+            });
+
+            $updateAccountHandler.fail(function (data, textStatus, jqXHR) {
+                new Noty({
+                    text: data.responseJSON.message, type: 'error',
+                    layout: 'center',
+                    theme: 'sunset',
+                    template: '<div class="noty_message"><span class="noty_text"></span>'
+                }).show();
+            });
+
+
+        })
+
+            //CONVERTING MINUTES FROM MIDNIGHT BACK TO TIME
+            //var minutes = 730;
+            //var m = minutes % 60;
+            //var h = (minutes - m) / 60;
+            //var ampm = h >= 12 ? 'PM' : 'AM';
+            //if (h >= 12) {
+            //   h -= 12;
+            //}
+            //var total = h + ":" + (m < 10 ? "0" : "") + m + " "+ ampm;
+
+            //$('#etimepicker').timepicker('setTime', total);
+      
+
+
+
+
+    </script>
+
+
+}

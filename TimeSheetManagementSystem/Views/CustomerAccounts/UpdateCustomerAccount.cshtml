@@ -138,13 +138,23 @@
                 var customer = data;
                 accountName = customer.accountName;
                 isVisible = customer.isVisible;
-                comments = decodeURIComponent(customer.comments);
+                comments = /*decodeURIComponent(*/customer.comments/*)*/;
 
 
                 console.dir(accountName);
-                $('#accountNameInput').val(accountName);
+            
 
-                $('#commentsInput').val(comments);
+                //$('#commentsInput').val(comments);
+                if (comments == null) {
+                    $('#commentsInput').val("");
+                }
+                else {
+                    $('#commentsInput').val(comments);
+
+                }
+
+
+
                 if (isVisible == false) {
                     $('#visibilityInput').bootstrapToggle('off');
                     this.val = 0;
@@ -153,6 +163,7 @@
                     $('#visibilityInput').bootstrapToggle('on');
                     this.val = 1;
                 }
+                 $('#accountNameInput').val(accountName);
                 
 
 
@@ -228,16 +239,16 @@
                 var collectedVisibility = check;
                 var collectedComments = $('#commentsInput').val();
 
-                var webFormData = new WebFormData(collectedAccountName, collectedVisibility, encode1(collectedComments));
+                var webFormData = new WebFormData(collectedAccountName, collectedVisibility, /*encode1(*/collectedComments/*)*/);
 
-                var webFormDataInString = JSON.stringify(webFormData);
-
+                //var webFormDataInString = JSON.stringify(webFormData);
+                console.dir(webFormData);
                 $updateCustomerHandler = $.ajax({
                     type: 'PUT',
                     url: '/API/CustomerAccounts/' + g_customerId,
-                    dataType: 'json',
-                    contentType: 'application/json;',
-                    data: "'" + webFormDataInString + "'"
+                   // dataType: 'json',
+                   // contentType: 'application/json;',
+                    data:  webFormData
                 })
 
                 $updateCustomerHandler.done(function (data, textStatus, jqXHR) {

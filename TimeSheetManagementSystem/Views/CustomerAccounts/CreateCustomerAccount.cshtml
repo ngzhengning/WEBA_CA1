@@ -315,15 +315,15 @@
 
 
 
-                var webFormData = new WebFormData(collectedAccountName, collectedVisibility, encode1(collectedComments), collectedRatePerHour, collectedeStartDate, collectedeEndDate);
-                var webFormDataInString = JSON.stringify(webFormData);
+                var webFormData = new WebFormData(collectedAccountName, collectedVisibility, /*encode1(*/collectedComments/*)*/, collectedRatePerHour, collectedeStartDate, collectedeEndDate);
+                //var webFormDataInString = JSON.stringify(webFormData);
 
                 $updateCustomerHandler = $.ajax({
                     method: 'POST',
                     url: '/API/CustomerAccounts/',
-                    dataType: 'json',
-                    contentType: 'application/json;',
-                    data: "'" + webFormDataInString + "'"
+                    //dataType: 'json',
+                    //contentType: 'application/json;',
+                    data: webFormData 
                 })
 
                 $updateCustomerHandler.done(function (data, textStatus, jqXHR) {

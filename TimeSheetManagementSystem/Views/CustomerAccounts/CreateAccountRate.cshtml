@@ -471,7 +471,6 @@
                     var emonth = $('#edatepicker').data('datepicker').getFormattedDate('mm');
                     var edate = new Date(eyear, emonth, 0);
                     collectedeEndDate = formatDate(edate);
-
                 }
 
                 //const y = getRecord(collectedRatePerHour, collectedeStartDate);
@@ -491,14 +490,14 @@
                 }
 
                 var webFormData = new WebFormData(collectedRatePerHour, collectedeStartDate, collectedeEndDate);
-                var webFormDataInString = JSON.stringify(webFormData);
-
+                //var webFormDataInString = JSON.stringify(webFormData);
+                console.dir(webFormData);
                 $updateRateHandler = $.ajax({
                     method: 'POST',
                     url: '/API/AccountRates/' + g_cusId,
-                    dataType: 'json',
-                    contentType: 'application/json;',
-                    data: "'" + webFormDataInString + "'"
+                    //dataType: 'json',
+                    //contentType: 'application/json;',
+                    data: webFormData
                 })
 
                 $updateRateHandler.done(function (data, textStatus, jqXHR) {

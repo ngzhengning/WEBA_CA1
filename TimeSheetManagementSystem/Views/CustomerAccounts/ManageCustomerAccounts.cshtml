@@ -51,6 +51,7 @@
 
         $loadCustomerDataHandler.done(function (data, textStatus, jqXHR) {
             var customerList = data;
+            console.dir(customerList);
             var CustomerAccountId = '';
             var AccountName = "";
             var NumOfRates= '';
@@ -71,8 +72,11 @@
                 accountName = customers.accountName;
                
                 numOfRates = customers.numOfRates;
-               comments = decodeURIComponent(customers.comments);
-  
+                 //comments = decodeURIComponent(customers.comments);
+                 comments = customers.comments;
+                
+
+
                 updatedBy = customers.updatedBy;
                 updatedAt = moment(customers.updatedAt).format("DD/MM/YYYY");
                 //updatedAt = moment(new Date()).format("DD/MM/YYYY"); //moment formating date
@@ -111,6 +115,26 @@
 
                 $cellElement.append($hyperLinkElement);
                 $rowElement.append($cellElement);
+
+
+                $hyperLinkElement = $('<a>Add Account Details</a>').attr('href', '/AccountDetails/CreateOneAccountDetailForCustomerAccount/' + customerAccountId);
+                $hyperLinkElement.addClass('btn btn-primary');
+
+                $cellElement = $('<td></td>');
+
+                $cellElement.append($hyperLinkElement);
+                $rowElement.append($cellElement);
+
+
+                
+                $hyperLinkElement = $('<a>Manage Account Details</a>').attr('href', '/AccountDetails/ManageAccountDetailsForOneCustomerAccount/' + customerAccountId);
+                $hyperLinkElement.addClass('btn btn-primary');
+
+                $cellElement = $('<td></td>');
+
+                $cellElement.append($hyperLinkElement);
+                $rowElement.append($cellElement);
+                
 
                 $tableBodyElement.append($rowElement);
             }

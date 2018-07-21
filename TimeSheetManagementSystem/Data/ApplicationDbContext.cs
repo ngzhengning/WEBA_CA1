@@ -410,7 +410,7 @@ namespace TimeSheetManagementSystem.Data
                 .Property(input => input.IsVisible)
                 .HasColumnName("IsVisible")
                 .HasColumnType("bit")
-                .HasDefaultValue(true)
+                //.HasDefaultValue(true)
                 .IsRequired(true);
 
             //----------- Defining AccountDetail Entity - End --------------

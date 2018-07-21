@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using System.Globalization;
-
+using Microsoft.AspNetCore.Http;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -96,28 +96,47 @@ namespace TimeSheetManagementSystem.APIs
 
         // POST api/<controller>
         [HttpPost]
-        public IActionResult Post([FromBody]string value)
+        public IActionResult Post(IFormCollection value)
         {
             using (var transaction = Database.Database.BeginTransaction())
             {
                 string customMessage = "";
-                var customerNewInput = JsonConvert.DeserializeObject<dynamic>(value);
+                //var customerNewInput = JsonConvert.DeserializeObject<dynamic>(value);
                 CustomerAccount newCustomer = new CustomerAccount();
-
                 int userId = GetUserIdFromUserInfo();
-
-                newCustomer.AccountName = customerNewInput.AccountName.Value;
-                Convert.ToBoolean(customerNewInput.IsVisible.Value);
-                Boolean dd = Convert.ToBoolean(customerNewInput.IsVisible.Value);
-                newCustomer.IsVisible = dd;
-                if (customerNewInput.Comments.Value == "")
+                //newCustomer.AccountName = customerNewInput.AccountName.Value;
+                newCustomer.AccountName = value["AccountName"];
+                //Convert.ToBoolean(customerNewInput.IsVisible.Value);
+                int i = Convert.ToInt32(value["isVisible"]);
+                if(i!=1)
                 {
-                    newCustomer.Comments = null;
+                    newCustomer.IsVisible = true;
                 }
                 else
                 {
-                    newCustomer.Comments = customerNewInput.Comments.Value;
+                    newCustomer.IsVisible = false;
                 }
+
+                var comments = value["Comments"];
+                if(comments !="")
+                {
+                    newCustomer.Comments = comments;
+                }
+                else
+                {
+                    newCustomer.Comments = null;
+                }
+
+                //Boolean dd = Convert.ToBoolean(customerNewInput.IsVisible.Value);
+                //newCustomer.IsVisible = dd;
+                //if (customerNewInput.Comments.Value == "")
+                //{
+                //    newCustomer.Comments = null;
+                //}
+                //else
+                //{
+                //    newCustomer.Comments = customerNewInput.Comments.Value;
+                //}
                 newCustomer.CreatedById = userId;
                 newCustomer.UpdatedById = userId;
                 newCustomer.CreatedAt = DateTime.Now;
@@ -135,7 +154,7 @@ namespace TimeSheetManagementSystem.APIs
                     {
                         customMessage = "Unable to save Customer Account record due " +
                                     "to another record having the same name : " +
-                                     customerNewInput.AccountName.Value;
+                                     value["AccountName"];
                         object httpFailRequestResultMessage = new { message = customMessage };
                         //Return a HTTP response of Bad Request status
                         //and embed the anonymous object's content within the message-body segmet.
@@ -143,28 +162,38 @@ namespace TimeSheetManagementSystem.APIs
                     }
                 }
 
-                var rateNewInput = JsonConvert.DeserializeObject<dynamic>(value);
+                //var rateNewInput = JsonConvert.DeserializeObject<dynamic>(value);
                 AccountRate newAccount = new AccountRate();
-
                 //CustomerAccount newCustomer = new CustomerAccount();
                 //var ds = Database.CustomerAccounts.Select(x => x.CustomerAccountId).Last();
                 //will require to save customer first.
-
                 //foreach (var one in ds)
                 //{
                 //newAccount.CustomerAccountId = ds;
                 //}
+
                 newAccount.CustomerAccountId = newCustomer.CustomerAccountId;
-                decimal rate = Convert.ToDecimal(rateNewInput.ratePerHour.Value);
-                newAccount.RatePerHour = rate;
+                newAccount.RatePerHour = Convert.ToDecimal(value["ratePerHour"]);
+                //decimal rate = Convert.ToDecimal(rateNewInput.ratePerHour.Value);
+                //newAccount.RatePerHour = rate;
+                newAccount.EffectiveStartDate = Convert.ToDateTime(value["eStartDate"]);
 
-                DateTime eStartDate = Convert.ToDateTime(rateNewInput.eStartDate.Value);
-                newAccount.EffectiveStartDate = eStartDate;
+                //DateTime eStartDate = Convert.ToDateTime(rateNewInput.eStartDate.Value);
+                //newAccount.EffectiveStartDate = eStartDate;
 
-                if (rateNewInput.eEndDate.Value != null)
+                //if (rateNewInput.eEndDate.Value != null)
+                //{
+                //    DateTime? eEndDate = Convert.ToDateTime(rateNewInput.eEndDate.Value);
+                //    newAccount.EffectiveEndDate = eEndDate;
+                //}
+                var eEndDate = value["eEndDate"];
+                if(eEndDate!="")
                 {
-                    DateTime? eEndDate = Convert.ToDateTime(rateNewInput.eEndDate.Value);
-                    newAccount.EffectiveEndDate = eEndDate;
+                    newAccount.EffectiveEndDate = Convert.ToDateTime(value["eEndDate"]);
+                }
+                else
+                {
+                    newAccount.EffectiveEndDate = null;
                 }
                 try
                 {
@@ -200,29 +229,46 @@ namespace TimeSheetManagementSystem.APIs
 
         // PUT api/<controller>/5
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody]string value)
+        public IActionResult Put(int id, IFormCollection value)
         {
             string customMessage = "";
             int userId = GetUserIdFromUserInfo();
-            var customerChangeInput = JsonConvert.DeserializeObject<dynamic>(value);
+            //var customerChangeInput = JsonConvert.DeserializeObject<dynamic>(value);
 
             var oneCustomer = Database.CustomerAccounts
                             .Where(x => x.CustomerAccountId == id).Single();
 
-            oneCustomer.AccountName = customerChangeInput.AccountName.Value;  
-            Boolean dd = Convert.ToBoolean(customerChangeInput.IsVisible.Value);
-            oneCustomer.IsVisible = dd;
+            oneCustomer.AccountName = value["AccountName"];
 
-            oneCustomer.Comments = customerChangeInput.Comments.Value;
+            int visible = Convert.ToInt32(value["isVisible"]);
+            if (visible != 1)
+            {
+                oneCustomer.IsVisible = false;
+            }
+            else
+            {
+                oneCustomer.IsVisible = true;
+            }
 
+            var comments = value["Comments"];
+            if (comments != "")
+            {
+                oneCustomer.Comments = comments;
+            }
+            else
+            {
+                oneCustomer.Comments = null;
+            }
+            //oneCustomer.AccountName = customerChangeInput.AccountName.Value;  
+            //Boolean dd = Convert.ToBoolean(customerChangeInput.IsVisible.Value);
+            //oneCustomer.IsVisible = dd;
+            //oneCustomer.Comments = customerChangeInput.Comments.Value;
             oneCustomer.UpdatedById = userId;
-            oneCustomer.UpdatedAt = DateTime.Now;
-            
+            oneCustomer.UpdatedAt = DateTime.Now;          
             try
             {
                 Database.SaveChanges();
             }
-
             catch (Exception ex)
             {
                 if (ex.InnerException.Message
@@ -230,7 +276,7 @@ namespace TimeSheetManagementSystem.APIs
                 {
                     customMessage = "Unable to save Customer Account record due " +
                               "to another record having the same name : " +
-                             customerChangeInput.AccountName.Value;
+                             value["AccountName"];
 
                     object httpFailRequestResultMessage = new { message = customMessage };
                     //Return a bad http request message to the client
