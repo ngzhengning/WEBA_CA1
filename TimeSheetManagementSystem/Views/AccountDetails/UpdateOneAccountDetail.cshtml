@@ -26,15 +26,7 @@
 
                         </table>
                     </div>
-                    <div class="form-group col-md-12">
-                        <table>
-                            <tr>
-                                <td class="lblall"></td>
-                                <td class="inptall"> <input type="button" class="btn btn-default" value="Check Current Account Details" id="chkAccount" /></td>
-                            </tr>
-                        </table>
-
-                    </div>
+                   
 
                     <div class="form-group col-md-12">
                         <table border="0">
@@ -165,25 +157,6 @@
     </div><!-- end of the div element which as the  class="col-md-offset-2 col-sm-8"-->
 </div><!-- end of div element with class="row" -->
 
-<div class="panel-body">
-    <div class="row">
-        <div class="col-md-12">
-            <table class="table table-hover" border="1" id="accountTable">
-                <thead>
-                    <tr>
-                        <th>Day</th>
-                        <th>Start Time</th>
-                        <th>End Time</th>
-                        <th>Effective Start Date</th>
-                        <th>Effective End Date</th>
-                        <th>Visibility</th>
-                    </tr>
-                </thead>
-                <tbody id="AccountDetailsTableBody"></tbody>
-            </table>
-        </div>
-    </div>
-</div>
 
 
 
@@ -198,8 +171,8 @@
     <script src="~/lib/jqwidgets/jqwidgets/jqx-all.js"></script>
 
     <script>
-        $('td').css('width', '230px');
-        $("#accountTable").hide();
+   
+        $('td').css('width', '230px');  
         $('.lblall').css('text-align', 'right');
         $('.lblall').css('display', 'block');
 
@@ -529,11 +502,7 @@
                 this.accList = inData;
             }
             check(day, ust, uet, sd, ed) {
-
-
-
                 for (var i = 0; i < this.accList.length; i++) {
-
                     var date = sd;
                     var tt = date.split("-");
                     var nsd = tt[0] + '-' + tt[1] /*+ '-' + tt[2]*/;
@@ -553,7 +522,7 @@
                             var eee = dsd.split('-');
                             var deed = eee[0] + '-' + eee[1];
 
-
+                            
                             if (nsd >= desd && ned <= deed) {
                                 if (day === this.accList[i].dayOfWeekNumber) {
                                     if (ust >= this.accList[i].startTime && ust <= this.accList[i].endTime) {
@@ -564,8 +533,19 @@
                                     }
                                 }
                             }
+                            else if (day === this.accList[i].dayOfWeekNumber) {
+                                if (ust >= this.accList[i].startTime && ust <= this.accList[i].endTime) {
+                                    return true;
+                                }
+                                else if (uet <= this.accList[i].endTime && uet >= this.accList[i].startTime) {
+                                    return true;
+                                }
+                            }
                         }
                         else {
+                            var edate = ed;
+                            var ett = edate.split("-");
+                            var ned = ett[0] + '-' + ett[1] /*+ '-' + ett[2]*/;
                             if (nsd >= desd) {
                                 if (day === this.accList[i].dayOfWeekNumber) {
                                     if (ust >= this.accList[i].startTime && ust <= this.accList[i].endTime) {
@@ -575,8 +555,19 @@
                                         return true;
                                     }
                                 }
-
                             }
+                            else if (ned >= desd) {
+                                return true;
+                            }
+                            else if(day === this.accList[i].dayOfWeekNumber) {
+                                if (ust >= this.accList[i].startTime && ust <= this.accList[i].endTime) {
+                                    return true;
+                                }
+                                else if (uet <= this.accList[i].endTime && uet >= this.accList[i].startTime) {
+                                    return true;
+                                }
+                            }
+
 
                         }
                     }
@@ -608,6 +599,17 @@
                                         return true;
                                     }
                                 }
+                            }
+                            else {
+                                if (day === this.accList[i].dayOfWeekNumber) {
+                                    if (ust >= this.accList[i].startTime && ust <= this.accList[i].endTime) {
+                                        return true;
+                                    }
+                                    else if (uet <= this.accList[i].endTime && uet >= this.accList[i].startTime) {
+                                        return true;
+                                    }
+                                }
+
                             }
 
                         }
@@ -698,7 +700,6 @@
                     },
                     stimepicker: {
                         required: true
-
                     }
 
                 }, messages: {

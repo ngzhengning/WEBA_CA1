@@ -4,7 +4,7 @@
             <div class="panel-heading">
                 Manage Account Details for <label id="accountName" style="text-decoration:underline"></label>
 
-                <div id="addRate" class="btn-group pull-right">
+                <div id="addDetail" class="btn-group pull-right">
                     @*give id to div for javascript manipulation*@
                 </div>
             </div>
@@ -44,6 +44,13 @@
             return id;
         };
 
+        //ADD BUTTON REMOVED
+        //const button = document.getElementById('addDetail')
+        //const $href = $('<a>Add</a>')
+        //$href.attr('href', `/AccountDetails/CreateOneAccountDetailForCustomerAccount/${g_cusId}`);
+        //$href.addClass('btn btn-default')
+        //$('#addDetail').append($href)
+
         function mintoTime(min) {
             var minutes = min;
             var m = minutes % 60;
@@ -81,7 +88,7 @@
                 var $cellElement = null;
                 var $rowElement = null;
 
-                console.dir(data);
+           
                 $('#accountName').html(accountName);
 
                 $tableBodyElement = $('#AccountDetailsTableBody');
@@ -125,7 +132,7 @@
                     endTime = account.endTime;
                     startTime = account.startTime;
                     accountDetailId = account.accountDetailId;
-                    if (account.isVisible = true) {
+                    if (account.isVisible == true) {
                         isVisible = "\u2714";
 
                     }
